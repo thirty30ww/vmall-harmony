@@ -10,6 +10,7 @@ import org.example.vmall_home_demo.entity.SmsCode;
 import org.example.vmall_home_demo.entity.User;
 import org.example.vmall_home_demo.mapper.SmsCodeMapper;
 import org.example.vmall_home_demo.mapper.UserMapper;
+import org.example.vmall_home_demo.security.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,7 +21,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HexFormat;
-import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -29,10 +29,12 @@ public class AuthService {
 
     private final UserMapper userMapper;
     private final SmsCodeMapper smsCodeMapper;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthService(UserMapper userMapper, SmsCodeMapper smsCodeMapper) {
+    public AuthService(UserMapper userMapper, SmsCodeMapper smsCodeMapper, JwtTokenProvider jwtTokenProvider) {
         this.userMapper = userMapper;
         this.smsCodeMapper = smsCodeMapper;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     public SendCodeResponse sendCode(SendCodeRequest request) {
@@ -86,7 +88,7 @@ public class AuthService {
         user.setPasswordHash(sha256(user.getPasswordSalt() + password));
         userMapper.insert(user);
 
-        return new AuthResponse(buildToken(user), new UserInfo(user.getId(), user.getPhone(), user.getUsername()));
+        return new AuthResponse(jwtTokenProvider.generateToken(user), new UserInfo(user.getId(), user.getPhone(), user.getUsername()));
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -106,7 +108,7 @@ public class AuthService {
         }
 
         userMapper.updateLastLoginAt(user.getId());
-        return new AuthResponse(buildToken(user), new UserInfo(user.getId(), user.getPhone(), user.getUsername()));
+        return new AuthResponse(jwtTokenProvider.generateToken(user), new UserInfo(user.getId(), user.getPhone(), user.getUsername()));
     }
 
     private User loginByPassword(String phone, String password) {
@@ -188,10 +190,6 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "invalid phone format");
         }
         return normalized;
-    }
-
-    private String buildToken(User user) {
-        return user.getId() + "." + UUID.randomUUID();
     }
 
     private String randomHex(int bytes) {

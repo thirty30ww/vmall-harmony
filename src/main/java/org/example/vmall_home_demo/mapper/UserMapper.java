@@ -25,6 +25,21 @@ public interface UserMapper {
             LIMIT 1
             """)
     User findByPhone(@Param("phone") String phone);
+    @Select("""
+            SELECT id,
+                   phone,
+                   username,
+                   password_hash AS passwordHash,
+                   password_salt AS passwordSalt,
+                   status,
+                   created_at AS createdAt,
+                   updated_at AS updatedAt,
+                   last_login_at AS lastLoginAt
+            FROM vmall_users
+            WHERE id = #{id}
+            LIMIT 1
+            """)
+    User findById(@Param("id") Long id);
 
     @Insert("""
             INSERT INTO vmall_users (phone, username, password_hash, password_salt, status, created_at, updated_at)
