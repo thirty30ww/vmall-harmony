@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c9f93eac-666d-4412-ac16-4c51b4b4e027" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/vmall-backend/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/VmallHomeDemoApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/config/WebConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/controller/ActivityController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/controller/AuthController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/controller/CategoryController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/controller/CategoryPageController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/controller/HomeController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/controller/ProductController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/controller/SearchSuggestionController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/dto/AuthResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/dto/CategoryPageCategoryDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/dto/CategoryPageProductDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/dto/CategoryPageResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/dto/HomeResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/dto/LoginRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/dto/RegisterRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/dto/SendCodeRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/dto/SendCodeResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/dto/UserInfo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/entity/Activity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/entity/Category.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/entity/CategoryPageMenu.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/entity/CategoryPageProduct.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/entity/Product.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/entity/SearchSuggestion.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/entity/SmsCode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/entity/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/mapper/ActivityMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/mapper/CategoryMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/mapper/CategoryPageMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/mapper/ProductMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/mapper/SearchSuggestionMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/mapper/SmsCodeMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/mapper/UserMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/service/ActivityService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/service/AuthService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/service/CategoryPageService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/service/CategoryService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/service/HomeService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/service/ProductService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/java/org/example/vmall_home_demo/service/SearchSuggestionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-backend/src/test/java/org/example/vmall_home_demo/VmallHomeDemoApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/AppScope/app.json5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/AppScope/resources/base/element/string.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/AppScope/resources/base/media/background.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/AppScope/resources/base/media/foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/AppScope/resources/base/media/layered_image.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/build-profile.json5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/code-linter.json5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/docs/vmall_homepage.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/docs/vmall_user_auth.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/build-profile.json5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/hvigorfile.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/obfuscation-rules.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/oh-package.json5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/api/authApi.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/api/categoryApi.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/api/homeApi.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/components/ActivityBanner.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/components/BottomNavBar.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/components/CategoryGrid.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/components/CategoryPanel.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/components/HomeSwiper.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/components/ProductCard.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/components/ProductsListSection.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/components/SearchBar.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/data/categoryData.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/data/productsListData.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/entryability/EntryAbility.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/entrybackupability/EntryBackupAbility.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/pages/HomePage.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/pages/LoginPage.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/pages/ProductDetailPage.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/ets/pages/RegisterPage.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/module.json5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/element/color.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/element/float.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/element/string.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/ProductsList_MatePadEdge.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/QQ.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/avatar.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/background.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_HongMengZhiJia.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_HongMengZhiXing.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_HongMengZhiXuan.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_HuaWeiShouJi.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_JiaoYuYouHui.PNG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_PeiJianZhongXin.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_QiYeShangYong.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_QianKunZhiJia.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_TaZhiXuan.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_WoDeJiFen.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_YiJiuHuanXin.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_YinYingYuLe.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_YunDongJianKang.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_ZhiBoJian.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_ZhiHuiBanGong.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/category_ZhongCe.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/foreground.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/huawei_logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/hwlogo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/img_HuaWei618.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/layered_image.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_ChaoXinXinX1Pro.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_FreeBuds6.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_FreeBuds6i.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_FreeBuds7i.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_FreeBudsPro5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_FreeClip2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_HUAWEIMateViewSE.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_HuaWeiJiaTingCunCHU.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_HuaWeiLingXiaoZiMuLuYouQ7.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_HuaWeiShouHuan11Pro.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_HuaWeiVisionZhiHuiPing6.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_HuaWeiVisionZhiHuiPing6SE.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_HuaWeiZhiNengMenSuo2Pro.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_Mate80ProMax.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_MateBook14HongMeng.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_MateBookD16E.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_MateBookPro.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_MatePad115S_2025.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_MatePad115_2026.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_MatePadMini.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_MatePadProMax.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_MateViewGT.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_MateX7.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_PuraXMax.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_ULTIMATE_DESIGN.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_WATCH5.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_WATCH_FIT5Pro.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_nova16.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/productsList_nova16pro.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/qq_logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/stack_HuaWeiAX3.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/stack_MateBookPro.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/stack_MatePadPro.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/stack_Sounds5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/stack_WenJieM9.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/startIcon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/swiper_FreeClip2.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/swiper_Mate80ProMax.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/swiper_PuraXMax.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/swiper_nova16.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/swiper_shangjieH5.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/swiper_watchGT6.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/tabBuilder_FaXian.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/tabBuilder_FaXian_select.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/tabBuilder_FenLei.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/tabBuilder_FenLei_select.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/tabBuilder_GouWuChe.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/tabBuilder_GouWuChe_select.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/tabBuilder_ShouYe.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/tabBuilder_ShouYe_select.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/tabBuilder_WoDe.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/media/tabBuilder_WoDe_select.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/profile/backup_config.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/base/profile/main_pages.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/main/resources/dark/element/color.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/mock/mock-config.json5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/ohosTest/ets/test/Ability.test.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/ohosTest/ets/test/List.test.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/ohosTest/module.json5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/test/List.test.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/entry/src/test/LocalUnit.test.ets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/hvigor/hvigor-config.json5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/hvigorfile.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/oh-package-lock.json5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vmall-harmony/oh-package.json5" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="使用 Maven 包装器" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="3FksmOsHRrg5LpZc5waA3gEqvUa" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.VmallHomeDemoApplication.executor": "Run",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "项目",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
+    ],
+    "com.intellij.ide.scratch.LRUPopupBuilder$1/更改 SQL 方言": [
+      "MySQL"
+    ]
+  }
+}]]></component>
+  <component name="RunManager" selected="Spring Boot.VmallHomeDemoApplication">
+    <configuration name="vmall_homepage.sql" type="DatabaseScript" editBeforeRun="true" temporary="true" nameIsGenerated="true">
+      <script-file value="$PROJECT_DIR$/docs/vmall_homepage.sql" />
+      <script-mode>FILE</script-mode>
+      <method v="2" />
+    </configuration>
+    <configuration name="VmallHomeDemoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="vmall_home_demo" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.vmall_home_demo.VmallHomeDemoApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="数据库脚本.vmall_homepage.sql" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="c9f93eac-666d-4412-ac16-4c51b4b4e027" name="更改" comment="" />
+      <created>1782630564029</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1782630564029</updated>
+      <workItem from="1782630565096" duration="4962000" />
+      <workItem from="1782694382166" duration="5357000" />
+      <workItem from="1782781163210" duration="7702000" />
+      <workItem from="1782799538690" duration="8747000" />
+      <workItem from="1782809333014" duration="1724000" />
+      <workItem from="1782816591634" duration="3268000" />
+      <workItem from="1782867029767" duration="1111000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
