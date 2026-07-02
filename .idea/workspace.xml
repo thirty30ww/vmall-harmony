@@ -4,19 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c9f93eac-666d-4412-ac16-4c51b4b4e027" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.cache/.Apifox_Helper/.toolWindow.db" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.cache/.Apifox_Helper/.toolWindow.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/8e3dfca7-6407-4d5e-8278-21509aac1d8b.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/8e3dfca7-6407-4d5e-8278-21509aac1d8b.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/entity/CartItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/entity/CartItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/mapper/CartItemMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/mapper/CartItemMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/service/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/service/CartService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/vmall_home_demo/entity/CartItem.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/vmall_home_demo/entity/CartItem.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/vmall_home_demo/mapper/CartItemMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/vmall_home_demo/mapper/CartItemMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/vmall_home_demo/service/CartService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/vmall_home_demo/service/CartService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-    </list>
+    <list default="true" id="c9f93eac-666d-4412-ac16-4c51b4b4e027" name="更改" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -127,7 +115,7 @@
       <workItem from="1782891688844" duration="3472000" />
       <workItem from="1782901997579" duration="3854000" />
       <workItem from="1782953483570" duration="7269000" />
-      <workItem from="1782972803322" duration="9279000" />
+      <workItem from="1782972803322" duration="9451000" />
     </task>
     <servers />
   </component>

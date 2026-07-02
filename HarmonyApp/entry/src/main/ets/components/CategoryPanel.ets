@@ -1,8 +1,11 @@
-﻿import { CategoryPageCategory, getCategoryPage } from '../api/categoryApi';
+import { router } from '@kit.ArkUI';
+import { CategoryPageCategory, CategoryPageGroup, CategoryPageProduct, getCategoryPage } from '../api/categoryApi';
 
 @Component
 export struct CategoryPanel {
   @State selectedIndex: number = 0;
+  @State selectedCategoryName: string = '';
+  @State selectedGroups: CategoryPageGroup[] = [];
   @State categories: CategoryPageCategory[] = [];
   @State loading: boolean = false;
   @State errorMessage: string = '';
@@ -20,63 +23,138 @@ export struct CategoryPanel {
       if (this.selectedIndex >= this.categories.length) {
         this.selectedIndex = 0;
       }
+      this.selectCategory(this.selectedIndex);
     } catch (error) {
-      this.errorMessage = '\u5206\u7C7B\u52A0\u8F7D\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u540E\u7AEF\u670D\u52A1';
+      this.errorMessage = '分类加载失败，请检查后端服务';
     } finally {
       this.loading = false;
     }
   }
 
-  selectedCategory(): CategoryPageCategory | null {
-    if (this.categories.length === 0 || this.selectedIndex < 0 || this.selectedIndex >= this.categories.length) {
-      return null;
+  selectCategory(index: number) {
+    if (index < 0 || index >= this.categories.length) {
+      this.selectedIndex = 0;
+      this.selectedCategoryName = '';
+      this.selectedGroups = [];
+      return;
     }
-    return this.categories[this.selectedIndex];
+
+    const category: CategoryPageCategory = this.categories[index];
+    this.selectedIndex = index;
+    this.selectedCategoryName = category.name ?? '';
+    this.selectedGroups = category.groups.slice(0);
   }
 
+  groupGridHeight(count: number): number {
+    const rows: number = Math.max(1, Math.ceil(count / 3));
+    return rows * 136;
+  }
+
+  openProduct(product: CategoryPageProduct) {
+    const productPrice: number | null = product.price ?? null;
+    try {
+      router.pushUrl({
+        url: 'pages/ProductDetailPage',
+        params: {
+          productId: product.id,
+          source: 'category',
+          productName: product.name,
+          productImage: product.imageUrl ?? '',
+          productFeature: product.feature ?? '',
+          productPrice: productPrice === null ? '' : productPrice.toString()
+        }
+      });
+    } catch (error) {
+      this.errorMessage = '页面跳转失败';
+    }
+  }
   @Builder
   menuItem(index: number, category: CategoryPageCategory) {
     Row() {
-      if (this.selectedIndex === index) {
-        Blank()
-          .width(3)
-          .height(22)
-          .backgroundColor('#D71920')
-          .borderRadius(2)
-      } else {
-        Blank()
-          .width(3)
-          .height(22)
-      }
-
       Text(category.name ?? '')
-        .fontSize(14)
+        .fontSize(16)
         .fontWeight(this.selectedIndex === index ? FontWeight.Bold : FontWeight.Regular)
-        .fontColor(this.selectedIndex === index ? '#D71920' : '#4E5969')
+        .fontColor(this.selectedIndex === index ? '#D71920' : '#666666')
         .layoutWeight(1)
-        .textAlign(TextAlign.Center)
-        .maxLines(2)
+        .textAlign(TextAlign.Start)
+        .maxLines(1)
         .textOverflow({ overflow: TextOverflow.Ellipsis })
     }
-    .height(48)
+    .height(72)
     .width('100%')
-    .backgroundColor(this.selectedIndex === index ? Color.White : '#F5F6F8')
+    .padding({ left: 16, right: 8 })
+    .backgroundColor('#F1F3F5')
     .onClick(() => {
-      this.selectedIndex = index;
+      this.selectCategory(index);
     })
   }
 
   @Builder
-  categoryPlaceholder(category: CategoryPageCategory) {
-    Column({ space: 14 }) {
-      Text(category.name ?? '')
-        .fontSize(18)
+  productTile(product: CategoryPageProduct) {
+    Column({ space: 8 }) {
+      Image(product.imageUrl ?? '')
+        .width(66)
+        .height(66)
+        .objectFit(ImageFit.Contain)
+
+      Text(product.name)
+        .fontSize(13)
+        .fontColor('#111111')
+        .lineHeight(16)
+        .maxLines(2)
+        .textOverflow({ overflow: TextOverflow.Ellipsis })
+        .textAlign(TextAlign.Center)
+        .width('100%')
+        .height(34)
+    }
+    .width('100%')
+    .height(124)
+    .justifyContent(FlexAlign.Center)
+    .onClick(() => {
+      this.openProduct(product);
+    })
+  }
+
+  @Builder
+  productGroup(group: CategoryPageGroup) {
+    Column({ space: 12 }) {
+      Text(group.groupName)
+        .fontSize(17)
         .fontWeight(FontWeight.Bold)
         .fontColor('#111111')
         .width('100%')
 
-      Column({ space: 8 }) {
-        Text('\u5F53\u524D\u6A21\u5757\u7B49\u5F85\u5B8C\u6210')
+      Grid() {
+        ForEach(group.products, (item: CategoryPageProduct) => {
+          GridItem() {
+            this.productTile(item)
+          }
+        }, (item: CategoryPageProduct) => `${this.selectedCategoryName}-${item.id}`)
+      }
+      .columnsTemplate('1fr 1fr 1fr')
+      .columnsGap(8)
+      .rowsGap(10)
+      .width('100%')
+      .height(this.groupGridHeight(group.products.length))
+    }
+    .width('100%')
+    .padding({ left: 14, right: 14, top: 12, bottom: 10 })
+    .backgroundColor(Color.White)
+    .borderRadius(18)
+  }
+
+  @Builder
+  categoryContent() {
+    if (this.selectedGroups.length > 0) {
+      Column({ space: 16 }) {
+        ForEach(this.selectedGroups, (group: CategoryPageGroup) => {
+          this.productGroup(group)
+        }, (group: CategoryPageGroup) => `${this.selectedCategoryName}-${group.groupName}`)
+      }
+      .width('100%')
+    } else {
+      Column() {
+        Text('当前模块等待完成')
           .fontSize(14)
           .fontColor('#86909C')
       }
@@ -84,17 +162,15 @@ export struct CategoryPanel {
       .height(160)
       .justifyContent(FlexAlign.Center)
       .backgroundColor(Color.White)
-      .borderRadius(8)
+      .borderRadius(18)
     }
-    .width('100%')
-    .padding(14)
   }
 
   @Builder
   rightContent() {
     if (this.loading) {
       Column() {
-        Text('\u52A0\u8F7D\u4E2D')
+        Text('加载中')
           .fontSize(14)
           .fontColor('#86909C')
       }
@@ -107,7 +183,7 @@ export struct CategoryPanel {
           .fontSize(14)
           .fontColor('#86909C')
           .textAlign(TextAlign.Center)
-        Button('\u91CD\u8BD5')
+        Button('重试')
           .height(36)
           .fontSize(14)
           .backgroundColor('#111111')
@@ -119,11 +195,11 @@ export struct CategoryPanel {
       .width('100%')
       .height('100%')
       .justifyContent(FlexAlign.Center)
-    } else if (this.selectedCategory() !== null) {
-      this.categoryPlaceholder(this.selectedCategory() as CategoryPageCategory)
+    } else if (this.categories.length > 0) {
+      this.categoryContent()
     } else {
       Column() {
-        Text('\u6682\u65E0\u5206\u7C7B\u6570\u636E')
+        Text('暂无分类数据')
           .fontSize(14)
           .fontColor('#86909C')
       }
@@ -143,9 +219,9 @@ export struct CategoryPanel {
         }
         .width('100%')
       }
-      .width(92)
+      .width(116)
       .height('100%')
-      .backgroundColor('#F5F6F8')
+      .backgroundColor('#F1F3F5')
       .scrollBar(BarState.Off)
 
       Scroll() {
@@ -153,14 +229,15 @@ export struct CategoryPanel {
           this.rightContent()
         }
         .width('100%')
-        .padding({ left: 12, right: 12, top: 12, bottom: 20 })
+        .padding({ left: 0, right: 0, top: 16, bottom: 24 })
       }
       .layoutWeight(1)
       .height('100%')
+      .padding({ right: 12 })
       .scrollBar(BarState.Off)
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#F5F6F8')
+    .backgroundColor('#F1F3F5')
   }
 }

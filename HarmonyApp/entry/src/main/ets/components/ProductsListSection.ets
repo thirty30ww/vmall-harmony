@@ -1,3 +1,4 @@
+import { router } from '@kit.ArkUI';
 import { ProductType, ProductsListData, productsList } from '../data/productsListData';
 
 const productSectionTypes: ProductType[] = [
@@ -18,6 +19,32 @@ export struct ProductsListSection {
 
   getProductsByType(type: ProductType): ProductsListData[] {
     return productsList.filter((item: ProductsListData) => item.type === type);
+  }
+  productIndex(item: ProductsListData): number {
+    for (let index = 0; index < productsList.length; index++) {
+      if (productsList[index].productName === item.productName && productsList[index].type === item.type) {
+        return index;
+      }
+    }
+    return -1;
+  }
+
+  openProduct(item: ProductsListData) {
+    const price = item.discountPrice ?? item.originalPrice;
+    try {
+      router.pushUrl({
+        url: 'pages/ProductDetailPage',
+        params: {
+          productId: 0,
+          source: 'homeStatic',
+          localProductIndex: this.productIndex(item),
+          productName: item.productName,
+          productFeature: item.description,
+          productPrice: price.toString()
+        }
+      });
+    } catch (error) {
+    }
   }
 
   @Builder
@@ -62,6 +89,9 @@ export struct ProductsListSection {
     .borderRadius(8)
     .clip(true)
     .backgroundColor(Color.White)
+    .onClick(() => {
+      this.openProduct(item);
+    })
   }
 
   @Builder
@@ -96,6 +126,9 @@ export struct ProductsListSection {
     .alignItems(HorizontalAlign.Center)
     .backgroundColor(Color.White)
     .borderRadius(8)
+    .onClick(() => {
+      this.openProduct(item);
+    })
   }
 
   @Builder

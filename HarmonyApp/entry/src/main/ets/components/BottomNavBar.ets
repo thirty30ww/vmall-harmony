@@ -1,20 +1,42 @@
 @Component
 export struct BottomNavBar {
   @Link activeIndex: number;
+  onTabChange: (index: number) => void = () => {};
 
   @Builder
-  navItem(index: number, icon: string, label: string) {
-    Column() {
-      Stack() {
-        Text(icon)
-          .fontSize(22)
-          .fontColor(this.activeIndex === index ? '#D71920' : '#7A7F85')
-          .fontWeight(this.activeIndex === index ? FontWeight.Bold : FontWeight.Regular)
-          .textAlign(TextAlign.Center)
-      }
-      .width('100%')
-      .height(28)
-      .alignContent(Alignment.Center)
+  navIcon(index: number) {
+    if (index === 0) {
+      Image(this.activeIndex === index ? $r('app.media.tabBuilder_ShouYe_select') : $r('app.media.tabBuilder_ShouYe'))
+        .width(24)
+        .height(24)
+        .objectFit(ImageFit.Contain)
+    } else if (index === 1) {
+      Image(this.activeIndex === index ? $r('app.media.tabBuilder_FenLei_select') : $r('app.media.tabBuilder_FenLei'))
+        .width(24)
+        .height(24)
+        .objectFit(ImageFit.Contain)
+    } else if (index === 2) {
+      Image(this.activeIndex === index ? $r('app.media.tabBuilder_FaXian_select') : $r('app.media.tabBuilder_FaXian'))
+        .width(24)
+        .height(24)
+        .objectFit(ImageFit.Contain)
+    } else if (index === 3) {
+      Image(this.activeIndex === index ? $r('app.media.tabBuilder_GouWuChe_select') : $r('app.media.tabBuilder_GouWuChe'))
+        .width(24)
+        .height(24)
+        .objectFit(ImageFit.Contain)
+    } else {
+      Image(this.activeIndex === index ? $r('app.media.tabBuilder_WoDe_select') : $r('app.media.tabBuilder_WoDe'))
+        .width(24)
+        .height(24)
+        .objectFit(ImageFit.Contain)
+    }
+  }
+
+  @Builder
+  navItem(index: number, label: string) {
+    Column({ space: 2 }) {
+      this.navIcon(index)
 
       Text(label)
         .fontSize(12)
@@ -31,16 +53,17 @@ export struct BottomNavBar {
     .justifyContent(FlexAlign.Center)
     .onClick(() => {
       this.activeIndex = index;
+      this.onTabChange(index);
     })
   }
 
   build() {
     Row() {
-      this.navItem(0, '⌂', '首页')
-      this.navItem(1, '▦', '分类')
-      this.navItem(2, '◉', '发现')
-      this.navItem(3, '◇', '购物车')
-      this.navItem(4, '○', '我的')
+      this.navItem(0, '\u9996\u9875')
+      this.navItem(1, '\u5206\u7c7b')
+      this.navItem(2, '\u53d1\u73b0')
+      this.navItem(3, '\u8d2d\u7269\u8f66')
+      this.navItem(4, '\u6211\u7684')
     }
     .width('100%')
     .height(60)
