@@ -51,32 +51,31 @@ public interface CartItemMapper {
     int insertOrIncrease(CartItem item);
 
     @Update("""
-            <script>
             UPDATE vmall_cart_items
-            <set>
-                <if test="quantity != null">
-                    quantity = #{quantity},
-                </if>
-                <if test="selected != null">
-                    selected = #{selected},
-                </if>
-                updated_at = NOW()
-            </set>
+            SET quantity = #{quantity}, updated_at = NOW()
             WHERE id = #{id}
               AND user_id = #{userId}
-            </script>
             """)
-    int updateItem(@Param("id") Long id,
-                   @Param("userId") Long userId,
-                   @Param("quantity") Integer quantity,
-                   @Param("selected") Boolean selected);
+    int updateQuantity(@Param("id") Long id,
+                       @Param("userId") Long userId,
+                       @Param("quantity") Integer quantity);
+
+    @Update("""
+            UPDATE vmall_cart_items
+            SET selected = #{selected}, updated_at = NOW()
+            WHERE id = #{id}
+              AND user_id = #{userId}
+            """)
+    int updateSelected(@Param("id") Long id,
+                       @Param("userId") Long userId,
+                       @Param("selected") Integer selected);
 
     @Update("""
             UPDATE vmall_cart_items
             SET selected = #{selected}, updated_at = NOW()
             WHERE user_id = #{userId}
             """)
-    int updateAllSelected(@Param("userId") Long userId, @Param("selected") Boolean selected);
+    int updateAllSelected(@Param("userId") Long userId, @Param("selected") Integer selected);
 
     @Delete("""
             DELETE FROM vmall_cart_items

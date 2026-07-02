@@ -13,7 +13,7 @@ public class CartItem {
     private BigDecimal productPrice;
     private String productFeature;
     private Integer quantity;
-    private Boolean selected;
+    private Integer selected;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -89,11 +89,11 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    public Boolean getSelected() {
+    public Integer getSelected() {
         return selected;
     }
 
-    public void setSelected(Boolean selected) {
+    public void setSelected(Integer selected) {
         this.selected = selected;
     }
 

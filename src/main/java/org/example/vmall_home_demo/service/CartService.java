@@ -60,7 +60,12 @@ public class CartService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "request is required");
         }
         Integer quantity = request.getQuantity() == null ? null : normalizeQuantity(request.getQuantity());
-        cartItemMapper.updateItem(itemId, userId, quantity, request.getSelected());
+        if (quantity != null) {
+            cartItemMapper.updateQuantity(itemId, userId, quantity);
+        }
+        if (request.getSelected() != null) {
+            cartItemMapper.updateSelected(itemId, userId, boolToInt(request.getSelected()));
+        }
         return getCart(userId);
     }
 
@@ -76,7 +81,7 @@ public class CartService {
         if (request == null || request.getSelected() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "selected is required");
         }
-        cartItemMapper.updateAllSelected(userId, request.getSelected());
+        cartItemMapper.updateAllSelected(userId, boolToInt(request.getSelected()));
         return getCart(userId);
     }
 
@@ -108,9 +113,17 @@ public class CartService {
                 price,
                 item.getProductFeature(),
                 quantity,
-                Boolean.TRUE.equals(item.getSelected()),
+                isSelected(item.getSelected()),
                 lineAmount
         );
+    }
+
+    private boolean isSelected(Integer selected) {
+        return selected != null && selected == 1;
+    }
+
+    private Integer boolToInt(Boolean value) {
+        return Boolean.TRUE.equals(value) ? 1 : 0;
     }
 
     private Integer normalizeQuantity(Integer quantity) {
