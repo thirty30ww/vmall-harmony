@@ -72,6 +72,30 @@ CREATE TABLE IF NOT EXISTS vmall_sms_codes
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+
+CREATE TABLE IF NOT EXISTS vmall_cart_items (
+                                                id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '购物车项ID',
+
+                                                user_id BIGINT NOT NULL COMMENT '用户ID',
+
+                                                product_id BIGINT NULL COMMENT '商品ID，来源为数据库商品时保存对应ID',
+                                                product_source VARCHAR(32) NOT NULL COMMENT '商品来源：home/category/homeStatic',
+                                                product_name VARCHAR(255) NOT NULL COMMENT '商品名称',
+                                                product_image VARCHAR(1000) NULL COMMENT '商品图片',
+                                                product_price DECIMAL(10, 2) NOT NULL DEFAULT 0.00 COMMENT '商品价格',
+                                                product_feature VARCHAR(1000) NULL COMMENT '商品描述',
+
+                                                quantity INT NOT NULL DEFAULT 1 COMMENT '商品数量',
+                                                selected TINYINT NOT NULL DEFAULT 1 COMMENT '是否选中：1选中，0未选中',
+
+                                                created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+                                                updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+
+                                                UNIQUE KEY uk_user_product_source_id (user_id, product_source, product_id),
+                                                KEY idx_cart_user_id (user_id),
+                                                KEY idx_cart_selected (user_id, selected)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户购物车表';
+
 -- Optional test user for password login.
 -- phone: 13800138000, password: 123456
 INSERT INTO vmall_users (phone, username, password_salt, password_hash, status)

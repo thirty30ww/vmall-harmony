@@ -5,23 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c9f93eac-666d-4412-ac16-4c51b4b4e027" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.cache/.Apifox_Helper/.toolWindow.db" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/vmall_discover.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/config/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/security/JwtAuthenticationFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/security/JwtTokenProvider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/mapper/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/vmall_home_demo/mapper/UserMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/vmall_home_demo/mapper/UserMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/org/example/vmall_home_demo/service/AuthService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/vmall_home_demo/service/AuthService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/controller/CartController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/dto/AddCartItemRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/dto/CartItemResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/dto/CartSummaryResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/dto/SelectAllCartRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/dto/UpdateCartItemRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/entity/CartItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/mapper/CartItemMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/service/CartService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/vmall_homepage.sql" beforeDir="false" afterPath="$PROJECT_DIR$/docs/vmall_homepage.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/entity/Category.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/entity/Category.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/mapper/CategoryMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/vmall_home_demo/mapper/CategoryMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/vmall_home_demo/entity/Category.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/vmall_home_demo/entity/Category.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/vmall_home_demo/mapper/CategoryMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/vmall_home_demo/mapper/CategoryMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,6 +132,8 @@
       <workItem from="1782886768718" duration="4809000" />
       <workItem from="1782891688844" duration="3472000" />
       <workItem from="1782901997579" duration="3854000" />
+      <workItem from="1782953483570" duration="7269000" />
+      <workItem from="1782972803322" duration="2799000" />
     </task>
     <servers />
   </component>

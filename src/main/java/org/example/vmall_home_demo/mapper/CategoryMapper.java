@@ -13,6 +13,8 @@ public interface CategoryMapper {
                    category AS name,
                    `group` AS groupName,
                    product_name AS productName,
+                   description AS feature,
+                   price,
                    image_url AS imageUrl,
                    scraped_at AS scrapedAt
             FROM vmall_homepage_categories
