@@ -166,8 +166,7 @@ export struct CategoryPanel {
     }
   }
 
-  @Builder
-  rightContent() {
+  build() {
     if (this.loading) {
       Column() {
         Text('加载中')
@@ -177,6 +176,7 @@ export struct CategoryPanel {
       .width('100%')
       .height('100%')
       .justifyContent(FlexAlign.Center)
+      .backgroundColor('#F5F6F8')
     } else if (this.errorMessage.length > 0) {
       Column({ space: 12 }) {
         Text(this.errorMessage)
@@ -195,49 +195,49 @@ export struct CategoryPanel {
       .width('100%')
       .height('100%')
       .justifyContent(FlexAlign.Center)
-    } else if (this.categories.length > 0) {
-      this.categoryContent()
+      .backgroundColor('#F5F6F8')
     } else {
-      Column() {
-        Text('暂无分类数据')
-          .fontSize(14)
-          .fontColor('#86909C')
+      Row() {
+        Scroll() {
+          Column() {
+            ForEach(this.categories, (item: CategoryPageCategory, index: number) => {
+              this.menuItem(index, item)
+            }, (item: CategoryPageCategory) => item.id.toString())
+          }
+          .width('100%')
+        }
+        .width(116)
+        .height('100%')
+        .backgroundColor('#F1F3F5')
+        .scrollBar(BarState.Off)
+
+        if (this.categories.length === 0) {
+          Column() {
+            Text('暂无分类数据')
+              .fontSize(14)
+              .fontColor('#86909C')
+          }
+          .layoutWeight(1)
+          .height('100%')
+          .padding({ right: 12 })
+          .justifyContent(FlexAlign.Center)
+        } else {
+          Scroll() {
+            Column() {
+              this.categoryContent()
+            }
+            .width('100%')
+            .padding({ left: 0, right: 0, top: 16, bottom: 24 })
+          }
+          .layoutWeight(1)
+          .height('100%')
+          .padding({ right: 12 })
+          .scrollBar(BarState.Off)
+        }
       }
       .width('100%')
       .height('100%')
-      .justifyContent(FlexAlign.Center)
-    }
-  }
-
-  build() {
-    Row() {
-      Scroll() {
-        Column() {
-          ForEach(this.categories, (item: CategoryPageCategory, index: number) => {
-            this.menuItem(index, item)
-          }, (item: CategoryPageCategory) => item.id.toString())
-        }
-        .width('100%')
-      }
-      .width(116)
-      .height('100%')
       .backgroundColor('#F1F3F5')
-      .scrollBar(BarState.Off)
-
-      Scroll() {
-        Column() {
-          this.rightContent()
-        }
-        .width('100%')
-        .padding({ left: 0, right: 0, top: 16, bottom: 24 })
-      }
-      .layoutWeight(1)
-      .height('100%')
-      .padding({ right: 12 })
-      .scrollBar(BarState.Off)
     }
-    .width('100%')
-    .height('100%')
-    .backgroundColor('#F1F3F5')
   }
 }
