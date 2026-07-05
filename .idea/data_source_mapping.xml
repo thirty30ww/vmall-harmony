@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="DataSourcePerFileMappings">
-    <file url="file://$PROJECT_DIR$/docs/vmall_discover.sql" value="d6e46194-9846-458c-acdc-12c46c735f78" />
-    <file url="file://$PROJECT_DIR$/docs/vmall_homepage.sql" value="d6e46194-9846-458c-acdc-12c46c735f78" />
-    <file url="file://$PROJECT_DIR$/docs/vmall_user_auth.sql" value="d6e46194-9846-458c-acdc-12c46c735f78" />
-  </component>
-</project>
