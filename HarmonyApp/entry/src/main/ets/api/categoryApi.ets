@@ -1,6 +1,6 @@
 import { http } from '@kit.NetworkKit';
 
-const API_BASE_URL: string = 'http://10.162.106.18:8080/api';
+const API_BASE_URL: string = 'http://10.200.0.51:8080/api';
 
 export interface CategoryPageRawItem {
   id: number;

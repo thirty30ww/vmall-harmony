@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.example</groupId>
-    <artifactId>vmall_home_demo</artifactId>
+    <artifactId>vmall_home</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>vmall_home_demo</name>
-    <description>vmall_home_demo</description>
+    <name>vmall_home</name>
+    <description>vmall_home</description>
     <url/>
     <licenses>
         <license/>

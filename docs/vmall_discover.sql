@@ -1,3 +1,5 @@
+use vmall;
+
 DROP TABLE IF EXISTS vmall_discover_items;
 DROP TABLE IF EXISTS vmall_discover_sections;
 DROP TABLE IF EXISTS vmall_discover_nav_icons;
