@@ -5,16 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c9f93eac-666d-4412-ac16-4c51b4b4e027" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/HarmonyApp/build-profile.json5" beforeDir="false" afterPath="$PROJECT_DIR$/HarmonyApp/build-profile.json5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HarmonyApp/entry/src/main/ets/api/authApi.ets" beforeDir="false" afterPath="$PROJECT_DIR$/HarmonyApp/entry/src/main/ets/api/authApi.ets" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HarmonyApp/entry/src/main/ets/api/cartApi.ets" beforeDir="false" afterPath="$PROJECT_DIR$/HarmonyApp/entry/src/main/ets/api/cartApi.ets" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HarmonyApp/entry/src/main/ets/api/categoryApi.ets" beforeDir="false" afterPath="$PROJECT_DIR$/HarmonyApp/entry/src/main/ets/api/categoryApi.ets" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HarmonyApp/entry/src/main/ets/api/discoverApi.ets" beforeDir="false" afterPath="$PROJECT_DIR$/HarmonyApp/entry/src/main/ets/api/discoverApi.ets" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HarmonyApp/entry/src/main/ets/api/homeApi.ets" beforeDir="false" afterPath="$PROJECT_DIR$/HarmonyApp/entry/src/main/ets/api/homeApi.ets" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/PROJECT_FILE_DOCUMENTATION.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/vmall_discover.sql" beforeDir="false" afterPath="$PROJECT_DIR$/docs/vmall_discover.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/vmall_homepage.sql" beforeDir="false" afterPath="$PROJECT_DIR$/docs/vmall_homepage.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,7 +29,7 @@
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
-        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+        <option name="mavenHome" value="使用 Maven 包装器" />
       </MavenGeneralSettings>
     </option>
   </component>
@@ -61,18 +57,17 @@
     &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;Spring Boot.VmallHomeDemoApplication.executor&quot;: &quot;Debug&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Spring Boot.VmallHomeDemoApplication.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Merrick/code/vmall_home&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/my study/task-queue-system&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;项目&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;全局库&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.itangcent.idea.plugin.configurable.AccountConfigurable.apifox&quot;,
@@ -97,7 +92,7 @@
       <method v="2" />
     </configuration>
     <configuration name="VmallHomeDemoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="vmall_home" />
+      <module name="vmall_home_demo" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.vmall_home_demo.VmallHomeDemoApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -108,14 +103,6 @@
         <item itemvalue="数据库脚本.vmall_homepage.sql" />
       </list>
     </recent_temporary>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-30f59d01ecdd-cffe25b9f5b3-intellij.indexing.shared.core-IU-253.28294.334" />
-        <option value="bundled-js-predefined-d6986cc7102b-c7e53b3be11b-JavaScript-IU-253.28294.334" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -137,8 +124,8 @@
       <workItem from="1782901997579" duration="3854000" />
       <workItem from="1782953483570" duration="7269000" />
       <workItem from="1782972803322" duration="9451000" />
-      <workItem from="1783128340972" duration="4610000" />
-      <workItem from="1783164201705" duration="201000" />
+      <workItem from="1783087341206" duration="2293000" />
+      <workItem from="1783214168594" duration="1607000" />
     </task>
     <servers />
   </component>

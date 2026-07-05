@@ -8,9 +8,7 @@ import { HomeSwiper } from '../components/HomeSwiper';
 import { ProductCard } from '../components/ProductCard';
 import { ProductsListSection } from '../components/ProductsListSection';
 import { SearchBar } from '../components/SearchBar';
-import { CartItem, CartSummary,
-  deleteCartItem,
-  deleteCartItem as removeCartItem, getCart, selectAllCartItems, updateCartItem } from '../api/cartApi';
+import { CartItem, CartSummary, deleteCartItem, getCart, selectAllCartItems, updateCartItem } from '../api/cartApi';
 import { Category as HomeCategory } from '../data/categoryData';
 import { productsList } from '../data/productsListData';
 import { getHomeData, getProducts, HomeData, Product } from '../api/homeApi';
@@ -23,7 +21,7 @@ struct HomePage {
     suggestions: [],
     activities: [],
     products: []
-  };
+  };  
   @State keyword: string = '';
   @State loading: boolean = true;
   @State errorMessage: string = '';
@@ -63,16 +61,27 @@ struct HomePage {
     return token.length > 0;
   }
 
-  // 2. 在 applyCartSummary 中排序
-  applyCartSummary(summary: CartSummary) {
-    // 按 id 升序排列
-    const sortedItems = summary.items.sort((a: CartItem, b: CartItem) => a.id - b.id);
+  logout() {
+    AppStorage.setOrCreate('token', '');
+    AppStorage.setOrCreate('phone', '');
+    AppStorage.setOrCreate('username', '');
+    this.currentUsername = '';
+    this.cartItems = [];
+    this.cartSelectedCount = 0;
+    this.cartTotalAmount = 0;
+    this.cartErrorMessage = '';
+    try {
+      router.pushUrl({ url: 'pages/LoginPage' });
+    } catch (error) {
+      this.errorMessage = '\u9875\u9762\u8df3\u8f6c\u5931\u8d25';
+    }
+  }  applyCartSummary(summary: CartSummary) {
+    const sortedItems: CartItem[] = summary.items.slice(0).sort((a: CartItem, b: CartItem) => a.id - b.id);
     this.cartItems = sortedItems;
     this.cartSelectedCount = summary.selectedCount;
     this.cartTotalAmount = summary.totalAmount;
   }
 
-  // 首次加载购物车
   async loadCart() {
     if (!this.isLoggedIn()) {
       this.cartItems = [];
@@ -86,29 +95,19 @@ struct HomePage {
     this.cartErrorMessage = '';
     try {
       const summary: CartSummary = await getCart();
-      // 按 id 升序排列
-      const sortedItems = summary.items.sort((a: CartItem, b: CartItem) => a.id - b.id);
-      this.cartItems = sortedItems;
-      this.cartSelectedCount = summary.selectedCount;
-      this.cartTotalAmount = summary.totalAmount;
+      this.applyCartSummary(summary);
     } catch (error) {
-      this.cartErrorMessage = '购物车加载失败';
+      this.cartErrorMessage = '\u8d2d\u7269\u8f66\u52a0\u8f7d\u5931\u8d25';
     } finally {
       this.cartLoading = false;
     }
   }
 
-
-
-  // 1. 修复 changeCartQuantity 方法 - 确保状态正确更新
-  // 修复：changeCartQuantity - 不触发全局刷新
   async changeCartQuantity(item: CartItem, quantity: number) {
     const nextQuantity: number = Math.max(0, Math.min(99, quantity));
     if (nextQuantity === item.quantity) {
       return;
     }
-
-    // 当数量变为0时，执行删除
     if (nextQuantity === 0) {
       await this.deleteCartProduct(item);
       return;
@@ -116,87 +115,53 @@ struct HomePage {
 
     this.operatingItemId = item.id;
     this.cartErrorMessage = '';
-
     try {
       const summary: CartSummary = await updateCartItem(item.id, nextQuantity, null);
       this.applyCartSummary(summary);
     } catch (error) {
-      this.cartErrorMessage = '数量更新失败';
+      this.cartErrorMessage = '\u6570\u91cf\u66f4\u65b0\u5931\u8d25';
       await this.loadCartSilent();
     } finally {
       this.operatingItemId = null;
     }
   }
-  // 2. 修复 toggleCartSelected 方法
+
   async toggleCartSelected(item: CartItem) {
     this.operatingItemId = item.id;
     this.cartErrorMessage = '';
-
     try {
       const summary: CartSummary = await updateCartItem(item.id, null, !item.selected);
       this.applyCartSummary(summary);
     } catch (error) {
-      this.cartErrorMessage = '选中状态更新失败';
+      this.cartErrorMessage = '\u9009\u4e2d\u72b6\u6001\u66f4\u65b0\u5931\u8d25';
       await this.loadCartSilent();
     } finally {
       this.operatingItemId = null;
     }
   }
 
-  // 修改 deleteCartProduct 方法
-  // 3. 在 deleteCartProduct 中重新排序
   async deleteCartProduct(item: CartItem) {
     this.isDeletingItemId = item.id;
     this.cartErrorMessage = '';
-
     try {
-      // 过滤并排序
-      const filteredItems: CartItem[] = [];
-      for (let i = 0; i < this.cartItems.length; i++) {
-        if (this.cartItems[i].id !== item.id) {
-          filteredItems.push(this.cartItems[i]);
-        }
-      }
-
-      // 按 id 升序排列
-      const sortedItems = filteredItems.sort((a: CartItem, b: CartItem) => a.id - b.id);
-
-      let selectedCount = 0;
-      let totalAmount = 0;
-      for (let i = 0; i < sortedItems.length; i++) {
-        if (sortedItems[i].selected) {
-          selectedCount++;
-          totalAmount += sortedItems[i].productPrice * sortedItems[i].quantity;
-        }
-      }
-
-      this.cartItems = sortedItems;
-      this.cartSelectedCount = selectedCount;
-      this.cartTotalAmount = totalAmount;
-
-      await deleteCartItem(item.id);
-      await this.loadCartSilent();
+      const summary: CartSummary = await deleteCartItem(item.id);
+      this.applyCartSummary(summary);
     } catch (error) {
-      this.cartErrorMessage = '删除失败，请重试';
+      this.cartErrorMessage = '\u5220\u9664\u5931\u8d25';
       await this.loadCartSilent();
     } finally {
       this.isDeletingItemId = null;
     }
   }
 
-
-  // 静默加载购物车（保持顺序）
   async loadCartSilent() {
     try {
       const summary: CartSummary = await getCart();
-      // 使用 applyCartSummary 保持顺序
       this.applyCartSummary(summary);
     } catch (error) {
-      // 静默失败，保持现有数据
-      console.error('静默加载购物车失败', error);
+      console.error('load cart failed', error);
     }
   }
-
   allCartSelected(): boolean {
     if (this.cartItems.length === 0) {
       return false;
@@ -208,52 +173,20 @@ struct HomePage {
     }
     return true;
   }
-
-  // 4. 修复 toggleCartAll 方法
   async toggleCartAll() {
-    const newSelectedState = !this.allCartSelected();
+    const nextSelected: boolean = !this.allCartSelected();
+    this.operatingItemId = -1;
     this.cartErrorMessage = '';
-
-    // 乐观更新 - 保持原有顺序
-    const updatedItems: CartItem[] = [];
-    for (let i = 0; i < this.cartItems.length; i++) {
-      const item = this.cartItems[i];
-      updatedItems.push({
-        id: item.id,
-        productId: item.productId,
-        productSource: item.productSource,
-        productName: item.productName,
-        productImage: item.productImage,
-        productPrice: item.productPrice,
-        productFeature: item.productFeature,
-        quantity: item.quantity,
-        selected: newSelectedState,
-        lineAmount: item.lineAmount
-      });
-    }
-
-    let newTotalAmount = 0;
-    if (newSelectedState) {
-      for (let i = 0; i < updatedItems.length; i++) {
-        newTotalAmount += updatedItems[i].productPrice * updatedItems[i].quantity;
-      }
-    }
-
-    // 直接更新，保持顺序
-    this.cartItems = updatedItems;
-    this.cartSelectedCount = newSelectedState ? updatedItems.length : 0;
-    this.cartTotalAmount = newTotalAmount;
-
     try {
-      const summary: CartSummary = await selectAllCartItems(newSelectedState);
-      // 使用 applyCartSummary 保持顺序
+      const summary: CartSummary = await selectAllCartItems(nextSelected);
       this.applyCartSummary(summary);
     } catch (error) {
-      this.cartErrorMessage = '全选更新失败';
+      this.cartErrorMessage = '\u5168\u9009\u66f4\u65b0\u5931\u8d25';
       await this.loadCartSilent();
+    } finally {
+      this.operatingItemId = null;
     }
   }
-
 
   priceText(value: number): string {
     return value.toFixed(2);
@@ -376,8 +309,6 @@ struct HomePage {
     .layoutWeight(1)
     .scrollBar(BarState.Off)
   }
-
-  // 5. 优化 cartSelectButton - 使用更可靠的点击处理
   @Builder
   cartSelectButton(selected: boolean, itemId: number, onTap: () => void) {
     Button(selected ? '\u2713' : '')
@@ -389,10 +320,7 @@ struct HomePage {
       .padding(0)
       .backgroundColor(selected ? '#D71920' : Color.White)
       .borderRadius(12)
-      .border({
-        width: 1.5,
-        color: selected ? '#D71920' : '#C9CDD4'
-      })
+      .border({ width: 1.5, color: selected ? '#D71920' : '#C9CDD4' })
       .enabled(this.operatingItemId !== itemId)
       .onClick(() => {
         onTap();
@@ -426,16 +354,8 @@ struct HomePage {
     .alignContent(Alignment.Center)
   }
 
-  // 6. 修复 cartItemCard - 确保列表项正确响应状态变化
   @Builder
   cartItemCard(item: CartItem) {
-    // 使用 @Builder 内部计算状态
-    this.cartItemCardContent(item)
-  }
-
-  @Builder
-  cartItemCardContent(item: CartItem) {
-    // 在 Builder 内部通过 this 访问状态
     Row({ space: 10 }) {
       Column() {
         this.cartSelectButton(item.selected, item.id, () => {
@@ -446,26 +366,7 @@ struct HomePage {
       .height('100%')
       .justifyContent(FlexAlign.Center)
 
-      // 商品图片区域 - 添加透明度效果
-      Stack() {
-        this.cartProductImage(item)
-        if (this.operatingItemId === item.id || this.isDeletingItemId === item.id) {
-          Column() {
-            Text(this.isDeletingItemId === item.id ? '删除中...' : '...')
-              .fontSize(12)
-              .fontColor('#999999')
-          }
-          .width('100%')
-          .height('100%')
-          .backgroundColor('rgba(255,255,255,0.7)')
-          .justifyContent(FlexAlign.Center)
-          .alignItems(HorizontalAlign.Center)
-        }
-      }
-      .width(92)
-      .height(92)
-      .borderRadius(10)
-      .backgroundColor('#F6F7F9')
+      this.cartProductImage(item)
 
       Column({ space: 7 }) {
         Text(item.productName)
@@ -476,7 +377,6 @@ struct HomePage {
           .maxLines(2)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
           .width('100%')
-          .opacity(this.isDeletingItemId === item.id ? 0.5 : 1)
 
         Text(item.productFeature ?? '')
           .fontSize(12)
@@ -485,7 +385,6 @@ struct HomePage {
           .maxLines(1)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
           .width('100%')
-          .opacity(this.isDeletingItemId === item.id ? 0.5 : 1)
 
         Row() {
           Row({ space: 2 }) {
@@ -499,7 +398,6 @@ struct HomePage {
               .fontColor('#D71920')
           }
           .layoutWeight(1)
-          .opacity(this.isDeletingItemId === item.id ? 0.5 : 1)
 
           Row() {
             Button('-')
@@ -511,14 +409,8 @@ struct HomePage {
               .backgroundColor('#F1F2F4')
               .borderRadius(15)
               .enabled(this.operatingItemId !== item.id && this.isDeletingItemId !== item.id)
-              .opacity(this.operatingItemId === item.id || this.isDeletingItemId === item.id ? 0.5 : 1)
               .onClick(() => {
-                // 当数量为1时，执行删除
-                if (item.quantity <= 1) {
-                  this.deleteCartProduct(item);
-                } else {
-                  this.changeCartQuantity(item, item.quantity - 1);
-                }
+                this.changeCartQuantity(item, item.quantity - 1);
               })
 
             Text(item.quantity.toString())
@@ -526,7 +418,6 @@ struct HomePage {
               .fontSize(14)
               .fontColor('#111111')
               .textAlign(TextAlign.Center)
-              .opacity(this.isDeletingItemId === item.id ? 0.5 : 1)
 
             Button('+')
               .width(30)
@@ -537,7 +428,6 @@ struct HomePage {
               .backgroundColor('#F1F2F4')
               .borderRadius(15)
               .enabled(this.operatingItemId !== item.id && this.isDeletingItemId !== item.id && item.quantity < 99)
-              .opacity(this.operatingItemId === item.id || this.isDeletingItemId === item.id || item.quantity >= 99 ? 0.5 : 1)
               .onClick(() => {
                 this.changeCartQuantity(item, item.quantity + 1);
               })
@@ -548,11 +438,11 @@ struct HomePage {
         .width('100%')
         .alignItems(VerticalAlign.Center)
 
-        Button(this.isDeletingItemId === item.id ? '删除中...' : '\u5220\u9664')
-          .width(this.isDeletingItemId === item.id ? 80 : 58)
+        Button(this.isDeletingItemId === item.id ? '\u5220\u9664\u4e2d' : '\u5220\u9664')
+          .width(64)
           .height(28)
           .fontSize(13)
-          .fontColor(this.isDeletingItemId === item.id ? '#CCCCCC' : '#8A8F96')
+          .fontColor('#8A8F96')
           .padding(0)
           .backgroundColor(Color.Transparent)
           .alignSelf(ItemAlign.End)
@@ -570,8 +460,6 @@ struct HomePage {
     .backgroundColor(Color.White)
     .borderRadius(16)
     .alignItems(VerticalAlign.Center)
-    .opacity(this.isDeletingItemId === item.id ? 0.7 : 1)
-    .animation({ duration: 200, curve: Curve.EaseInOut })
   }
 
   @Builder
@@ -617,31 +505,25 @@ struct HomePage {
     .alignItems(HorizontalAlign.Center)
   }
 
-  // 7. 修复 cartContent 中的 List 渲染 - 使用 @Builder 和 key
   @Builder
   cartContent() {
     if (!this.isLoggedIn()) {
       this.cartEmptyContent('\u8bf7\u5148\u767b\u5f55\u540e\u67e5\u770b\u8d2d\u7269\u8f66', '\u53bb\u767b\u5f55', true)
-    } else if (this.cartItems.length === 0 && !this.cartErrorMessage) {
-      // 只有第一次加载时显示loading
-      if (this.cartLoading) {
-        Column() {
-          Text('加载中...')
-            .fontSize(15)
-            .fontColor('#86909C')
-        }
-        .layoutWeight(1)
-        .width('100%')
-        .justifyContent(FlexAlign.Center)
-      } else {
-        this.cartEmptyContent('您的购物车暂时没有商品', '去购物', false)
+    } else if (this.cartLoading && this.cartItems.length === 0) {
+      Column() {
+        Text('\u8d2d\u7269\u8f66\u52a0\u8f7d\u4e2d')
+          .fontSize(15)
+          .fontColor('#86909C')
       }
+      .layoutWeight(1)
+      .width('100%')
+      .justifyContent(FlexAlign.Center)
     } else if (this.cartErrorMessage.length > 0 && this.cartItems.length === 0) {
       Column({ space: 12 }) {
         Text(this.cartErrorMessage)
           .fontSize(15)
           .fontColor('#86909C')
-        Button('重试')
+        Button('\u91cd\u8bd5')
           .width(120)
           .height(42)
           .fontColor(Color.White)
@@ -655,31 +537,28 @@ struct HomePage {
       .width('100%')
       .justifyContent(FlexAlign.Center)
       .alignItems(HorizontalAlign.Center)
+    } else if (this.cartItems.length === 0) {
+      this.cartEmptyContent('\u60a8\u7684\u8d2d\u7269\u8f66\u6682\u65f6\u6ca1\u6709\u5546\u54c1', '\u53bb\u8d2d\u7269', false)
     } else {
       Column() {
-        // 在 cartContent 的 List 中
         List({ space: 12 }) {
           ForEach(this.cartItems, (item: CartItem) => {
             ListItem() {
               this.cartItemCard(item)
             }
-          }, (item: CartItem) => item.id.toString()) // 使用 id 作为唯一且稳定的 key
+          }, (item: CartItem) => item.id.toString())
         }
         .layoutWeight(1)
         .width('100%')
         .padding({ left: 16, right: 16, top: 12, bottom: 12 })
         .scrollBar(BarState.Off)
-        // 底部结算栏
+
         Row() {
           Row({ space: 8 }) {
-            this.cartSelectButton(
-              this.allCartSelected(),
-              -1, // 全选用特殊id
-              () => {
-                this.toggleCartAll();
-              }
-            )
-            Text('全选')
+            this.cartSelectButton(this.allCartSelected(), -1, () => {
+              this.toggleCartAll();
+            })
+            Text('\u5168\u9009')
               .fontSize(15)
               .fontColor('#111111')
           }
@@ -688,7 +567,7 @@ struct HomePage {
 
           Blank()
 
-          Text('合计: ')
+          Text('\u5408\u8ba1: ')
             .fontSize(14)
             .fontColor('#111111')
           Text('\u00a5' + this.priceText(this.cartTotalAmount))
@@ -696,7 +575,7 @@ struct HomePage {
             .fontWeight(FontWeight.Bold)
             .fontColor('#D71920')
 
-          Button('结算(' + this.cartSelectedCount.toString() + ')')
+          Button('\u7ed3\u7b97(' + this.cartSelectedCount.toString() + ')')
             .width(116)
             .height(46)
             .fontSize(16)
@@ -706,16 +585,6 @@ struct HomePage {
             .borderRadius(23)
             .enabled(this.cartSelectedCount > 0)
             .opacity(this.cartSelectedCount > 0 ? 1 : 0.6)
-            .onClick(() => {
-              if (this.cartSelectedCount > 0) {
-                // 跳转到结算页面
-                try {
-                  router.pushUrl({ url: 'pages/CheckoutPage' });
-                } catch (error) {
-                  this.cartErrorMessage = '页面跳转失败';
-                }
-              }
-            })
         }
         .width('100%')
         .height(66)
@@ -727,7 +596,6 @@ struct HomePage {
       .width('100%')
     }
   }
-
   @Builder
   myAssetItem(icon: Resource, title: string) {
     Column({ space: 4 }) {
@@ -808,6 +676,27 @@ struct HomePage {
     .width('100%')
     .height(64)
     .alignItems(VerticalAlign.Center)
+  }
+
+  @Builder
+  logoutRow() {
+    Row() {
+      Text('\u9000\u51fa\u767b\u5f55')
+        .fontSize(18)
+        .fontWeight(FontWeight.Bold)
+        .fontColor('#D71920')
+        .layoutWeight(1)
+
+      Text('\u203a')
+        .fontSize(34)
+        .fontColor('#C9CDD4')
+    }
+    .width('100%')
+    .height(64)
+    .alignItems(VerticalAlign.Center)
+    .onClick(() => {
+      this.logout();
+    })
   }
 
   @Builder
@@ -966,6 +855,13 @@ struct HomePage {
 
         Column() {
           this.myListRow($r('app.media.shezhi'), '\u8bbe\u7f6e')
+          if (this.isLoggedIn()) {
+            Divider()
+              .strokeWidth(1)
+              .color('#ECECEC')
+              .margin({ left: 40 })
+            this.logoutRow()
+          }
         }
         .width('100%')
         .padding({ left: 14, right: 14 })
@@ -1017,18 +913,12 @@ struct HomePage {
         Blank()
           .layoutWeight(1)
 
-        if (this.activeTabIndex === 1 || this.activeTabIndex === 4) {
+        if (this.activeTabIndex === 4) {
           Stack() {
-            if (this.activeTabIndex === 4) {
-              Image($r('app.media.youjian'))
-                .width(25)
-                .height(25)
-                .objectFit(ImageFit.Contain)
-            } else {
-              Text('\u2315')
-                .fontSize(28)
-                .fontColor('#111111')
-            }
+            Image($r('app.media.youjian'))
+              .width(25)
+              .height(25)
+              .objectFit(ImageFit.Contain)
           }
           .width(48)
           .height(48)

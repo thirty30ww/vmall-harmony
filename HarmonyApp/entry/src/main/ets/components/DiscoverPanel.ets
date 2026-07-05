@@ -185,16 +185,6 @@ export struct DiscoverPanel {
 
       Blank()
         .layoutWeight(1)
-
-      Row({ space: 12 }) {
-        Text('🔍')
-          .fontSize(22)
-          .fontColor('#111111')
-
-        Text('🔔')
-          .fontSize(22)
-          .fontColor('#111111')
-      }
     }
     .width('100%')
     .height(58)
