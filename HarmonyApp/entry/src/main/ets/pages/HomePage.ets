@@ -28,7 +28,6 @@ struct HomePage {
   @State activeTabIndex: number = 0;
   @State currentUsername: string = '';
   @State cartItems: CartItem[] = [];
-  @State cartSelectedCount: number = 0;
   @State cartTotalAmount: number = 0;
   @State cartLoading: boolean = false;
   @State cartErrorMessage: string = '';
@@ -66,7 +65,6 @@ struct HomePage {
     AppStorage.setOrCreate('username', '');
     this.currentUsername = '';
     this.cartItems = [];
-    this.cartSelectedCount = 0;
     this.cartTotalAmount = 0;
     this.cartErrorMessage = '';
     try {
@@ -79,7 +77,6 @@ struct HomePage {
   async loadCart() {
     if (!this.isLoggedIn()) {
       this.cartItems = [];
-      this.cartSelectedCount = 0;
       this.cartTotalAmount = 0;
       this.cartErrorMessage = '';
       return;
@@ -90,49 +87,12 @@ struct HomePage {
     try {
       const summary: CartSummary = await getCart();
       this.cartItems = summary.items;
-      this.cartSelectedCount = summary.selectedCount;
       this.cartTotalAmount = summary.totalAmount;
     } catch (error) {
       this.cartErrorMessage = '\u8d2d\u7269\u8f66\u52a0\u8f7d\u5931\u8d25';
     } finally {
       this.cartLoading = false;
     }
-  }
-
-  recalcCartTotals() {
-    let selectedCount: number = 0;
-    let totalAmount: number = 0;
-    for (let i: number = 0; i < this.cartItems.length; i++) {
-      const item = this.cartItems[i];
-      if (item.selected) {
-        selectedCount += item.quantity;
-        totalAmount += item.productPrice * item.quantity;
-      }
-    }
-    this.cartSelectedCount = selectedCount;
-    this.cartTotalAmount = totalAmount;
-  }
-
-  toggleCartSelected(item: CartItem) {
-    this.cartErrorMessage = '';
-    const newItems: CartItem[] = [];
-    for (let i: number = 0; i < this.cartItems.length; i++) {
-      const old = this.cartItems[i];
-      if (old.id === item.id) {
-        const clone: CartItem = {
-          id: old.id, productId: old.productId, productSource: old.productSource,
-          productName: old.productName, productImage: old.productImage,
-          productPrice: old.productPrice, productFeature: old.productFeature,
-          quantity: old.quantity, lineAmount: old.lineAmount,
-          selected: !old.selected
-        };
-        newItems.push(clone);
-      } else {
-        newItems.push(old);
-      }
-    }
-    this.cartItems = newItems;
-    this.recalcCartTotals();
   }
 
   changeCartQuantity(item: CartItem, quantity: number) {
@@ -149,8 +109,7 @@ struct HomePage {
           id: old.id, productId: old.productId, productSource: old.productSource,
           productName: old.productName, productImage: old.productImage,
           productPrice: old.productPrice, productFeature: old.productFeature,
-          quantity: nextQuantity, lineAmount: old.lineAmount,
-          selected: old.selected
+          quantity: nextQuantity, lineAmount: old.lineAmount
         };
         newItems.push(clone);
       } else {
@@ -158,7 +117,7 @@ struct HomePage {
       }
     }
     this.cartItems = newItems;
-    this.recalcCartTotals();
+    this.cartTotalAmount = newItems.reduce((sum: number, i: CartItem) => sum + i.productPrice * i.quantity, 0);
   }
 
   async deleteCartProduct(item: CartItem) {
@@ -170,7 +129,7 @@ struct HomePage {
       }
     }
     this.cartItems = newItems;
-    this.recalcCartTotals();
+    this.cartTotalAmount = newItems.reduce((sum: number, i: CartItem) => sum + i.productPrice * i.quantity, 0);
 
     try {
       await deleteCartItem(item.id);
@@ -184,40 +143,10 @@ struct HomePage {
     try {
       const summary: CartSummary = await getCart();
       this.cartItems = summary.items;
-      this.cartSelectedCount = summary.selectedCount;
       this.cartTotalAmount = summary.totalAmount;
     } catch (error) {
       console.error('load cart failed', error);
     }
-  }
-  allCartSelected(): boolean {
-    if (this.cartItems.length === 0) {
-      return false;
-    }
-    for (let index = 0; index < this.cartItems.length; index++) {
-      if (!this.cartItems[index].selected) {
-        return false;
-      }
-    }
-    return true;
-  }
-  toggleCartAll() {
-    this.cartErrorMessage = '';
-    const nextSelected: boolean = !this.allCartSelected();
-    const newItems: CartItem[] = [];
-    for (let i: number = 0; i < this.cartItems.length; i++) {
-      const old = this.cartItems[i];
-      const clone: CartItem = {
-        id: old.id, productId: old.productId, productSource: old.productSource,
-        productName: old.productName, productImage: old.productImage,
-        productPrice: old.productPrice, productFeature: old.productFeature,
-        quantity: old.quantity, lineAmount: old.lineAmount,
-        selected: nextSelected
-      };
-      newItems.push(clone);
-    }
-    this.cartItems = newItems;
-    this.recalcCartTotals();
   }
 
   priceText(value: number): string {
@@ -419,9 +348,6 @@ struct HomePage {
             ListItem() {
               CartItemCardComponent({
                 item: item,
-                onToggleSelected: (cartItem: CartItem) => {
-                  this.toggleCartSelected(cartItem);
-                },
                 onChangeQuantity: (cartItem: CartItem, quantity: number) => {
                   this.changeCartQuantity(cartItem, quantity);
                 },
@@ -430,7 +356,7 @@ struct HomePage {
                 }
               })
             }
-          }, (item: CartItem) => item.id.toString() + '_' + item.selected.toString() + '_' + item.quantity.toString())
+          }, (item: CartItem) => item.id.toString() + '_' + item.quantity.toString())
         }
         .layoutWeight(1)
         .width('100%')
@@ -438,29 +364,6 @@ struct HomePage {
         .scrollBar(BarState.Off)
 
         Row() {
-          Row({ space: 8 }) {
-            Button(this.allCartSelected() ? '\u2713' : '')
-              .width(24)
-              .height(24)
-              .fontSize(14)
-              .fontWeight(FontWeight.Bold)
-              .fontColor(this.allCartSelected() ? Color.White : '#C9CDD4')
-              .padding(0)
-              .backgroundColor(this.allCartSelected() ? '#D71920' : Color.White)
-              .borderRadius(12)
-              .border({ width: 1.5, color: this.allCartSelected() ? '#D71920' : '#C9CDD4' })
-              .onClick(() => {
-                this.toggleCartAll();
-              })
-            Text('\u5168\u9009')
-              .fontSize(15)
-              .fontColor('#111111')
-          }
-          .height('100%')
-          .alignItems(VerticalAlign.Center)
-
-          Blank()
-
           Text('\u5408\u8ba1: ')
             .fontSize(14)
             .fontColor('#111111')
@@ -469,7 +372,9 @@ struct HomePage {
             .fontWeight(FontWeight.Bold)
             .fontColor('#D71920')
 
-          Button('\u7ed3\u7b97(' + this.cartSelectedCount.toString() + ')')
+          Blank()
+
+          Button('\u7ed3\u7b97(' + this.cartItems.length.toString() + ')')
             .width(116)
             .height(46)
             .fontSize(16)
@@ -477,8 +382,6 @@ struct HomePage {
             .fontColor(Color.White)
             .backgroundColor('#D71920')
             .borderRadius(23)
-            .enabled(this.cartSelectedCount > 0)
-            .opacity(this.cartSelectedCount > 0 ? 1 : 0.6)
         }
         .width('100%')
         .height(66)

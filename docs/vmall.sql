@@ -40,13 +40,11 @@ CREATE TABLE `vmall_cart_items` (
   `product_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '商品价格',
   `product_feature` varchar(1000) DEFAULT NULL COMMENT '商品描述',
   `quantity` int NOT NULL DEFAULT '1' COMMENT '商品数量',
-  `selected` tinyint NOT NULL DEFAULT '1' COMMENT '是否选中：1选中，0未选中',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_user_product_source_id` (`user_id`,`product_source`,`product_id`),
-  KEY `idx_cart_user_id` (`user_id`),
-  KEY `idx_cart_selected` (`user_id`,`selected`)
+  KEY `idx_cart_user_id` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户购物车表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -56,7 +54,7 @@ CREATE TABLE `vmall_cart_items` (
 
 LOCK TABLES `vmall_cart_items` WRITE;
 /*!40000 ALTER TABLE `vmall_cart_items` DISABLE KEYS */;
-INSERT INTO `vmall_cart_items` VALUES (1,4,13,'category','WATCH FIT 5','https://res.vmallres.com/pimages/FssCdnProxy/vmall_product_uom/pmsSalesFile/428_428_1BCE6003D8E0046B10CF4FE336CF1BFF.png',1299.00,'轻薄时尚，全天候健康监测',1,0,'2026-07-04 10:38:00','2026-07-05 19:16:57'),(2,4,14,'category','华为超新星手表 X1 Pro','https://res.vmallres.com/pimages/FssCdnProxy/vmall_product_uom/pmsSalesFile/428_428_E95FC11CE8ADA233257D141CD3EA031F.png',1499.00,'儿童智能手表，安全守护升级',2,1,'2026-07-04 10:38:04','2026-07-06 08:49:05');
+INSERT INTO `vmall_cart_items` VALUES (1,4,13,'category','WATCH FIT 5','https://res.vmallres.com/pimages/FssCdnProxy/vmall_product_uom/pmsSalesFile/428_428_1BCE6003D8E0046B10CF4FE336CF1BFF.png',1299.00,'轻薄时尚，全天候健康监测',1,'2026-07-04 10:38:00','2026-07-05 19:16:57'),(2,4,14,'category','华为超新星手表 X1 Pro','https://res.vmallres.com/pimages/FssCdnProxy/vmall_product_uom/pmsSalesFile/428_428_E95FC11CE8ADA233257D141CD3EA031F.png',1499.00,'儿童智能手表，安全守护升级',2,'2026-07-04 10:38:04','2026-07-06 08:49:05');
 /*!40000 ALTER TABLE `vmall_cart_items` ENABLE KEYS */;
 UNLOCK TABLES;
 

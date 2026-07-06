@@ -19,11 +19,10 @@ public interface CartItemMapper {
                    product_source AS productSource,
                    product_name AS productName,
                    product_image AS productImage,
-                   product_price AS productPrice,
-                   product_feature AS productFeature,
-                   quantity,
-                   selected,
-                   created_at AS createdAt,
+                    product_price AS productPrice,
+                    product_feature AS productFeature,
+                    quantity,
+                    created_at AS createdAt,
                    updated_at AS updatedAt
             FROM vmall_cart_items
             WHERE user_id = #{userId}
@@ -34,10 +33,10 @@ public interface CartItemMapper {
     @Insert("""
             INSERT INTO vmall_cart_items (
                 user_id, product_id, product_source, product_name, product_image,
-                product_price, product_feature, quantity, selected, created_at, updated_at
+                product_price, product_feature, quantity, created_at, updated_at
             ) VALUES (
                 #{userId}, #{productId}, #{productSource}, #{productName}, #{productImage},
-                #{productPrice}, #{productFeature}, #{quantity}, 0, NOW(), NOW()
+                #{productPrice}, #{productFeature}, #{quantity}, NOW(), NOW()
             )
             ON DUPLICATE KEY UPDATE
                 product_name = VALUES(product_name),
@@ -45,7 +44,6 @@ public interface CartItemMapper {
                 product_price = VALUES(product_price),
                 product_feature = VALUES(product_feature),
                 quantity = quantity + VALUES(quantity),
-                selected = 0,
                 updated_at = NOW()
             """)
     int insertOrIncrease(CartItem item);
@@ -59,23 +57,6 @@ public interface CartItemMapper {
     int updateQuantity(@Param("id") Long id,
                        @Param("userId") Long userId,
                        @Param("quantity") Integer quantity);
-
-    @Update("""
-            UPDATE vmall_cart_items
-            SET selected = #{selected}, updated_at = NOW()
-            WHERE id = #{id}
-              AND user_id = #{userId}
-            """)
-    int updateSelected(@Param("id") Long id,
-                       @Param("userId") Long userId,
-                       @Param("selected") Integer selected);
-
-    @Update("""
-            UPDATE vmall_cart_items
-            SET selected = #{selected}, updated_at = NOW()
-            WHERE user_id = #{userId}
-            """)
-    int updateAllSelected(@Param("userId") Long userId, @Param("selected") Integer selected);
 
     @Delete("""
             DELETE FROM vmall_cart_items

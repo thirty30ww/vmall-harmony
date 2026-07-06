@@ -11,12 +11,11 @@ public class CartItemResponse {
     private BigDecimal productPrice;
     private String productFeature;
     private Integer quantity;
-    private Boolean selected;
     private BigDecimal lineAmount;
 
     public CartItemResponse(Long id, Long productId, String productSource, String productName,
                             String productImage, BigDecimal productPrice, String productFeature,
-                            Integer quantity, Boolean selected, BigDecimal lineAmount) {
+                            Integer quantity, BigDecimal lineAmount) {
         this.id = id;
         this.productId = productId;
         this.productSource = productSource;
@@ -25,7 +24,6 @@ public class CartItemResponse {
         this.productPrice = productPrice;
         this.productFeature = productFeature;
         this.quantity = quantity;
-        this.selected = selected;
         this.lineAmount = lineAmount;
     }
 
@@ -91,14 +89,6 @@ public class CartItemResponse {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
-    }
-
-    public Boolean getSelected() {
-        return selected;
-    }
-
-    public void setSelected(Boolean selected) {
-        this.selected = selected;
     }
 
     public BigDecimal getLineAmount() {

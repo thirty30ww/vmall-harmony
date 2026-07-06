@@ -5,12 +5,10 @@ import java.util.List;
 
 public class CartSummaryResponse {
     private List<CartItemResponse> items;
-    private Integer selectedCount;
     private BigDecimal totalAmount;
 
-    public CartSummaryResponse(List<CartItemResponse> items, Integer selectedCount, BigDecimal totalAmount) {
+    public CartSummaryResponse(List<CartItemResponse> items, BigDecimal totalAmount) {
         this.items = items;
-        this.selectedCount = selectedCount;
         this.totalAmount = totalAmount;
     }
 
@@ -20,14 +18,6 @@ public class CartSummaryResponse {
 
     public void setItems(List<CartItemResponse> items) {
         this.items = items;
-    }
-
-    public Integer getSelectedCount() {
-        return selectedCount;
-    }
-
-    public void setSelectedCount(Integer selectedCount) {
-        this.selectedCount = selectedCount;
     }
 
     public BigDecimal getTotalAmount() {

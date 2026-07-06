@@ -2,7 +2,6 @@ package org.example.vmall_home_demo.controller;
 
 import org.example.vmall_home_demo.dto.AddCartItemRequest;
 import org.example.vmall_home_demo.dto.CartSummaryResponse;
-import org.example.vmall_home_demo.dto.SelectAllCartRequest;
 import org.example.vmall_home_demo.dto.UpdateCartItemRequest;
 import org.example.vmall_home_demo.dto.UserInfo;
 import org.example.vmall_home_demo.service.CartService;
@@ -50,12 +49,6 @@ public class CartController {
     public CartSummaryResponse deleteItem(@AuthenticationPrincipal UserInfo user,
                                           @PathVariable Long id) {
         return cartService.deleteItem(currentUserId(user), id);
-    }
-
-    @PutMapping("/select-all")
-    public CartSummaryResponse selectAll(@AuthenticationPrincipal UserInfo user,
-                                         @RequestBody SelectAllCartRequest request) {
-        return cartService.selectAll(currentUserId(user), request);
     }
 
     private Long currentUserId(UserInfo user) {

@@ -10,13 +10,11 @@ export interface CartItem {
   productPrice: number;
   productFeature: string | null;
   quantity: number;
-  selected: boolean;
   lineAmount: number;
 }
 
 export interface CartSummary {
   items: CartItem[];
-  selectedCount: number;
   totalAmount: number;
 }
 
@@ -32,19 +30,13 @@ export interface AddCartItemRequest {
 
 interface UpdateCartItemRequest {
   quantity?: number;
-  selected?: boolean;
 }
 
-interface SelectAllCartRequest {
-  selected: boolean;
-}
-
-type CartRequestBody = AddCartItemRequest | UpdateCartItemRequest | SelectAllCartRequest | null;
+type CartRequestBody = AddCartItemRequest | UpdateCartItemRequest | null;
 
 function normalizeCartSummary(data: CartSummary): CartSummary {
   return {
     items: data.items ?? [],
-    selectedCount: data.selectedCount ?? 0,
     totalAmount: data.totalAmount ?? 0
   };
 }
@@ -98,13 +90,10 @@ export async function addCartItem(item: AddCartItemRequest): Promise<CartSummary
   return normalizeCartSummary(data);
 }
 
-export async function updateCartItem(itemId: number, quantity: number | null, selected: boolean | null): Promise<CartSummary> {
+export async function updateCartItem(itemId: number, quantity: number | null): Promise<CartSummary> {
   const requestBody: UpdateCartItemRequest = {};
   if (quantity !== null) {
     requestBody.quantity = quantity;
-  }
-  if (selected !== null) {
-    requestBody.selected = selected;
   }
   const data = await requestCart<CartSummary>(`/cart/items/${itemId}`, http.RequestMethod.PUT, requestBody);
   return normalizeCartSummary(data);
@@ -112,13 +101,5 @@ export async function updateCartItem(itemId: number, quantity: number | null, se
 
 export async function deleteCartItem(itemId: number): Promise<CartSummary> {
   const data = await requestCart<CartSummary>(`/cart/items/${itemId}`, http.RequestMethod.POST, null);
-  return normalizeCartSummary(data);
-}
-
-export async function selectAllCartItems(selected: boolean): Promise<CartSummary> {
-  const requestBody: SelectAllCartRequest = {
-    selected: selected
-  };
-  const data = await requestCart<CartSummary>('/cart/select-all', http.RequestMethod.PUT, requestBody);
   return normalizeCartSummary(data);
 }

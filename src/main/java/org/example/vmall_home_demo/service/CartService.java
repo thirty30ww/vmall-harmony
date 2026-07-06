@@ -3,7 +3,6 @@ package org.example.vmall_home_demo.service;
 import org.example.vmall_home_demo.dto.AddCartItemRequest;
 import org.example.vmall_home_demo.dto.CartItemResponse;
 import org.example.vmall_home_demo.dto.CartSummaryResponse;
-import org.example.vmall_home_demo.dto.SelectAllCartRequest;
 import org.example.vmall_home_demo.dto.UpdateCartItemRequest;
 import org.example.vmall_home_demo.entity.CartItem;
 import org.example.vmall_home_demo.mapper.CartItemMapper;
@@ -63,9 +62,6 @@ public class CartService {
         if (quantity != null) {
             cartItemMapper.updateQuantity(itemId, userId, quantity);
         }
-        if (request.getSelected() != null) {
-            cartItemMapper.updateSelected(itemId, userId, boolToInt(request.getSelected()));
-        }
         return getCart(userId);
     }
 
@@ -77,27 +73,15 @@ public class CartService {
         return getCart(userId);
     }
 
-    public CartSummaryResponse selectAll(Long userId, SelectAllCartRequest request) {
-        if (request == null || request.getSelected() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "selected is required");
-        }
-        cartItemMapper.updateAllSelected(userId, boolToInt(request.getSelected()));
-        return getCart(userId);
-    }
-
     private CartSummaryResponse buildSummary(List<CartItem> items) {
         List<CartItemResponse> responses = items.stream()
                 .map(this::toResponse)
                 .toList();
-        int selectedCount = 0;
         BigDecimal totalAmount = BigDecimal.ZERO;
         for (CartItemResponse item : responses) {
-            if (Boolean.TRUE.equals(item.getSelected())) {
-                selectedCount += item.getQuantity() == null ? 0 : item.getQuantity();
-                totalAmount = totalAmount.add(item.getLineAmount());
-            }
+            totalAmount = totalAmount.add(item.getLineAmount());
         }
-        return new CartSummaryResponse(responses, selectedCount, totalAmount);
+        return new CartSummaryResponse(responses, totalAmount);
     }
 
     private CartItemResponse toResponse(CartItem item) {
@@ -113,17 +97,8 @@ public class CartService {
                 price,
                 item.getProductFeature(),
                 quantity,
-                isSelected(item.getSelected()),
                 lineAmount
         );
-    }
-
-    private boolean isSelected(Integer selected) {
-        return selected != null && selected == 1;
-    }
-
-    private Integer boolToInt(Boolean value) {
-        return Boolean.TRUE.equals(value) ? 1 : 0;
     }
 
     private Integer normalizeQuantity(Integer quantity) {
