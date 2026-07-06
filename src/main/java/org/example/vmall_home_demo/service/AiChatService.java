@@ -40,11 +40,23 @@ public class AiChatService {
                 %s
                 """.formatted(context);
 
-        return chatClient.prompt()
+        String reply = chatClient.prompt()
                 .system(systemPrompt)
                 .user(userMessage)
                 .call()
                 .content();
+
+        return cleanMarkdown(reply);
+    }
+
+    private String cleanMarkdown(String text) {
+        if (text == null) return null;
+        return text
+                .replaceAll("\\*\\*|__", "")
+                .replaceAll("\\*", "")
+                .replaceAll("`{1,3}", "")
+                .replaceAll("#{1,6}\\s?", "")
+                .replaceAll(">\\s?", "");
     }
 
     private String buildProductContext() {
