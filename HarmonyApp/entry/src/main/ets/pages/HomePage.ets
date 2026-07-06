@@ -582,10 +582,11 @@ struct HomePage {
         .fontColor('#111111')
         .layoutWeight(1)
 
-      Text('\u203a')
-        .fontSize(24)
-        .fontColor('#C9CDD4')
-        .margin({ bottom: 2 })
+      Image($r('app.media.youjian'))
+        .width(16)
+        .height(16)
+        .objectFit(ImageFit.Contain)
+        .rotate({ angle: 180 })
     }
     .width('100%')
     .height(64)
@@ -595,7 +596,7 @@ struct HomePage {
   @Builder
   logoutRow() {
     Row() {
-      Image($r('app.media.wenti'))
+      Image($r('app.media.logout'))
         .width(28)
         .height(28)
         .objectFit(ImageFit.Contain)
@@ -607,10 +608,11 @@ struct HomePage {
         .fontColor('#D71920')
         .layoutWeight(1)
 
-      Text('\u203a')
-        .fontSize(24)
-        .fontColor('#C9CDD4')
-        .margin({ bottom: 2 })
+      Image($r('app.media.youjian'))
+        .width(16)
+        .height(16)
+        .objectFit(ImageFit.Contain)
+        .rotate({ angle: 180 })
     }
     .width('100%')
     .height(64)
@@ -704,12 +706,14 @@ struct HomePage {
               .fontSize(16)
               .fontColor('#7A7F85')
 
-            Text('\u203a')
-              .fontSize(24)
-              .fontColor('#8A8F96')
-              .margin({ left: 4, bottom: 2 })
+            Image($r('app.media.youjian'))
+              .width(14)
+              .height(14)
+              .objectFit(ImageFit.Contain)
+              .rotate({ angle: 180 })
+              .margin({ left: 6 })
           }
-          .height(36)
+          .height(32)
           .alignItems(VerticalAlign.Center)
 
           Row() {
@@ -740,12 +744,14 @@ struct HomePage {
               .fontSize(16)
               .fontColor('#7A7F85')
 
-            Text('\u203a')
-              .fontSize(24)
-              .fontColor('#8A8F96')
-              .margin({ left: 4, bottom: 2 })
+            Image($r('app.media.youjian'))
+              .width(14)
+              .height(14)
+              .objectFit(ImageFit.Contain)
+              .rotate({ angle: 180 })
+              .margin({ left: 6 })
           }
-          .height(36)
+          .height(32)
           .alignItems(VerticalAlign.Center)
 
           Row() {
