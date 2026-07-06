@@ -172,9 +172,12 @@ struct HomePage {
     this.cartItems = newItems;
     this.recalcCartTotals();
 
+    console.info('deleteCartProduct calling API id=' + item.id.toString());
     try {
-      await deleteCartItem(item.id);
+      const result: CartSummary = await deleteCartItem(item.id);
+      console.info('deleteCartProduct API success, items=' + result.items.length.toString());
     } catch (error) {
+      console.error('deleteCartProduct API failed: ' + JSON.stringify(error));
       this.cartErrorMessage = '\u5220\u9664\u5931\u8d25';
       await this.loadCartSilent();
     }
