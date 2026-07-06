@@ -239,7 +239,6 @@ export struct DiscoverPanel {
   @State selectedTabIndex: number = 0;
   @State selectedTabName: string = '推荐';
   @State contentTabName: string = '推荐';
-  @State loading: boolean = true;
   @State errorMessage: string = '';
   @State isBannerLoaded: boolean = false;
 
@@ -283,7 +282,6 @@ export struct DiscoverPanel {
   }
 
   async loadDiscover(tabName: string) {
-    this.loading = true;
     this.errorMessage = '';
     try {
       const pageId = TAB_PAGE_MAP[tabName] || DEFAULT_DISCOVER_PAGE_ID;
@@ -296,8 +294,6 @@ export struct DiscoverPanel {
     } catch (error) {
       this.errorMessage = '发现页加载失败，请检查后端服务';
       console.error('加载失败: ' + JSON.stringify(error));
-    } finally {
-      this.loading = false;
     }
   }
 
@@ -360,40 +356,28 @@ export struct DiscoverPanel {
   }
 
   build() {
-    if (this.loading) {
-      Column() {
-        Text('加载中')
-          .fontSize(14)
-          .fontColor('#86909C')
-      }
-      .width('100%')
-      .height('100%')
-      .justifyContent(FlexAlign.Center)
-      .backgroundColor('#F5F6F8')
-    } else {
-      Column() {
-        this.topHeader()
+    Column() {
+      this.topHeader()
 
-        Scroll() {
-          Column({ space: 16 }) {
-            BannerSwiper({ bannerItemsData: this.bannerItemsData })
-            TabsBar({
-              selectedIndex: this.selectedTabIndex,
-              onTabClick: (i: number, n: string): void => { this.onTabClick(i, n); }
-            })
-            ContentGrid({ items: this.contentItems() })
-          }
-          .width('100%')
-          .padding({ left: 12, right: 12, top: 0, bottom: 24 })
+      Scroll() {
+        Column({ space: 16 }) {
+          BannerSwiper({ bannerItemsData: this.bannerItemsData })
+          TabsBar({
+            selectedIndex: this.selectedTabIndex,
+            onTabClick: (i: number, n: string): void => { this.onTabClick(i, n); }
+          })
+          ContentGrid({ items: this.contentItems() })
         }
-        .layoutWeight(1)
         .width('100%')
-        .scrollBar(BarState.Off)
-        .scrollable(ScrollDirection.Vertical)
+        .padding({ left: 12, right: 12, top: 0, bottom: 24 })
       }
+      .layoutWeight(1)
       .width('100%')
-      .height('100%')
-      .backgroundColor('#F5F6F8')
+      .scrollBar(BarState.Off)
+      .scrollable(ScrollDirection.Vertical)
     }
+    .width('100%')
+    .height('100%')
+    .backgroundColor('#F5F6F8')
   }
 }
