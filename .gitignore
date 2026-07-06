@@ -3,7 +3,10 @@
 # IDE
 *.iml
 
-# AI 工具辅助文件
+# AI tools
 .codegenie/
 .codex/
 target/
+
+# Local DB config (contains real credentials)
+application-local.yml
