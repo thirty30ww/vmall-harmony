@@ -186,6 +186,7 @@ struct AiChatPage {
     this.messages.push({ role: 'user', content: text });
     this.inputText = '';
     this.loading = true;
+    this.scroller.scrollEdge(Edge.Bottom);
 
     try {
       const result = await chatWithAI(text);
