@@ -3,9 +3,18 @@ import { productsList } from '../data/productsListData';
 
 @Component
 export struct CartItemCardComponent {
-  @ObjectLink item: CartItem;
-  @Prop operatingItemId: number = -1;
-  @Prop isDeletingItemId: number = -1;
+  @Prop item: CartItem = {
+    id: 0,
+    productId: 0,
+    productSource: '',
+    productName: '',
+    productImage: null,
+    productPrice: 0,
+    productFeature: null,
+    quantity: 0,
+    selected: false,
+    lineAmount: 0
+  };
   onToggleSelected: (item: CartItem) => void = () => {};
   onChangeQuantity: (item: CartItem, quantity: number) => void = () => {};
   onDelete: (item: CartItem) => void = () => {};
@@ -27,7 +36,6 @@ export struct CartItemCardComponent {
           .backgroundColor(this.item.selected ? '#D71920' : Color.White)
           .borderRadius(12)
           .border({ width: 1.5, color: this.item.selected ? '#D71920' : '#C9CDD4' })
-          .enabled(this.operatingItemId !== this.item.id)
           .onClick(() => {
             this.onToggleSelected(this.item);
           })
@@ -100,7 +108,6 @@ export struct CartItemCardComponent {
               .padding(0)
               .backgroundColor('#F1F2F4')
               .borderRadius(15)
-              .enabled(this.operatingItemId !== this.item.id && this.isDeletingItemId !== this.item.id)
               .onClick(() => {
                 this.onChangeQuantity(this.item, this.item.quantity - 1);
               })
@@ -119,7 +126,6 @@ export struct CartItemCardComponent {
               .padding(0)
               .backgroundColor('#F1F2F4')
               .borderRadius(15)
-              .enabled(this.operatingItemId !== this.item.id && this.isDeletingItemId !== this.item.id && this.item.quantity < 99)
               .onClick(() => {
                 this.onChangeQuantity(this.item, this.item.quantity + 1);
               })
@@ -130,7 +136,7 @@ export struct CartItemCardComponent {
         .width('100%')
         .alignItems(VerticalAlign.Center)
 
-        Button(this.isDeletingItemId === this.item.id ? '\u5220\u9664\u4e2d' : '\u5220\u9664')
+        Button('\u5220\u9664')
           .width(64)
           .height(28)
           .fontSize(13)
@@ -138,7 +144,6 @@ export struct CartItemCardComponent {
           .padding(0)
           .backgroundColor(Color.Transparent)
           .alignSelf(ItemAlign.End)
-          .enabled(this.isDeletingItemId !== this.item.id)
           .onClick(() => {
             this.onDelete(this.item);
           })

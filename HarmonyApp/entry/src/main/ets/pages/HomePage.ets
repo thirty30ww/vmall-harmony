@@ -32,8 +32,7 @@ struct HomePage {
   @State cartTotalAmount: number = 0;
   @State cartLoading: boolean = false;
   @State cartErrorMessage: string = '';
-  @State operatingItemId: number | null = null;
-  @State isDeletingItemId: number | null = null;
+
 
   aboutToAppear() {
     this.loadCurrentUser();
@@ -110,47 +109,30 @@ struct HomePage {
       return;
     }
 
-    this.operatingItemId = item.id;
     this.cartErrorMessage = '';
     try {
       const summary: CartSummary = await updateCartItem(item.id, nextQuantity, null);
-      const updated: CartItem | undefined = summary.items.find((i: CartItem) => i.id === item.id);
-      if (updated !== undefined) {
-        item.quantity = updated.quantity;
-        item.selected = updated.selected;
-        item.lineAmount = updated.lineAmount;
-      }
+      this.cartItems = summary.items;
       this.cartSelectedCount = summary.selectedCount;
       this.cartTotalAmount = summary.totalAmount;
     } catch (error) {
       this.cartErrorMessage = '\u6570\u91cf\u66f4\u65b0\u5931\u8d25';
-      await this.loadCartSilent();
-    } finally {
-      this.operatingItemId = null;
     }
   }
 
   async toggleCartSelected(item: CartItem) {
-    this.operatingItemId = item.id;
     this.cartErrorMessage = '';
     try {
       const summary: CartSummary = await updateCartItem(item.id, null, !item.selected);
-      const updated: CartItem | undefined = summary.items.find((i: CartItem) => i.id === item.id);
-      if (updated !== undefined) {
-        item.selected = updated.selected;
-      }
+      this.cartItems = summary.items;
       this.cartSelectedCount = summary.selectedCount;
       this.cartTotalAmount = summary.totalAmount;
     } catch (error) {
       this.cartErrorMessage = '\u9009\u4e2d\u72b6\u6001\u66f4\u65b0\u5931\u8d25';
-      await this.loadCartSilent();
-    } finally {
-      this.operatingItemId = null;
     }
   }
 
   async deleteCartProduct(item: CartItem) {
-    this.isDeletingItemId = item.id;
     this.cartErrorMessage = '';
     try {
       const summary: CartSummary = await deleteCartItem(item.id);
@@ -159,9 +141,6 @@ struct HomePage {
       this.cartTotalAmount = summary.totalAmount;
     } catch (error) {
       this.cartErrorMessage = '\u5220\u9664\u5931\u8d25';
-      await this.loadCartSilent();
-    } finally {
-      this.isDeletingItemId = null;
     }
   }
 
@@ -188,23 +167,14 @@ struct HomePage {
   }
   async toggleCartAll() {
     const nextSelected: boolean = !this.allCartSelected();
-    this.operatingItemId = -1;
     this.cartErrorMessage = '';
     try {
       const summary: CartSummary = await selectAllCartItems(nextSelected);
-      for (let i: number = 0; i < this.cartItems.length; i++) {
-        const updated: CartItem | undefined = summary.items.find((s: CartItem) => s.id === this.cartItems[i].id);
-        if (updated !== undefined) {
-          this.cartItems[i].selected = updated.selected;
-        }
-      }
+      this.cartItems = summary.items;
       this.cartSelectedCount = summary.selectedCount;
       this.cartTotalAmount = summary.totalAmount;
     } catch (error) {
       this.cartErrorMessage = '\u5168\u9009\u66f4\u65b0\u5931\u8d25';
-      await this.loadCartSilent();
-    } finally {
-      this.operatingItemId = null;
     }
   }
 
@@ -341,7 +311,6 @@ struct HomePage {
       .backgroundColor(selected ? '#D71920' : Color.White)
       .borderRadius(12)
       .border({ width: 1.5, color: selected ? '#D71920' : '#C9CDD4' })
-      .enabled(this.operatingItemId !== itemId)
       .onClick(() => {
         onTap();
       })
@@ -431,8 +400,6 @@ struct HomePage {
             ListItem() {
               CartItemCardComponent({
                 item: item,
-                operatingItemId: this.operatingItemId ?? -1,
-                isDeletingItemId: this.isDeletingItemId ?? -1,
                 onToggleSelected: (cartItem: CartItem) => {
                   this.toggleCartSelected(cartItem);
                 },
@@ -444,7 +411,7 @@ struct HomePage {
                 }
               })
             }
-          }, (item: CartItem) => item.id.toString())
+          }, (item: CartItem) => item.id.toString() + '_' + item.selected + '_' + item.quantity)
         }
         .layoutWeight(1)
         .width('100%')
