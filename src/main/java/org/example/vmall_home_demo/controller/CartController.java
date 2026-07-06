@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -45,7 +46,7 @@ public class CartController {
         return cartService.updateItem(currentUserId(user), id, request);
     }
 
-    @DeleteMapping("/items/{id}")
+    @RequestMapping(value = "/items/{id}", method = { RequestMethod.DELETE, RequestMethod.POST })
     public CartSummaryResponse deleteItem(@AuthenticationPrincipal UserInfo user,
                                           @PathVariable Long id) {
         return cartService.deleteItem(currentUserId(user), id);

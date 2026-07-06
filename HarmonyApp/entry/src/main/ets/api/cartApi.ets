@@ -101,7 +101,7 @@ export async function updateCartItem(itemId: number, quantity: number | null, se
 }
 
 export async function deleteCartItem(itemId: number): Promise<CartSummary> {
-  const data = await requestCart<CartSummary>(`/cart/items/${itemId}`, http.RequestMethod.DELETE, null);
+  const data = await requestCart<CartSummary>(`/cart/items/${itemId}`, http.RequestMethod.POST, null);
   return normalizeCartSummary(data);
 }
 
