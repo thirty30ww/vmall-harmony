@@ -137,12 +137,8 @@ struct HomePage {
 
   changeCartQuantity(item: CartItem, quantity: number) {
     this.cartErrorMessage = '';
-    const nextQuantity: number = Math.max(0, Math.min(99, quantity));
+    const nextQuantity: number = Math.max(1, Math.min(99, quantity));
     if (nextQuantity === item.quantity) {
-      return;
-    }
-    if (nextQuantity === 0) {
-      this.deleteCartProduct(item);
       return;
     }
     const newItems: CartItem[] = [];
@@ -169,7 +165,7 @@ struct HomePage {
     this.cartErrorMessage = '';
     const newItems: CartItem[] = [];
     for (let i: number = 0; i < this.cartItems.length; i++) {
-      if (this.cartItems[i] !== item) {
+      if (this.cartItems[i].id !== item.id) {
         newItems.push(this.cartItems[i]);
       }
     }
@@ -490,9 +486,6 @@ struct HomePage {
             .borderRadius(23)
             .enabled(this.cartSelectedCount > 0)
             .opacity(this.cartSelectedCount > 0 ? 1 : 0.6)
-            .onClick(() => {
-              AlertDialog.show({ message: '\u6682\u65f6\u4e0d\u652f\u6301' });
-            })
         }
         .width('100%')
         .height(66)
