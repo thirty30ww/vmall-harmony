@@ -89,19 +89,8 @@ struct HomePage {
     this.cartErrorMessage = '';
     try {
       const summary: CartSummary = await getCart();
-      const items: CartItem[] = [];
-      for (let i = 0; i < summary.items.length; i++) {
-        const old = summary.items[i];
-        items.push({
-          id: old.id, productId: old.productId, productSource: old.productSource,
-          productName: old.productName, productImage: old.productImage,
-          productPrice: old.productPrice, productFeature: old.productFeature,
-          quantity: old.quantity, lineAmount: old.lineAmount,
-          selected: false
-        });
-      }
-      this.cartItems = items;
-      this.cartSelectedCount = 0;
+      this.cartItems = summary.items;
+      this.cartSelectedCount = summary.selectedCount;
       this.cartTotalAmount = summary.totalAmount;
     } catch (error) {
       this.cartErrorMessage = '\u8d2d\u7269\u8f66\u52a0\u8f7d\u5931\u8d25';
@@ -194,19 +183,8 @@ struct HomePage {
   async loadCartSilent() {
     try {
       const summary: CartSummary = await getCart();
-      const items: CartItem[] = [];
-      for (let i = 0; i < summary.items.length; i++) {
-        const old = summary.items[i];
-        items.push({
-          id: old.id, productId: old.productId, productSource: old.productSource,
-          productName: old.productName, productImage: old.productImage,
-          productPrice: old.productPrice, productFeature: old.productFeature,
-          quantity: old.quantity, lineAmount: old.lineAmount,
-          selected: false
-        });
-      }
-      this.cartItems = items;
-      this.cartSelectedCount = 0;
+      this.cartItems = summary.items;
+      this.cartSelectedCount = summary.selectedCount;
       this.cartTotalAmount = summary.totalAmount;
     } catch (error) {
       console.error('load cart failed', error);

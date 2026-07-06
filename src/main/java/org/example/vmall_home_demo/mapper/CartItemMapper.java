@@ -37,7 +37,7 @@ public interface CartItemMapper {
                 product_price, product_feature, quantity, selected, created_at, updated_at
             ) VALUES (
                 #{userId}, #{productId}, #{productSource}, #{productName}, #{productImage},
-                #{productPrice}, #{productFeature}, #{quantity}, 1, NOW(), NOW()
+                #{productPrice}, #{productFeature}, #{quantity}, 0, NOW(), NOW()
             )
             ON DUPLICATE KEY UPDATE
                 product_name = VALUES(product_name),
@@ -45,7 +45,7 @@ public interface CartItemMapper {
                 product_price = VALUES(product_price),
                 product_feature = VALUES(product_feature),
                 quantity = quantity + VALUES(quantity),
-                selected = 1,
+                selected = 0,
                 updated_at = NOW()
             """)
     int insertOrIncrease(CartItem item);
