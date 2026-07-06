@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: vmall_home
+  profiles:
+    active: local
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
