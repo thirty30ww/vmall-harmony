@@ -582,11 +582,9 @@ struct HomePage {
         .fontColor('#111111')
         .layoutWeight(1)
 
-      Image($r('app.media.youjian'))
-        .width(16)
-        .height(16)
-        .objectFit(ImageFit.Contain)
-        .rotate({ angle: 180 })
+      Text('\u203a')
+        .fontSize(20)
+        .fontColor('#C9CDD4')
     }
     .width('100%')
     .height(64)
@@ -608,11 +606,9 @@ struct HomePage {
         .fontColor('#D71920')
         .layoutWeight(1)
 
-      Image($r('app.media.youjian'))
-        .width(16)
-        .height(16)
-        .objectFit(ImageFit.Contain)
-        .rotate({ angle: 180 })
+      Text('\u203a')
+        .fontSize(20)
+        .fontColor('#C9CDD4')
     }
     .width('100%')
     .height(64)
@@ -706,14 +702,12 @@ struct HomePage {
               .fontSize(16)
               .fontColor('#7A7F85')
 
-            Image($r('app.media.youjian'))
-              .width(14)
-              .height(14)
-              .objectFit(ImageFit.Contain)
-              .rotate({ angle: 180 })
-              .margin({ left: 6 })
+            Text('\u203a')
+              .fontSize(18)
+              .fontColor('#8A8F96')
+              .margin({ left: 4 })
           }
-          .height(32)
+          .height(36)
           .alignItems(VerticalAlign.Center)
 
           Row() {
@@ -744,14 +738,12 @@ struct HomePage {
               .fontSize(16)
               .fontColor('#7A7F85')
 
-            Image($r('app.media.youjian'))
-              .width(14)
-              .height(14)
-              .objectFit(ImageFit.Contain)
-              .rotate({ angle: 180 })
-              .margin({ left: 6 })
+            Text('\u203a')
+              .fontSize(18)
+              .fontColor('#8A8F96')
+              .margin({ left: 4 })
           }
-          .height(32)
+          .height(36)
           .alignItems(VerticalAlign.Center)
 
           Row() {
