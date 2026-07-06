@@ -583,8 +583,9 @@ struct HomePage {
         .layoutWeight(1)
 
       Text('\u203a')
-        .fontSize(34)
+        .fontSize(24)
         .fontColor('#C9CDD4')
+        .margin({ bottom: 2 })
     }
     .width('100%')
     .height(64)
@@ -594,6 +595,12 @@ struct HomePage {
   @Builder
   logoutRow() {
     Row() {
+      Image($r('app.media.wenti'))
+        .width(28)
+        .height(28)
+        .objectFit(ImageFit.Contain)
+        .margin({ right: 12 })
+
       Text('\u9000\u51fa\u767b\u5f55')
         .fontSize(18)
         .fontWeight(FontWeight.Bold)
@@ -601,8 +608,9 @@ struct HomePage {
         .layoutWeight(1)
 
       Text('\u203a')
-        .fontSize(34)
+        .fontSize(24)
         .fontColor('#C9CDD4')
+        .margin({ bottom: 2 })
     }
     .width('100%')
     .height(64)
@@ -693,14 +701,15 @@ struct HomePage {
               .layoutWeight(1)
 
             Text('\u5168\u90e8\u8ba2\u5355')
-              .fontSize(14)
+              .fontSize(16)
               .fontColor('#7A7F85')
 
             Text('\u203a')
-              .fontSize(30)
+              .fontSize(24)
               .fontColor('#8A8F96')
+              .margin({ left: 4, bottom: 2 })
           }
-          .height(32)
+          .height(36)
           .alignItems(VerticalAlign.Center)
 
           Row() {
@@ -732,10 +741,11 @@ struct HomePage {
               .fontColor('#7A7F85')
 
             Text('\u203a')
-              .fontSize(30)
+              .fontSize(24)
               .fontColor('#8A8F96')
+              .margin({ left: 4, bottom: 2 })
           }
-          .height(32)
+          .height(36)
           .alignItems(VerticalAlign.Center)
 
           Row() {
