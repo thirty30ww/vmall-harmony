@@ -178,6 +178,7 @@ struct HomePage {
       console.info('deleteCartProduct API success, items=' + result.items.length.toString());
     } catch (error) {
       console.error('deleteCartProduct API failed: ' + JSON.stringify(error));
+      console.error('deleteCartProduct item.id=' + item.id.toString() + ', cartItems.len=' + this.cartItems.length.toString());
       this.cartErrorMessage = '\u5220\u9664\u5931\u8d25';
       await this.loadCartSilent();
     }
