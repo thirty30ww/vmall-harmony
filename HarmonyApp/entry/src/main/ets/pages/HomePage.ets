@@ -290,17 +290,6 @@ struct HomePage {
   homeContent() {
     Scroll() {
       Column({ space: 18 }) {
-        Column() {
-          SearchBar({
-            keyword: $keyword,
-            onSearch: (value: string) => {
-              this.searchProducts(value);
-            }
-          })
-        }
-        .width('100%')
-        .padding({ left: 16, right: 16 })
-
         HomeSwiper()
 
         Column({ space: 18 }) {
@@ -804,10 +793,10 @@ struct HomePage {
 
   @Builder
   topBar() {
-    if (this.activeTabIndex !== 2) {
+    if (this.activeTabIndex === 1 || this.activeTabIndex === 3 || this.activeTabIndex === 4) {
       Row() {
-        Text(this.activeTabIndex === 1 ? '\u5206\u7c7b' : this.activeTabIndex === 3 ? '\u8d2d\u7269\u8f66' : this.activeTabIndex === 4 ? '\u6211\u7684' : '\u534e\u4e3a\u5546\u57ce')
-          .fontSize(this.activeTabIndex === 1 || this.activeTabIndex === 3 || this.activeTabIndex === 4 ? 28 : 22)
+        Text(this.activeTabIndex === 1 ? '\u5206\u7c7b' : this.activeTabIndex === 3 ? '\u8d2d\u7269\u8f66' : '\u6211\u7684')
+          .fontSize(28)
           .fontWeight(FontWeight.Bold)
           .fontColor('#111111')
 
@@ -836,7 +825,18 @@ struct HomePage {
 
   build() {
     Column() {
-      this.topBar()
+      if (this.activeTabIndex === 0) {
+        SearchBar({
+          keyword: $keyword,
+          onSearch: (value: string) => {
+            this.searchProducts(value);
+          }
+        })
+        .width('100%')
+        .padding({ left: 16, right: 16, top: 8, bottom: 2 })
+      } else {
+        this.topBar()
+      }
 
       if (this.activeTabIndex === 0) {
         this.homeContent()
