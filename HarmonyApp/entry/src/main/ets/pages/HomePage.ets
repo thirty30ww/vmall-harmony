@@ -290,7 +290,11 @@ struct HomePage {
   homeContent() {
     Scroll() {
       Column({ space: 18 }) {
-        HomeSwiper()
+        Column() {
+          HomeSwiper()
+        }
+        .width('100%')
+        .padding({ left: 16, right: 16 })
 
         Column({ space: 18 }) {
           CategoryGrid({
