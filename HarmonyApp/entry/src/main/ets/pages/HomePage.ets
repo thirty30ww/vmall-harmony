@@ -837,7 +837,7 @@ struct HomePage {
           }
         })
         .width('100%')
-        .padding({ left: 16, right: 16, top: 8, bottom: 2 })
+        .padding({ left: 16, right: 16, top: 8, bottom: 14 })
       } else {
         this.topBar()
       }

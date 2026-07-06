@@ -4,14 +4,6 @@ import { Category, categoryData } from '../data/categoryData';
 export struct CategoryGrid {
   onSelect: (category: Category) => void = () => {};
 
-  get pairStartIndices(): number[] {
-    const result: number[] = [];
-    for (let i = 0; i < categoryData.length; i += 2) {
-      result.push(i);
-    }
-    return result;
-  }
-
   @Builder
   columnItem(item: Category) {
     Column({ space: 6 }) {
@@ -33,19 +25,27 @@ export struct CategoryGrid {
     })
   }
 
+  @Builder
+  pairColumn(first: Category, second: Category) {
+    Column({ space: 14 }) {
+      this.columnItem(first)
+      this.columnItem(second)
+    }
+    .width(72)
+    .alignItems(HorizontalAlign.Center)
+  }
+
   build() {
     Scroll() {
       Row({ space: 10 }) {
-        ForEach(this.pairStartIndices, (startIdx: number) => {
-          Column({ space: 14 }) {
-            this.columnItem(categoryData[startIdx])
-            if (startIdx + 1 < categoryData.length) {
-              this.columnItem(categoryData[startIdx + 1])
-            }
-          }
-          .width(72)
-          .alignItems(HorizontalAlign.Center)
-        }, (startIdx: number) => startIdx.toString())
+        this.pairColumn(categoryData[0], categoryData[1])
+        this.pairColumn(categoryData[2], categoryData[3])
+        this.pairColumn(categoryData[4], categoryData[5])
+        this.pairColumn(categoryData[6], categoryData[7])
+        this.pairColumn(categoryData[8], categoryData[9])
+        this.pairColumn(categoryData[10], categoryData[11])
+        this.pairColumn(categoryData[12], categoryData[13])
+        this.pairColumn(categoryData[14], categoryData[15])
       }
     }
     .width('100%')
