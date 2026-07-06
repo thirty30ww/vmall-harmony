@@ -10,3 +10,6 @@
 /.clang-tidy
 **/.test
 /.appanalyzer
+
+# API 地址配置（含本地 IP，请勿提交）
+entry/src/main/ets/api/ApiConfig.ets

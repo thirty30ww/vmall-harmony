@@ -1,6 +1,5 @@
 import { http } from '@kit.NetworkKit';
-
-const API_BASE_URL: string = 'http://10.162.106.18:8080/api';
+import { API_BASE_URL } from './ApiConfig';
 
 interface SendCodeRequest {
   phone: string;
