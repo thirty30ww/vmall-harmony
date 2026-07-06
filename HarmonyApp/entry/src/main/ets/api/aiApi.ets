@@ -4,6 +4,7 @@ import { API_BASE_URL } from './ApiConfig';
 export interface ChatMessage {
   role: string;
   content: string;
+  metadata?: string | null;
 }
 
 export interface RecommendedProduct {

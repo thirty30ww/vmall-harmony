@@ -3,6 +3,7 @@ package org.example.vmall_home_demo.dto;
 public class ChatMessage {
     private String role;
     private String content;
+    private String metadata;
 
     public ChatMessage() {}
 
@@ -15,4 +16,6 @@ public class ChatMessage {
     public void setRole(String role) { this.role = role; }
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
+    public String getMetadata() { return metadata; }
+    public void setMetadata(String metadata) { this.metadata = metadata; }
 }

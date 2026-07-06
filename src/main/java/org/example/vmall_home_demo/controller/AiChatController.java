@@ -1,8 +1,11 @@
 package org.example.vmall_home_demo.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.vmall_home_demo.dto.ChatMessage;
 import org.example.vmall_home_demo.dto.ChatRequest;
 import org.example.vmall_home_demo.dto.ChatResponse;
+import org.example.vmall_home_demo.dto.RecommendedProduct;
 import org.example.vmall_home_demo.security.JwtTokenProvider;
 import org.example.vmall_home_demo.service.AiChatService;
 import org.example.vmall_home_demo.service.ConversationService;
@@ -13,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/ai")
 public class AiChatController {
@@ -22,13 +28,16 @@ public class AiChatController {
     private final AiChatService aiChatService;
     private final ConversationService conversationService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
 
     public AiChatController(AiChatService aiChatService,
                             ConversationService conversationService,
-                            JwtTokenProvider jwtTokenProvider) {
+                            JwtTokenProvider jwtTokenProvider,
+                            ObjectMapper objectMapper) {
         this.aiChatService = aiChatService;
         this.conversationService = conversationService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.objectMapper = objectMapper;
     }
 
     @PostMapping("/chat")
@@ -44,11 +53,22 @@ public class AiChatController {
         }
         conversationService.addMessage(result.conversationId(), currentMsg);
         AiChatService.ChatResult chatResult = aiChatService.chat(currentMsg, request.getHistory(), userId);
-        conversationService.addMessage(result.conversationId(), new ChatMessage("assistant", chatResult.getReply()));
+        ChatMessage assistantMsg = new ChatMessage("assistant", chatResult.getReply());
+        assistantMsg.setMetadata(serializeMetadata(chatResult.getRecommendedProducts()));
+        conversationService.addMessage(result.conversationId(), assistantMsg);
         return new ChatResponse(chatResult.getReply(), result.conversationId(), chatResult.getRecommendedProducts());
     }
 
     private static final String GREETING = "你好！我是智能导购助手，可以帮你推荐商品、了解产品信息。请问有什么需要帮助的吗？";
+
+    private String serializeMetadata(List<RecommendedProduct> products) {
+        if (products == null || products.isEmpty()) return null;
+        try {
+            return objectMapper.writeValueAsString(Map.of("recommendedProducts", products));
+        } catch (JsonProcessingException e) {
+            return null;
+        }
+    }
 
     private Long extractUserId(String authHeader) {
         if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {

@@ -14,7 +14,7 @@ import java.util.List;
 public interface ConversationMessageMapper {
 
     @Select("""
-            SELECT id, conversation_id AS conversationId, role, content,
+            SELECT id, conversation_id AS conversationId, role, content, metadata,
                    created_at AS createdAt
             FROM vmall_conversation_messages
             WHERE conversation_id = #{conversationId}
@@ -23,8 +23,8 @@ public interface ConversationMessageMapper {
     List<ConversationMessage> findByConversationId(@Param("conversationId") Long conversationId);
 
     @Insert("""
-            INSERT INTO vmall_conversation_messages (conversation_id, role, content, created_at)
-            VALUES (#{conversationId}, #{role}, #{content}, NOW())
+            INSERT INTO vmall_conversation_messages (conversation_id, role, content, metadata, created_at)
+            VALUES (#{conversationId}, #{role}, #{content}, #{metadata}, NOW())
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(ConversationMessage message);

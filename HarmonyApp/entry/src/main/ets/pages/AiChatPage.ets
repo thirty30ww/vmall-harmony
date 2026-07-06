@@ -15,6 +15,17 @@ interface ChatMessage {
   products?: RecommendedProduct[];
 }
 
+function parseMetadataProducts(metadata: string | null | undefined): RecommendedProduct[] | undefined {
+  if (!metadata) return undefined;
+  try {
+    const obj: object = JSON.parse(metadata);
+    const list: RecommendedProduct[] | undefined = (obj as Record<string, object>)['recommendedProducts'] as RecommendedProduct[] | undefined;
+    return list && list.length > 0 ? list : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 @Entry
 @Component
 struct AiChatPage {
@@ -71,7 +82,8 @@ struct AiChatPage {
       const detail = await getConversation(id);
       const msgs: ChatMessage[] = detail.messages.map((m): ChatMessage => ({
         role: m.role === 'assistant' ? 'ai' : 'user',
-        content: m.content
+        content: m.content,
+        products: parseMetadataProducts(m.metadata)
       }));
       this.messages = msgs;
       if (msgs.length === 0) {

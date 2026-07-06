@@ -55,6 +55,7 @@ public class ConversationService {
         msg.setConversationId(conversationId);
         msg.setRole(chatMessage.getRole());
         msg.setContent(chatMessage.getContent());
+        msg.setMetadata(chatMessage.getMetadata());
         messageMapper.insert(msg);
         conversationMapper.touch(conversationId);
     }
@@ -68,7 +69,9 @@ public class ConversationService {
         List<ConversationMessage> msgs = messageMapper.findByConversationId(conversationId);
         List<ChatMessage> result = new ArrayList<>();
         for (ConversationMessage msg : msgs) {
-            result.add(new ChatMessage(msg.getRole(), msg.getContent()));
+            ChatMessage dto = new ChatMessage(msg.getRole(), msg.getContent());
+            dto.setMetadata(msg.getMetadata());
+            result.add(dto);
         }
         return result;
     }

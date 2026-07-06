@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS vmall_conversation_messages (
     conversation_id BIGINT NOT NULL,
     role            VARCHAR(20) NOT NULL COMMENT 'user / assistant',
     content         TEXT NOT NULL,
+    metadata        TEXT COMMENT 'JSON: recommended products etc.',
     created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     INDEX idx_conversation_id (conversation_id)
