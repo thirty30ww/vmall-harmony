@@ -67,12 +67,12 @@ public class AiChatService {
                 如果用户需求不明确，可以主动询问预算或用途。
                 如果商品目录中没有合适的商品，请如实告知。
                 严禁使用Markdown格式。不要使用任何标记符号。
+                注意：回答时不要称呼用户的姓名或用户名，直接回答问题即可。
                 """);
         if (userId != null) {
             User user = userMapper.findById(userId);
             if (user != null) {
                 sb.append("\n当前用户信息：\n");
-                sb.append("- 用户名：").append(user.getUsername()).append("\n");
                 List<CartItem> cartItems = cartItemMapper.findByUserId(userId);
                 if (!cartItems.isEmpty()) {
                     sb.append("- 购物车商品：\n");

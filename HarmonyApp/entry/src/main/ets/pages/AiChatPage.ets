@@ -152,32 +152,88 @@ struct AiChatPage {
 
   @Builder buildConversationList() {
     Column() {
-      ForEach(this.conversations, (conv: Conversation) => {
-        Row() {
-          Text(conv.title)
-            .fontSize(14)
-            .fontColor(this.activeConversationId === conv.id ? '#D71920' : '#1D2129')
-            .fontWeight(this.activeConversationId === conv.id ? FontWeight.Medium : FontWeight.Regular)
-            .layoutWeight(1)
-            .maxLines(1)
-            .textOverflow({ overflow: TextOverflow.Ellipsis })
-          Text('✕')
-            .fontSize(14)
-            .fontColor('#C9CDD4')
-            .onClick(() => this.deleteConv(conv.id))
+      Row() {
+        Text('历史对话')
+          .fontSize(16)
+          .fontWeight(FontWeight.Medium)
+          .fontColor('#1D2129')
+        Blank()
+        Text('关闭')
+          .fontSize(13)
+          .fontColor('#86909C')
+          .onClick(() => { this.showSidebar = false })
+      }
+      .width('100%')
+      .padding({ left: 16, right: 16, top: 12, bottom: 10 })
+      .border({ width: { bottom: 0.5 }, color: '#F2F3F5' })
+
+      Scroll() {
+        Column() {
+          ForEach(this.conversations, (conv: Conversation) => {
+            Row() {
+              Text('💬')
+                .fontSize(14)
+                .margin({ right: 8 })
+              Column() {
+                Text(conv.title)
+                  .fontSize(14)
+                  .fontColor('#1D2129')
+                  .maxLines(1)
+                  .textOverflow({ overflow: TextOverflow.Ellipsis })
+                  .lineHeight(20)
+                Text(this.formatDate(conv.createdAt))
+                  .fontSize(11)
+                  .fontColor('#C9CDD4')
+                  .lineHeight(16)
+              }
+              .layoutWeight(1)
+              .alignItems(HorizontalAlign.Start)
+
+              Text('✕')
+                .fontSize(12)
+                .fontColor('#C9CDD4')
+                .padding({ left: 8, right: 4, top: 4, bottom: 4 })
+                .onClick(() => this.deleteConv(conv.id))
+            }
+            .width('100%')
+            .padding({ left: 16, right: 12, top: 10, bottom: 10 })
+            .backgroundColor(this.activeConversationId === conv.id ? '#FFF1F0' : Color.White)
+            .borderRadius(8)
+            .onClick(() => {
+              this.switchConversation(conv.id);
+              this.showSidebar = false;
+            })
+          })
         }
         .width('100%')
-        .height(44)
-        .padding({ left: 16, right: 12 })
-        .onClick(() => {
-          this.switchConversation(conv.id);
-          this.showSidebar = false;
-        })
-      })
+        .padding({ top: 6, bottom: 12 })
+      }
+      .layoutWeight(1)
+      .width('100%')
     }
     .width('100%')
+    .constraintSize({ maxHeight: '60%' })
     .backgroundColor(Color.White)
-    .border({ width: { bottom: 0.5 }, color: { bottom: '#E5E6E8' } })
+    .borderRadius({ bottomLeft: 12, bottomRight: 12 })
+    .shadow({ radius: 8, color: '#1A000000', offsetX: 0, offsetY: 2 })
+  }
+
+  formatDate(iso: string): string {
+    try {
+      const d = new Date(iso);
+      const now = new Date();
+      const diffMs = now.getTime() - d.getTime();
+      const diffMin = Math.floor(diffMs / 60000);
+      if (diffMin < 1) return '刚刚';
+      if (diffMin < 60) return diffMin + '分钟前';
+      const diffHour = Math.floor(diffMin / 60);
+      if (diffHour < 24) return diffHour + '小时前';
+      const month = (d.getMonth() + 1).toString().padStart(2, '0');
+      const day = d.getDate().toString().padStart(2, '0');
+      return month + '-' + day;
+    } catch (_) {
+      return '';
+    }
   }
 
   @Builder buildChatArea() {
