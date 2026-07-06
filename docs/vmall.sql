@@ -16,14 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Current Database: `vmall`
---
-
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `vmall` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-
-USE `vmall`;
-
---
 -- Table structure for table `vmall_cart_items`
 --
 
@@ -43,8 +35,9 @@ CREATE TABLE `vmall_cart_items` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_user_product_source_id` (`user_id`,`product_source`,`product_id`),
-  KEY `idx_cart_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户购物车表';
+  KEY `idx_cart_user_id` (`user_id`),
+  KEY `idx_cart_selected` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户购物车表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -53,8 +46,66 @@ CREATE TABLE `vmall_cart_items` (
 
 LOCK TABLES `vmall_cart_items` WRITE;
 /*!40000 ALTER TABLE `vmall_cart_items` DISABLE KEYS */;
-INSERT INTO `vmall_cart_items` VALUES (1,4,13,'category','WATCH FIT 5','https://res.vmallres.com/pimages/FssCdnProxy/vmall_product_uom/pmsSalesFile/428_428_1BCE6003D8E0046B10CF4FE336CF1BFF.png',1299.00,'轻薄时尚，全天候健康监测','2026-07-04 10:38:00','2026-07-05 19:16:57'),(2,4,14,'category','华为超新星手表 X1 Pro','https://res.vmallres.com/pimages/FssCdnProxy/vmall_product_uom/pmsSalesFile/428_428_E95FC11CE8ADA233257D141CD3EA031F.png',1499.00,'儿童智能手表，安全守护升级','2026-07-04 10:38:04','2026-07-06 08:49:05');
+INSERT INTO `vmall_cart_items` VALUES (2,4,14,'category','华为超新星手表 X1 Pro','https://res.vmallres.com/pimages/FssCdnProxy/vmall_product_uom/pmsSalesFile/428_428_E95FC11CE8ADA233257D141CD3EA031F.png',1499.00,'儿童智能手表，安全守护升级','2026-07-04 10:38:04','2026-07-06 10:09:07'),(4,4,1,'homeStatic','nova 16',NULL,2999.00,'后置红枫影像','2026-07-06 12:38:58','2026-07-06 15:27:50');
 /*!40000 ALTER TABLE `vmall_cart_items` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vmall_conversation_messages`
+--
+
+DROP TABLE IF EXISTS `vmall_conversation_messages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vmall_conversation_messages` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `conversation_id` bigint NOT NULL,
+  `role` varchar(20) NOT NULL COMMENT 'user / assistant',
+  `content` text NOT NULL,
+  `metadata` text COMMENT 'JSON: recommended products etc.',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_conversation_id` (`conversation_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vmall_conversation_messages`
+--
+
+LOCK TABLES `vmall_conversation_messages` WRITE;
+/*!40000 ALTER TABLE `vmall_conversation_messages` DISABLE KEYS */;
+INSERT INTO `vmall_conversation_messages` VALUES (30,6,'assistant','你好！我是智能导购助手，可以帮你推荐商品、了解产品信息。请问有什么需要帮助的吗？',NULL,'2026-07-06 19:49:23'),(31,6,'user','你好',NULL,'2026-07-06 19:49:23'),(32,6,'assistant','你好！很高兴为你服务。我看到你的购物车中已经有一台nova 16手机和一款华为超新星手表X1 Pro。\n\n请问你这次是想看看其他什么商品呢？比如有没有想为手机或手表搭配的配件，比如耳机、充电器、保护壳等？或者你想看看其他品类的商品，比如平板、笔记本、智慧屏等？可以告诉我你的预算或者用途，我来帮你推荐最合适的商品。',NULL,'2026-07-06 19:49:26'),(33,6,'user','可以给我推荐手机吗',NULL,'2026-07-06 19:49:47'),(34,6,'assistant','当然可以。看到你的购物车中已经有一台nova 16，这款手机主打时尚轻薄和鸿蒙智慧体验。如果你想在nova 16的基础上升级，或者看看其他选择，这里有几个不错的推荐：\n\n如果你追求更专业的拍照体验，可以考虑 nova 16 Pro，价格是3699元。它专注于专业人像摄影，是潮美的新拍档，相比你购物车里的nova 16，在影像方面有显著提升。\n\n如果预算更充足，想要全能影像旗舰，nova 16 Ultra 是个很棒的选择，价格是4999元。它拥有超薄直屏设计和全能影像系统，是nova系列的顶配机型。\n\n此外，如果你对性能有更高要求，也可以看看 Mate 70 Pro 优享版，价格是5999元。它拥有旗舰配置，但价格相对优享，是性价比很高的选择。\n\n当然，如果你想了解其他系列，比如Pura系列或者Mate系列的其他机型，也可以告诉我你的预算或者对手机有什么特别的要求，比如拍照、续航、性能等，我可以为你做更精准的推荐。',NULL,'2026-07-06 19:49:52'),(35,6,'user','预算3000内 给我推荐3台',NULL,'2026-07-06 19:50:35'),(36,6,'assistant','好的，根据你3000元以内的预算，结合你的购物车中已有nova 16（2899元），为你推荐以下3款手机：\n\n1.  nova 16，价格2899元。这款就是你购物车中的手机，时尚轻薄机身，鸿蒙智慧体验，完全符合你的预算。\n\n2.  nova 16z，价格1999元。这是nova系列中千元价位段的选择，实力均衡，性价比很高，适合作为备用机或送给长辈。\n\n3.  华为畅享 90，价格1799元。这款手机主打大屏长续航，日常使用非常流畅，是千元价位段的好选择。',NULL,'2026-07-06 19:50:38'),(37,6,'user','2000左右呢',NULL,'2026-07-06 19:54:14'),(38,6,'assistant','好的，根据2000元左右的预算，为你推荐以下3款手机：\n\n1.  nova 16z，价格1999元。这是nova系列中千元价位段的选择，实力均衡，性价比很高，非常符合你的预算。\n\n2.  华为畅享 90 Plus，价格2199元。这款手机主打大屏大电量，畅快娱乐体验，价格稍超出预算但配置更均衡。\n\n3.  麦芒40 5G，价格1999元。这是华为智选系列，支持5G高速网络，是2000元价位段的不错选择。',NULL,'2026-07-06 19:54:17'),(39,7,'assistant','你好！我是智能导购助手，可以帮你推荐商品、了解产品信息。请问有什么需要帮助的吗？',NULL,'2026-07-06 20:05:19'),(40,7,'user','给我推荐一款笔记本',NULL,'2026-07-06 20:05:19'),(41,7,'assistant','好的。我看到您的购物车中已经有一部nova 16手机和一款华为超新星手表X1 Pro，看来您对华为生态产品很感兴趣。请问您这次选购笔记本的主要用途是什么呢？比如是日常办公、学习、专业创作，还是玩一些大型游戏？另外，您大概的预算是多少？这样我可以为您更精准地推荐。',NULL,'2026-07-06 20:05:22'),(42,7,'user','学习用',NULL,'2026-07-06 20:05:37'),(43,7,'assistant','好的，学习用途的话，主要看重便携性、续航和护眼效果。结合您的购物车中有nova 16手机，选择一款能与手机良好联动的笔记本会带来更好的学习体验。\n\n为您推荐以下几款：\n\n1.  MateBook D 14 SE，价格3999.00元。这款是轻薄本，非常适合学生和日常办公，14英寸的屏幕兼顾了便携和视野，价格也很亲民，是学习入门的好选择。\n2.  MateBook 14 鸿蒙版，价格6999.00元。这款搭载了鸿蒙OS，可以和您的nova 16手机实现全场景智慧互联，比如手机文件直接拖拽到电脑、在电脑上接听手机电话等，学习资料流转非常方便，体验更上一层楼。\n3.  MatePad 11.5 2026，价格1999.00元。如果您主要是看网课、做笔记和阅读文献，这款平板电脑也是不错的选择。它拥有高刷护眼屏，搭配手写笔（需另购）可以像纸质笔记本一样做笔记，而且非常轻薄便携，价格也很有优势。','{\"recommendedProducts\":[{\"productId\":162,\"productName\":\"MateBook D 14 SE\",\"imageUrl\":\"https://res.vmallres.com/pimages/FssCdnProxy/vmall_product_uom/pmsSalesFile/428_428_68C0696C71A0B938D10B3B5DEDF7F4DF.png\",\"price\":3999.00,\"feature\":\"轻薄本，学生办公首选\"},{\"productId\":159,\"productName\":\"MateBook 14 鸿蒙版\",\"imageUrl\":\"https://res.vmallres.com/uomcdn/CN/cms/202604/8b6c74154346419791ccfe9f4e861299.png.50.webp\",\"price\":6999.00,\"feature\":\"搭载鸿蒙OS，全场景智慧互联体验\"},{\"productId\":617,\"productName\":\"MatePad 11.5 2026\",\"imageUrl\":\"https://res.vmallres.com/pimages/FssCdnProxy/vmall_product_uom/pmsSalesFile/428_428_860D07D275E366B30A048C0CEFF89B36.png\",\"price\":1999.00,\"feature\":\"高刷护眼屏，学习办公好帮手\"}]}','2026-07-06 20:05:41');
+/*!40000 ALTER TABLE `vmall_conversation_messages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `vmall_conversations`
+--
+
+DROP TABLE IF EXISTS `vmall_conversations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `vmall_conversations` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint DEFAULT NULL COMMENT 'NULL for anonymous conversations',
+  `title` varchar(200) DEFAULT '新对话',
+  `status` tinyint DEFAULT '1' COMMENT '1=active, 0=archived',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `vmall_conversations`
+--
+
+LOCK TABLES `vmall_conversations` WRITE;
+/*!40000 ALTER TABLE `vmall_conversations` DISABLE KEYS */;
+INSERT INTO `vmall_conversations` VALUES (6,4,'你好',1,'2026-07-06 19:49:23','2026-07-06 19:54:17'),(7,4,'给我推荐一款笔记本',1,'2026-07-06 20:05:19','2026-07-06 20:05:41');
+/*!40000 ALTER TABLE `vmall_conversations` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -66,19 +117,19 @@ DROP TABLE IF EXISTS `vmall_discover_items`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `vmall_discover_items` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `page_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tab_name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `card_id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `data_source_code` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `item_type` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `subtitle` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `author_name` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `image_url` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `link_url` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `content_id` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `page_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tab_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `card_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `data_source_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `item_type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `subtitle` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `author_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image_url` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `link_url` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `content_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `content_type` int DEFAULT NULL,
-  `product_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `product_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `product_price` decimal(10,2) DEFAULT NULL,
   `like_count` int DEFAULT NULL,
   `view_count` int DEFAULT NULL,
@@ -109,12 +160,12 @@ DROP TABLE IF EXISTS `vmall_discover_nav_icons`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `vmall_discover_nav_icons` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `page_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `position` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `icon_attribute` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `image_url` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `link_url` varchar(1000) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `page_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `position` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `icon_attribute` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image_url` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `link_url` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `sort_order` int NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -140,9 +191,9 @@ DROP TABLE IF EXISTS `vmall_discover_pages`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `vmall_discover_pages` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `page_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `page_name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `source_url` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `page_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `page_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `source_url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `sort_order` int NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -169,15 +220,15 @@ DROP TABLE IF EXISTS `vmall_discover_sections`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `vmall_discover_sections` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `page_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tab_name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `card_id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `card_type` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `card_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `layout_type` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `data_source_code` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `data_source_type` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `img_proportion` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `page_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tab_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `card_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `card_type` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `card_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `layout_type` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `data_source_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `data_source_type` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `img_proportion` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `sort_order` int NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -205,9 +256,9 @@ DROP TABLE IF EXISTS `vmall_discover_tabs`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `vmall_discover_tabs` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `tab_key` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tab_name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `related_page_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tab_key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tab_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `related_page_id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `sort_order` int NOT NULL DEFAULT '0',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -356,7 +407,7 @@ CREATE TABLE `vmall_sms_codes` (
   PRIMARY KEY (`id`),
   KEY `idx_vmall_sms_phone_code` (`phone`,`code`),
   KEY `idx_vmall_sms_expires_at` (`expires_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=115 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -365,7 +416,7 @@ CREATE TABLE `vmall_sms_codes` (
 
 LOCK TABLES `vmall_sms_codes` WRITE;
 /*!40000 ALTER TABLE `vmall_sms_codes` DISABLE KEYS */;
-INSERT INTO `vmall_sms_codes` VALUES (1,'18970973164','984563',1,'2026-07-04 10:42:13','2026-07-04 10:37:12'),(2,'18970973164','274734',1,'2026-07-05 19:21:11','2026-07-05 19:16:10'),(3,'18970973164','753728',0,'2026-07-05 19:29:06','2026-07-05 19:24:06'),(4,'18970973164','065196',0,'2026-07-05 19:29:10','2026-07-05 19:24:09'),(5,'18970973164','951014',0,'2026-07-05 19:29:10','2026-07-05 19:24:10'),(6,'18970973164','951892',0,'2026-07-05 19:29:10','2026-07-05 19:24:10'),(7,'18970973164','065843',1,'2026-07-05 19:29:12','2026-07-05 19:24:11'),(8,'18970973164','327014',1,'2026-07-05 19:35:33','2026-07-05 19:30:32'),(9,'18970973164','985444',1,'2026-07-05 19:40:06','2026-07-05 19:35:06'),(10,'18970973164','156004',1,'2026-07-05 19:45:40','2026-07-05 19:40:40'),(11,'18970973164','090082',1,'2026-07-05 19:56:12','2026-07-05 19:51:11'),(12,'18970973164','925187',0,'2026-07-05 20:00:44','2026-07-05 19:55:43'),(13,'18970973164','234964',1,'2026-07-05 20:00:50','2026-07-05 19:55:49'),(14,'18970973164','572434',1,'2026-07-05 20:08:02','2026-07-05 20:03:01'),(15,'18970973164','645976',1,'2026-07-05 20:21:27','2026-07-05 20:16:26'),(16,'18970973164','192122',0,'2026-07-05 20:29:15','2026-07-05 20:24:15'),(17,'18970973164','227030',1,'2026-07-05 20:29:17','2026-07-05 20:24:17'),(18,'18970973164','291380',1,'2026-07-05 20:35:24','2026-07-05 20:30:24'),(19,'18970973164','321844',1,'2026-07-05 20:40:44','2026-07-05 20:35:43'),(20,'18970973164','787739',1,'2026-07-05 20:44:41','2026-07-05 20:39:41'),(21,'18970973164','607056',1,'2026-07-05 20:49:31','2026-07-05 20:44:30'),(22,'18970973164','582937',1,'2026-07-05 20:56:46','2026-07-05 20:51:46'),(23,'18970973164','503008',1,'2026-07-05 21:08:53','2026-07-05 21:03:53'),(24,'18970973164','811850',1,'2026-07-05 21:18:32','2026-07-05 21:13:32'),(25,'18970973164','803239',1,'2026-07-05 21:23:10','2026-07-05 21:18:09'),(26,'18970973164','281064',1,'2026-07-05 21:38:47','2026-07-05 21:33:46'),(27,'18970973164','518823',1,'2026-07-05 21:59:48','2026-07-05 21:54:47'),(28,'18970973164','278470',1,'2026-07-05 22:06:22','2026-07-05 22:01:22'),(29,'18970973164','625353',0,'2026-07-06 08:53:45','2026-07-06 08:48:44'),(30,'18970973164','557086',1,'2026-07-06 08:53:46','2026-07-06 08:48:45');
+INSERT INTO `vmall_sms_codes` VALUES (1,'18970973164','984563',1,'2026-07-04 10:42:13','2026-07-04 10:37:12'),(2,'18970973164','274734',1,'2026-07-05 19:21:11','2026-07-05 19:16:10'),(3,'18970973164','753728',0,'2026-07-05 19:29:06','2026-07-05 19:24:06'),(4,'18970973164','065196',0,'2026-07-05 19:29:10','2026-07-05 19:24:09'),(5,'18970973164','951014',0,'2026-07-05 19:29:10','2026-07-05 19:24:10'),(6,'18970973164','951892',0,'2026-07-05 19:29:10','2026-07-05 19:24:10'),(7,'18970973164','065843',1,'2026-07-05 19:29:12','2026-07-05 19:24:11'),(8,'18970973164','327014',1,'2026-07-05 19:35:33','2026-07-05 19:30:32'),(9,'18970973164','985444',1,'2026-07-05 19:40:06','2026-07-05 19:35:06'),(10,'18970973164','156004',1,'2026-07-05 19:45:40','2026-07-05 19:40:40'),(11,'18970973164','090082',1,'2026-07-05 19:56:12','2026-07-05 19:51:11'),(12,'18970973164','925187',0,'2026-07-05 20:00:44','2026-07-05 19:55:43'),(13,'18970973164','234964',1,'2026-07-05 20:00:50','2026-07-05 19:55:49'),(14,'18970973164','572434',1,'2026-07-05 20:08:02','2026-07-05 20:03:01'),(15,'18970973164','645976',1,'2026-07-05 20:21:27','2026-07-05 20:16:26'),(16,'18970973164','192122',0,'2026-07-05 20:29:15','2026-07-05 20:24:15'),(17,'18970973164','227030',1,'2026-07-05 20:29:17','2026-07-05 20:24:17'),(18,'18970973164','291380',1,'2026-07-05 20:35:24','2026-07-05 20:30:24'),(19,'18970973164','321844',1,'2026-07-05 20:40:44','2026-07-05 20:35:43'),(20,'18970973164','787739',1,'2026-07-05 20:44:41','2026-07-05 20:39:41'),(21,'18970973164','607056',1,'2026-07-05 20:49:31','2026-07-05 20:44:30'),(22,'18970973164','582937',1,'2026-07-05 20:56:46','2026-07-05 20:51:46'),(23,'18970973164','503008',1,'2026-07-05 21:08:53','2026-07-05 21:03:53'),(24,'18970973164','811850',1,'2026-07-05 21:18:32','2026-07-05 21:13:32'),(25,'18970973164','803239',1,'2026-07-05 21:23:10','2026-07-05 21:18:09'),(26,'18970973164','281064',1,'2026-07-05 21:38:47','2026-07-05 21:33:46'),(27,'18970973164','518823',1,'2026-07-05 21:59:48','2026-07-05 21:54:47'),(28,'18970973164','278470',1,'2026-07-05 22:06:22','2026-07-05 22:01:22'),(29,'18970973164','625353',0,'2026-07-06 08:53:45','2026-07-06 08:48:44'),(30,'18970973164','557086',1,'2026-07-06 08:53:46','2026-07-06 08:48:45'),(31,'18970973164','029780',1,'2026-07-06 09:22:52','2026-07-06 09:17:51'),(32,'18970973164','882094',1,'2026-07-06 09:26:48','2026-07-06 09:21:47'),(33,'18970973164','609891',1,'2026-07-06 09:38:06','2026-07-06 09:33:06'),(34,'18970973164','076566',1,'2026-07-06 09:47:10','2026-07-06 09:42:10'),(35,'18970973164','455242',1,'2026-07-06 10:13:34','2026-07-06 10:08:34'),(36,'18970973164','592990',1,'2026-07-06 10:20:51','2026-07-06 10:15:51'),(37,'18970973164','336505',1,'2026-07-06 10:27:21','2026-07-06 10:22:21'),(38,'18970973164','891953',1,'2026-07-06 10:30:37','2026-07-06 10:25:37'),(39,'18970973164','621727',1,'2026-07-06 10:37:31','2026-07-06 10:32:30'),(40,'18970973164','231104',1,'2026-07-06 10:42:22','2026-07-06 10:37:22'),(41,'18970973164','605390',1,'2026-07-06 10:54:22','2026-07-06 10:49:21'),(42,'18970973164','105882',0,'2026-07-06 10:59:35','2026-07-06 10:54:35'),(43,'18970973164','550283',1,'2026-07-06 11:00:11','2026-07-06 10:55:11'),(44,'18970973164','386621',1,'2026-07-06 11:05:44','2026-07-06 11:00:43'),(45,'18970973164','711462',1,'2026-07-06 11:10:19','2026-07-06 11:05:18'),(46,'18970973164','984150',1,'2026-07-06 11:22:12','2026-07-06 11:17:11'),(47,'18970973164','716053',1,'2026-07-06 11:29:57','2026-07-06 11:24:57'),(48,'18970973164','168733',1,'2026-07-06 11:37:16','2026-07-06 11:32:16'),(49,'18970973164','878431',1,'2026-07-06 11:42:11','2026-07-06 11:37:10'),(50,'18970973164','523339',1,'2026-07-06 12:32:41','2026-07-06 12:27:40'),(51,'18970973164','550466',0,'2026-07-06 12:36:04','2026-07-06 12:31:03'),(52,'18970973164','660845',1,'2026-07-06 12:36:04','2026-07-06 12:31:04'),(53,'18970973164','703279',1,'2026-07-06 12:43:24','2026-07-06 12:38:23'),(54,'18970973164','711292',1,'2026-07-06 12:46:56','2026-07-06 12:41:55'),(55,'18970973164','048757',1,'2026-07-06 12:57:56','2026-07-06 12:52:56'),(56,'18970973164','322330',1,'2026-07-06 13:11:55','2026-07-06 13:06:54'),(57,'18970973164','901541',1,'2026-07-06 13:13:23','2026-07-06 13:08:23'),(58,'18970973164','030191',0,'2026-07-06 13:16:16','2026-07-06 13:11:16'),(59,'18970973164','188012',1,'2026-07-06 13:16:25','2026-07-06 13:11:25'),(60,'18970973164','763450',1,'2026-07-06 13:16:40','2026-07-06 13:11:40'),(61,'18970973164','795742',1,'2026-07-06 13:19:18','2026-07-06 13:14:17'),(62,'18970973164','345923',1,'2026-07-06 15:24:34','2026-07-06 15:19:34'),(63,'18970973164','880718',1,'2026-07-06 15:31:49','2026-07-06 15:26:49'),(64,'18970973164','681002',1,'2026-07-06 16:31:41','2026-07-06 16:26:40'),(65,'18970973164','351524',0,'2026-07-06 16:37:03','2026-07-06 16:32:03'),(66,'18970973164','945705',0,'2026-07-06 16:37:06','2026-07-06 16:32:05'),(67,'18970973164','746854',0,'2026-07-06 16:37:06','2026-07-06 16:32:06'),(68,'18970973164','380014',0,'2026-07-06 16:37:08','2026-07-06 16:32:07'),(69,'18970973164','575932',0,'2026-07-06 16:37:08','2026-07-06 16:32:07'),(70,'18970973164','136510',1,'2026-07-06 16:37:08','2026-07-06 16:32:08'),(71,'18970973164','731347',1,'2026-07-06 16:40:20','2026-07-06 16:35:19'),(72,'18970973164','519739',1,'2026-07-06 16:40:39','2026-07-06 16:35:38'),(73,'18970973164','366348',1,'2026-07-06 16:44:13','2026-07-06 16:39:13'),(74,'18970973164','827206',1,'2026-07-06 16:45:14','2026-07-06 16:40:13'),(75,'18970973164','775977',1,'2026-07-06 16:46:11','2026-07-06 16:41:11'),(76,'18970973164','564991',1,'2026-07-06 16:51:27','2026-07-06 16:46:26'),(77,'18970973164','870209',1,'2026-07-06 16:55:38','2026-07-06 16:50:38'),(78,'18970973164','018278',1,'2026-07-06 16:59:30','2026-07-06 16:54:29'),(79,'18970973164','846752',1,'2026-07-06 17:04:05','2026-07-06 16:59:04'),(80,'18970973164','440102',1,'2026-07-06 17:06:24','2026-07-06 17:01:23'),(81,'18970973164','422879',1,'2026-07-06 17:08:20','2026-07-06 17:03:20'),(82,'18970973164','045448',1,'2026-07-06 17:10:24','2026-07-06 17:05:24'),(83,'18970973164','563192',1,'2026-07-06 17:16:12','2026-07-06 17:11:12'),(84,'18970973164','621529',1,'2026-07-06 17:18:35','2026-07-06 17:13:34'),(85,'18970973164','619679',0,'2026-07-06 17:25:29','2026-07-06 17:20:28'),(86,'18970973164','717180',1,'2026-07-06 17:25:34','2026-07-06 17:20:34'),(87,'18970973164','202241',0,'2026-07-06 17:34:15','2026-07-06 17:29:15'),(88,'18970973164','976924',1,'2026-07-06 17:34:24','2026-07-06 17:29:23'),(89,'18970973164','509780',1,'2026-07-06 18:03:35','2026-07-06 17:58:35'),(90,'18970973164','650015',1,'2026-07-06 18:09:29','2026-07-06 18:04:28'),(91,'18970973164','865084',1,'2026-07-06 18:42:08','2026-07-06 18:37:07'),(92,'18970973164','992946',1,'2026-07-06 19:09:51','2026-07-06 19:04:50'),(93,'18970973164','177432',1,'2026-07-06 19:14:46','2026-07-06 19:09:46'),(94,'18970973164','614746',1,'2026-07-06 19:20:41','2026-07-06 19:15:40'),(95,'18970973164','822520',1,'2026-07-06 19:26:09','2026-07-06 19:21:08'),(96,'18970973164','328347',0,'2026-07-06 19:31:36','2026-07-06 19:26:35'),(97,'18970973164','967046',1,'2026-07-06 19:31:39','2026-07-06 19:26:38'),(98,'18970973164','125753',1,'2026-07-06 19:36:56','2026-07-06 19:31:56'),(99,'18970973164','336293',1,'2026-07-06 19:50:01','2026-07-06 19:45:01'),(100,'18970973164','581786',1,'2026-07-06 19:54:07','2026-07-06 19:49:07'),(101,'18970973164','902389',1,'2026-07-06 19:58:58','2026-07-06 19:53:58'),(102,'18970973164','681252',1,'2026-07-06 20:09:56','2026-07-06 20:04:55'),(103,'18970973164','909230',1,'2026-07-06 20:17:44','2026-07-06 20:12:43'),(104,'18970973164','006088',1,'2026-07-06 20:26:12','2026-07-06 20:21:11'),(105,'18970973164','096986',1,'2026-07-06 20:29:45','2026-07-06 20:24:44'),(106,'18970973164','575083',1,'2026-07-06 20:33:04','2026-07-06 20:28:03'),(107,'18970973164','602856',1,'2026-07-06 20:33:42','2026-07-06 20:28:42'),(108,'18970973164','427407',0,'2026-07-06 20:35:39','2026-07-06 20:30:38'),(109,'18970973164','029085',1,'2026-07-06 20:35:40','2026-07-06 20:30:40'),(110,'18970973164','745596',1,'2026-07-06 20:38:51','2026-07-06 20:33:51'),(111,'18970973164','159585',1,'2026-07-06 21:00:30','2026-07-06 20:55:29'),(112,'18970973164','602062',1,'2026-07-06 21:12:28','2026-07-06 21:07:27'),(113,'18970973164','708467',1,'2026-07-06 21:26:18','2026-07-06 21:21:18'),(114,'18970973164','562116',1,'2026-07-06 21:28:21','2026-07-06 21:23:20');
 /*!40000 ALTER TABLE `vmall_sms_codes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -397,17 +448,9 @@ CREATE TABLE `vmall_users` (
 
 LOCK TABLES `vmall_users` WRITE;
 /*!40000 ALTER TABLE `vmall_users` DISABLE KEYS */;
-INSERT INTO `vmall_users` VALUES (1,'13800138000','test_user','4763d29402ce76a7941c85861975b6c985b630df5efe7db196c09f19798b19f8','vmall-demo-salt',1,'2026-07-04 09:30:42','2026-07-04 09:30:42',NULL),(4,'18970973164','Merrick','2aed66719b13c012a9ce43748c0b0906ca97cfd39b362bab0bea03656dca16a0','238b48c678bd956378928deb7ac6699f',1,'2026-07-04 10:37:34','2026-07-06 08:48:54','2026-07-06 08:48:54');
+INSERT INTO `vmall_users` VALUES (1,'13800138000','test_user','4763d29402ce76a7941c85861975b6c985b630df5efe7db196c09f19798b19f8','vmall-demo-salt',1,'2026-07-04 09:30:42','2026-07-04 09:30:42',NULL),(4,'18970973164','Merrick','2aed66719b13c012a9ce43748c0b0906ca97cfd39b362bab0bea03656dca16a0','238b48c678bd956378928deb7ac6699f',1,'2026-07-04 10:37:34','2026-07-06 21:23:26','2026-07-06 21:23:26');
 /*!40000 ALTER TABLE `vmall_users` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping events for database 'vmall'
---
-
---
--- Dumping routines for database 'vmall'
---
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -418,4 +461,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-07-06  9:02:10
+-- Dump completed on 2026-07-06 21:25:51
