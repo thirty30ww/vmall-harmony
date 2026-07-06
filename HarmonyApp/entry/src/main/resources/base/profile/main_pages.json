@@ -3,6 +3,7 @@
     "pages/LoginPage",
     "pages/RegisterPage",
     "pages/HomePage",
-    "pages/ProductDetailPage"
+    "pages/ProductDetailPage",
+    "pages/AiChatPage"
   ]
 }

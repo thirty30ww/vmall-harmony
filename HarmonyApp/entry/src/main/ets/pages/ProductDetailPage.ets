@@ -2,6 +2,7 @@ import { router } from '@kit.ArkUI';
 import { addCartItem, AddCartItemRequest } from '../api/cartApi';
 import { getProductById, Product } from '../api/homeApi';
 import { productsList } from '../data/productsListData';
+import { AiFloatingButton } from '../components/AiFloatingButton';
 
 interface ProductDetailParams {
   productId?: number | string;
@@ -311,63 +312,69 @@ struct ProductDetailPage {
   }
 
   build() {
-    Column() {
-      Stack() {
-        Scroll() {
-          Column() {
-            if (this.loading && !this.hasProduct) {
-              Column() {
-                Text('\u52a0\u8f7d\u4e2d')
-                  .fontSize(15)
-                  .fontColor('#86909C')
+    Stack() {
+      Column() {
+        Stack() {
+          Scroll() {
+            Column() {
+              if (this.loading && !this.hasProduct) {
+                Column() {
+                  Text('\u52a0\u8f7d\u4e2d')
+                    .fontSize(15)
+                    .fontColor('#86909C')
+                }
+                .width('100%')
+                .height(420)
+                .justifyContent(FlexAlign.Center)
+              } else if (this.errorMessage.length > 0 && !this.hasProduct) {
+                Column() {
+                  Text(this.errorMessage)
+                    .fontSize(15)
+                    .fontColor('#86909C')
+                }
+                .width('100%')
+                .height(420)
+                .justifyContent(FlexAlign.Center)
+              } else {
+                this.productImageBlock()
+                this.productInfoCard()
               }
-              .width('100%')
-              .height(420)
-              .justifyContent(FlexAlign.Center)
-            } else if (this.errorMessage.length > 0 && !this.hasProduct) {
-              Column() {
-                Text(this.errorMessage)
-                  .fontSize(15)
-                  .fontColor('#86909C')
-              }
-              .width('100%')
-              .height(420)
-              .justifyContent(FlexAlign.Center)
-            } else {
-              this.productImageBlock()
-              this.productInfoCard()
             }
+            .width('100%')
+            .padding({ bottom: 76 })
           }
           .width('100%')
-          .padding({ bottom: 76 })
-        }
-        .width('100%')
-        .height('100%')
-        .scrollBar(BarState.Off)
+          .height('100%')
+          .scrollBar(BarState.Off)
 
-        Column() {
-          Row() {
-            this.topButton('<', true)
+          Column() {
+            Row() {
+              this.topButton('<', true)
+
+              Blank()
+
+              this.topButton('...', false)
+            }
+            .width('100%')
+            .padding({ left: 12, right: 12, top: 0 })
 
             Blank()
 
-            this.topButton('...', false)
+            this.bottomBar()
           }
           .width('100%')
-          .padding({ left: 12, right: 12, top: 0 })
-
-          Blank()
-
-          this.bottomBar()
+          .height('100%')
         }
         .width('100%')
         .height('100%')
       }
       .width('100%')
       .height('100%')
+      .backgroundColor('#F2F3F5')
+
+      AiFloatingButton({ initBottom: 24 })
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#F2F3F5')
   }
 }

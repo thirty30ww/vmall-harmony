@@ -12,6 +12,7 @@ import { CartItem, CartSummary, deleteCartItem, getCart } from '../api/cartApi';
 import { CartItemCardComponent } from '../components/CartItemCardComponent';
 import { Category as HomeCategory } from '../data/categoryData';
 import { getHomeData, getProducts, HomeData, Product } from '../api/homeApi';
+import { AiFloatingButton } from '../components/AiFloatingButton';
 
 @Entry
 @Component
@@ -846,46 +847,52 @@ struct HomePage {
   }
 
   build() {
-    Column() {
-      if (this.activeTabIndex === 0) {
-        SearchBar({
-          keyword: $keyword,
-          onSearch: (value: string) => {
-            this.searchProducts(value);
-          }
-        })
-        .width('100%')
-        .padding({ left: 16, right: 16, top: 8, bottom: 14 })
-      } else {
-        this.topBar()
-      }
-
-      if (this.activeTabIndex === 0) {
-        this.homeContent()
-      } else if (this.activeTabIndex === 1) {
-        CategoryPanel()
-          .layoutWeight(1)
-      } else if (this.activeTabIndex === 2) {
-        DiscoverPanel()
-          .layoutWeight(1)
-      } else if (this.activeTabIndex === 3) {
-        this.cartContent()
-      } else if (this.activeTabIndex === 4) {
-        this.myContent()
-      } else {
-        this.waitingContent()
-      }
-
-      BottomNavBar({ activeIndex: $activeTabIndex, onTabChange: (index: number) => {
-        if (index === 3) {
-          this.loadCart();
-        } else if (index === 4) {
-          this.loadCurrentUser();
+    Stack() {
+      Column() {
+        if (this.activeTabIndex === 0) {
+          SearchBar({
+            keyword: $keyword,
+            onSearch: (value: string) => {
+              this.searchProducts(value);
+            }
+          })
+          .width('100%')
+          .padding({ left: 16, right: 16, top: 8, bottom: 14 })
+        } else {
+          this.topBar()
         }
-      } })
+
+        if (this.activeTabIndex === 0) {
+          this.homeContent()
+        } else if (this.activeTabIndex === 1) {
+          CategoryPanel()
+            .layoutWeight(1)
+        } else if (this.activeTabIndex === 2) {
+          DiscoverPanel()
+            .layoutWeight(1)
+        } else if (this.activeTabIndex === 3) {
+          this.cartContent()
+        } else if (this.activeTabIndex === 4) {
+          this.myContent()
+        } else {
+          this.waitingContent()
+        }
+
+        BottomNavBar({ activeIndex: $activeTabIndex, onTabChange: (index: number) => {
+          if (index === 3) {
+            this.loadCart();
+          } else if (index === 4) {
+            this.loadCurrentUser();
+          }
+        } })
+      }
+      .width('100%')
+      .height('100%')
+      .backgroundColor('#F5F6F8')
+
+      AiFloatingButton({ initBottom: 130 })
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#F5F6F8')
   }
 }
