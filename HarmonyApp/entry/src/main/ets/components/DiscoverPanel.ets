@@ -239,7 +239,7 @@ export struct DiscoverPanel {
   @State selectedTabIndex: number = 0;
   @State selectedTabName: string = '推荐';
   @State contentTabName: string = '推荐';
-  @State loading: boolean = false;
+  @State loading: boolean = true;
   @State errorMessage: string = '';
   @State isBannerLoaded: boolean = false;
 
@@ -360,28 +360,40 @@ export struct DiscoverPanel {
   }
 
   build() {
-    Column() {
-      this.topHeader()
-
-      Scroll() {
-        Column({ space: 16 }) {
-          BannerSwiper({ bannerItemsData: this.bannerItemsData })
-          TabsBar({
-            selectedIndex: this.selectedTabIndex,
-            onTabClick: (i: number, n: string): void => { this.onTabClick(i, n); }
-          })
-          ContentGrid({ items: this.contentItems() })
-        }
-        .width('100%')
-        .padding({ left: 12, right: 12, top: 0, bottom: 24 })
+    if (this.loading) {
+      Column() {
+        Text('加载中')
+          .fontSize(14)
+          .fontColor('#86909C')
       }
-      .layoutWeight(1)
       .width('100%')
-      .scrollBar(BarState.Off)
-      .scrollable(ScrollDirection.Vertical)
+      .height('100%')
+      .justifyContent(FlexAlign.Center)
+      .backgroundColor('#F5F6F8')
+    } else {
+      Column() {
+        this.topHeader()
+
+        Scroll() {
+          Column({ space: 16 }) {
+            BannerSwiper({ bannerItemsData: this.bannerItemsData })
+            TabsBar({
+              selectedIndex: this.selectedTabIndex,
+              onTabClick: (i: number, n: string): void => { this.onTabClick(i, n); }
+            })
+            ContentGrid({ items: this.contentItems() })
+          }
+          .width('100%')
+          .padding({ left: 12, right: 12, top: 0, bottom: 24 })
+        }
+        .layoutWeight(1)
+        .width('100%')
+        .scrollBar(BarState.Off)
+        .scrollable(ScrollDirection.Vertical)
+      }
+      .width('100%')
+      .height('100%')
+      .backgroundColor('#F5F6F8')
     }
-    .width('100%')
-    .height('100%')
-    .backgroundColor('#F5F6F8')
   }
 }
