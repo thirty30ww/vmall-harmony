@@ -4,10 +4,10 @@ import { Category, categoryData } from '../data/categoryData';
 export struct CategoryGrid {
   onSelect: (category: Category) => void = () => {};
 
-  get columns(): Category[][] {
-    const result: Category[][] = [];
+  get pairStartIndices(): number[] {
+    const result: number[] = [];
     for (let i = 0; i < categoryData.length; i += 2) {
-      result.push([categoryData[i], categoryData[i + 1]]);
+      result.push(i);
     }
     return result;
   }
@@ -36,16 +36,16 @@ export struct CategoryGrid {
   build() {
     Scroll() {
       Row({ space: 10 }) {
-        ForEach(this.columns, (column: Category[], idx: number) => {
+        ForEach(this.pairStartIndices, (startIdx: number) => {
           Column({ space: 14 }) {
-            this.columnItem(column[0])
-            if (column.length > 1) {
-              this.columnItem(column[1])
+            this.columnItem(categoryData[startIdx])
+            if (startIdx + 1 < categoryData.length) {
+              this.columnItem(categoryData[startIdx + 1])
             }
           }
           .width(72)
           .alignItems(HorizontalAlign.Center)
-        }, (column: Category[], idx: number) => idx.toString())
+        }, (startIdx: number) => startIdx.toString())
       }
     }
     .width('100%')
