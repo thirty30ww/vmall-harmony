@@ -1,17 +1,18 @@
 import { http } from '@kit.NetworkKit';
 import { API_BASE_URL } from './ApiConfig';
 
-export interface CartItem {
-  id: number;
-  productId: number;
-  productSource: string;
-  productName: string;
-  productImage: string | null;
-  productPrice: number;
-  productFeature: string | null;
-  quantity: number;
-  selected: boolean;
-  lineAmount: number;
+@Observed
+export class CartItem {
+  id: number = 0;
+  productId: number = 0;
+  productSource: string = '';
+  productName: string = '';
+  productImage: string | null = null;
+  productPrice: number = 0;
+  productFeature: string | null = null;
+  quantity: number = 0;
+  selected: boolean = false;
+  lineAmount: number = 0;
 }
 
 export interface CartSummary {
@@ -42,8 +43,25 @@ interface SelectAllCartRequest {
 type CartRequestBody = AddCartItemRequest | UpdateCartItemRequest | SelectAllCartRequest | null;
 
 function normalizeCartSummary(data: CartSummary): CartSummary {
+  const rawItems: CartItem[] = data.items ?? [];
+  const items: CartItem[] = [];
+  for (let i: number = 0; i < rawItems.length; i++) {
+    const raw: CartItem = rawItems[i];
+    const item: CartItem = new CartItem();
+    item.id = raw.id;
+    item.productId = raw.productId;
+    item.productSource = raw.productSource;
+    item.productName = raw.productName;
+    item.productImage = raw.productImage;
+    item.productPrice = raw.productPrice;
+    item.productFeature = raw.productFeature;
+    item.quantity = raw.quantity;
+    item.selected = raw.selected;
+    item.lineAmount = raw.lineAmount;
+    items.push(item);
+  }
   return {
-    items: data.items ?? [],
+    items: items,
     selectedCount: data.selectedCount ?? 0,
     totalAmount: data.totalAmount ?? 0
   };

@@ -113,43 +113,14 @@ struct HomePage {
     this.cartTotalAmount = totalAmount;
   }
 
-  cloneItem(item: CartItem): CartItem {
-    return {
-      id: item.id,
-      productId: item.productId,
-      productSource: item.productSource,
-      productName: item.productName,
-      productImage: item.productImage,
-      productPrice: item.productPrice,
-      productFeature: item.productFeature,
-      quantity: item.quantity,
-      selected: item.selected,
-      lineAmount: item.lineAmount
-    };
-  }
-
   toggleCartSelected(item: CartItem) {
-    if (this.cartErrorMessage.length > 0) {
-      this.cartErrorMessage = '';
-    }
-    const newItems: CartItem[] = [];
-    for (let i: number = 0; i < this.cartItems.length; i++) {
-      if (this.cartItems[i] === item) {
-        const clone: CartItem = this.cloneItem(this.cartItems[i]);
-        clone.selected = !clone.selected;
-        newItems.push(clone);
-      } else {
-        newItems.push(this.cartItems[i]);
-      }
-    }
-    this.cartItems = newItems;
+    this.cartErrorMessage = '';
+    item.selected = !item.selected;
     this.recalcCartTotals();
   }
 
   changeCartQuantity(item: CartItem, quantity: number) {
-    if (this.cartErrorMessage.length > 0) {
-      this.cartErrorMessage = '';
-    }
+    this.cartErrorMessage = '';
     const nextQuantity: number = Math.max(0, Math.min(99, quantity));
     if (nextQuantity === item.quantity) {
       return;
@@ -158,17 +129,7 @@ struct HomePage {
       this.deleteCartProduct(item);
       return;
     }
-    const newItems: CartItem[] = [];
-    for (let i: number = 0; i < this.cartItems.length; i++) {
-      if (this.cartItems[i] === item) {
-        const clone: CartItem = this.cloneItem(this.cartItems[i]);
-        clone.quantity = nextQuantity;
-        newItems.push(clone);
-      } else {
-        newItems.push(this.cartItems[i]);
-      }
-    }
-    this.cartItems = newItems;
+    item.quantity = nextQuantity;
     this.recalcCartTotals();
   }
 
@@ -213,17 +174,11 @@ struct HomePage {
     return true;
   }
   toggleCartAll() {
-    if (this.cartErrorMessage.length > 0) {
-      this.cartErrorMessage = '';
-    }
+    this.cartErrorMessage = '';
     const nextSelected: boolean = !this.allCartSelected();
-    const newItems: CartItem[] = [];
     for (let i: number = 0; i < this.cartItems.length; i++) {
-      const clone: CartItem = this.cloneItem(this.cartItems[i]);
-      clone.selected = nextSelected;
-      newItems.push(clone);
+      this.cartItems[i].selected = nextSelected;
     }
-    this.cartItems = newItems;
     this.recalcCartTotals();
   }
 
