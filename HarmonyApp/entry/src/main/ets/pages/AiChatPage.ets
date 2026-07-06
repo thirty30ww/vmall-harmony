@@ -140,6 +140,11 @@ struct AiChatPage {
           .lineHeight(22)
       }
       .margin({ left: 60 })
+      Image($r('app.media.avatar'))
+        .width(28)
+        .height(28)
+        .borderRadius(14)
+        .margin({ left: 8 })
     }
     .width('100%')
     .padding({ left: 16, right: 16, bottom: 8 })
