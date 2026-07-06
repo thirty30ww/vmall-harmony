@@ -107,9 +107,6 @@ struct AiChatPage {
   build() {
     Stack() {
       Column() {
-        if (this.showSidebar && this.conversations.length > 0) {
-          this.buildConversationList()
-        }
         this.buildChatArea()
         this.buildInputArea()
       }
@@ -144,6 +141,10 @@ struct AiChatPage {
       .border({ width: { bottom: 0.5 }, color: { bottom: '#E5E6E8' } })
       .alignItems(VerticalAlign.Center)
       .position({ top: 0 })
+
+      if (this.showSidebar && this.conversations.length > 0) {
+        this.buildConversationList()
+      }
     }
     .width('100%')
     .height('100%')
@@ -152,28 +153,10 @@ struct AiChatPage {
 
   @Builder buildConversationList() {
     Column() {
-      Row() {
-        Text('历史对话')
-          .fontSize(16)
-          .fontWeight(FontWeight.Medium)
-          .fontColor('#1D2129')
-        Blank()
-        Text('关闭')
-          .fontSize(13)
-          .fontColor('#86909C')
-          .onClick(() => { this.showSidebar = false })
-      }
-      .width('100%')
-      .padding({ left: 16, right: 16, top: 12, bottom: 10 })
-      .border({ width: { bottom: 0.5 }, color: '#F2F3F5' })
-
       Scroll() {
         Column() {
           ForEach(this.conversations, (conv: Conversation) => {
             Row() {
-              Text('💬')
-                .fontSize(14)
-                .margin({ right: 8 })
               Column() {
                 Text(conv.title)
                   .fontSize(14)
@@ -206,16 +189,17 @@ struct AiChatPage {
           })
         }
         .width('100%')
-        .padding({ top: 6, bottom: 12 })
+        .padding({ top: 8, bottom: 8 })
       }
-      .layoutWeight(1)
       .width('100%')
     }
     .width('100%')
-    .constraintSize({ maxHeight: '60%' })
+    .constraintSize({ maxHeight: '50%' })
+    .padding({ top: 8 })
     .backgroundColor(Color.White)
     .borderRadius({ bottomLeft: 12, bottomRight: 12 })
-    .shadow({ radius: 8, color: '#1A000000', offsetX: 0, offsetY: 2 })
+    .shadow({ radius: 8, color: '#1A000000', offsetX: 0, offsetY: 4 })
+    .position({ top: 52 })
   }
 
   formatDate(iso: string): string {
