@@ -3,7 +3,18 @@ import { productsList } from '../data/productsListData';
 
 @Component
 export struct CartItemCardComponent {
-  @ObjectLink item: CartItem;
+  @Prop item: CartItem = {
+    id: 0,
+    productId: 0,
+    productSource: '',
+    productName: '',
+    productImage: null,
+    productPrice: 0,
+    productFeature: null,
+    quantity: 0,
+    selected: false,
+    lineAmount: 0
+  };
   onToggleSelected: (item: CartItem) => void = () => {};
   onChangeQuantity: (item: CartItem, quantity: number) => void = () => {};
   onDelete: (item: CartItem) => void = () => {};

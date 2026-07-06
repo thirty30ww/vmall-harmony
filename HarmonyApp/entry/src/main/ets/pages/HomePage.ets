@@ -113,11 +113,36 @@ struct HomePage {
     this.cartTotalAmount = totalAmount;
   }
 
+  cloneItem(item: CartItem): CartItem {
+    return {
+      id: item.id,
+      productId: item.productId,
+      productSource: item.productSource,
+      productName: item.productName,
+      productImage: item.productImage,
+      productPrice: item.productPrice,
+      productFeature: item.productFeature,
+      quantity: item.quantity,
+      selected: item.selected,
+      lineAmount: item.lineAmount
+    };
+  }
+
   toggleCartSelected(item: CartItem) {
     if (this.cartErrorMessage.length > 0) {
       this.cartErrorMessage = '';
     }
-    item.selected = !item.selected;
+    const newItems: CartItem[] = [];
+    for (let i: number = 0; i < this.cartItems.length; i++) {
+      if (this.cartItems[i] === item) {
+        const clone: CartItem = this.cloneItem(this.cartItems[i]);
+        clone.selected = !clone.selected;
+        newItems.push(clone);
+      } else {
+        newItems.push(this.cartItems[i]);
+      }
+    }
+    this.cartItems = newItems;
     this.recalcCartTotals();
   }
 
@@ -133,7 +158,17 @@ struct HomePage {
       this.deleteCartProduct(item);
       return;
     }
-    item.quantity = nextQuantity;
+    const newItems: CartItem[] = [];
+    for (let i: number = 0; i < this.cartItems.length; i++) {
+      if (this.cartItems[i] === item) {
+        const clone: CartItem = this.cloneItem(this.cartItems[i]);
+        clone.quantity = nextQuantity;
+        newItems.push(clone);
+      } else {
+        newItems.push(this.cartItems[i]);
+      }
+    }
+    this.cartItems = newItems;
     this.recalcCartTotals();
   }
 
@@ -182,9 +217,13 @@ struct HomePage {
       this.cartErrorMessage = '';
     }
     const nextSelected: boolean = !this.allCartSelected();
+    const newItems: CartItem[] = [];
     for (let i: number = 0; i < this.cartItems.length; i++) {
-      this.cartItems[i].selected = nextSelected;
+      const clone: CartItem = this.cloneItem(this.cartItems[i]);
+      clone.selected = nextSelected;
+      newItems.push(clone);
     }
+    this.cartItems = newItems;
     this.recalcCartTotals();
   }
 
