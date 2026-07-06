@@ -15,6 +15,7 @@ export struct HomeSwiper {
           .width('100%')
           .height('100%')
           .objectFit(ImageFit.Cover)
+          .borderRadius(18)
       }, (image: Resource, index: number) => index.toString())
     }
     .width('100%')
@@ -22,5 +23,6 @@ export struct HomeSwiper {
     .autoPlay(true)
     .interval(3500)
     .indicator(true)
+    .borderRadius(18)
   }
 }
