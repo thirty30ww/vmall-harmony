@@ -115,7 +115,23 @@ struct HomePage {
 
   toggleCartSelected(item: CartItem) {
     this.cartErrorMessage = '';
-    item.selected = !item.selected;
+    const newItems: CartItem[] = [];
+    for (let i: number = 0; i < this.cartItems.length; i++) {
+      const old = this.cartItems[i];
+      if (old.id === item.id) {
+        const clone: CartItem = {
+          id: old.id, productId: old.productId, productSource: old.productSource,
+          productName: old.productName, productImage: old.productImage,
+          productPrice: old.productPrice, productFeature: old.productFeature,
+          quantity: old.quantity, lineAmount: old.lineAmount,
+          selected: !old.selected
+        };
+        newItems.push(clone);
+      } else {
+        newItems.push(old);
+      }
+    }
+    this.cartItems = newItems;
     this.recalcCartTotals();
   }
 
@@ -129,7 +145,23 @@ struct HomePage {
       this.deleteCartProduct(item);
       return;
     }
-    item.quantity = nextQuantity;
+    const newItems: CartItem[] = [];
+    for (let i: number = 0; i < this.cartItems.length; i++) {
+      const old = this.cartItems[i];
+      if (old.id === item.id) {
+        const clone: CartItem = {
+          id: old.id, productId: old.productId, productSource: old.productSource,
+          productName: old.productName, productImage: old.productImage,
+          productPrice: old.productPrice, productFeature: old.productFeature,
+          quantity: nextQuantity, lineAmount: old.lineAmount,
+          selected: old.selected
+        };
+        newItems.push(clone);
+      } else {
+        newItems.push(old);
+      }
+    }
+    this.cartItems = newItems;
     this.recalcCartTotals();
   }
 
@@ -176,9 +208,19 @@ struct HomePage {
   toggleCartAll() {
     this.cartErrorMessage = '';
     const nextSelected: boolean = !this.allCartSelected();
+    const newItems: CartItem[] = [];
     for (let i: number = 0; i < this.cartItems.length; i++) {
-      this.cartItems[i].selected = nextSelected;
+      const old = this.cartItems[i];
+      const clone: CartItem = {
+        id: old.id, productId: old.productId, productSource: old.productSource,
+        productName: old.productName, productImage: old.productImage,
+        productPrice: old.productPrice, productFeature: old.productFeature,
+        quantity: old.quantity, lineAmount: old.lineAmount,
+        selected: nextSelected
+      };
+      newItems.push(clone);
     }
+    this.cartItems = newItems;
     this.recalcCartTotals();
   }
 
@@ -399,7 +441,7 @@ struct HomePage {
                 }
               })
             }
-          }, (item: CartItem) => item.id.toString())
+          }, (item: CartItem) => item.id.toString() + '_' + item.selected.toString() + '_' + item.quantity.toString())
         }
         .layoutWeight(1)
         .width('100%')
