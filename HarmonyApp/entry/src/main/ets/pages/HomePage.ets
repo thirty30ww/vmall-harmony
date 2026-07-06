@@ -75,7 +75,22 @@ struct HomePage {
     } catch (error) {
       this.errorMessage = '\u9875\u9762\u8df3\u8f6c\u5931\u8d25';
     }
-  }  applyCartSummary(summary: CartSummary) {
+  }
+  applyCartSummary(summary: CartSummary) {
+    const summaryMap = new Map<number, CartItem>();
+    summary.items.forEach((item: CartItem) => {
+      summaryMap.set(item.id, item);
+    });
+    for (let i: number = 0; i < this.cartItems.length; i++) {
+      const existing: CartItem = this.cartItems[i];
+      const updated: CartItem | undefined = summaryMap.get(existing.id);
+      if (updated !== undefined) {
+        existing.quantity = updated.quantity;
+        existing.selected = updated.selected;
+        existing.lineAmount = updated.lineAmount;
+        summaryMap.delete(existing.id);
+      }
+    }
     const sortedItems: CartItem[] = summary.items.slice(0).sort((a: CartItem, b: CartItem) => a.id - b.id);
     this.cartItems = sortedItems;
     this.cartSelectedCount = summary.selectedCount;
@@ -424,7 +439,7 @@ struct HomePage {
                 }
               })
             }
-          }, (item: CartItem) => item.id.toString() + '_' + item.selected + '_' + item.quantity)
+          }, (item: CartItem) => item.id.toString())
         }
         .layoutWeight(1)
         .width('100%')
