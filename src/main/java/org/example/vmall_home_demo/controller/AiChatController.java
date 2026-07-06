@@ -43,9 +43,9 @@ public class AiChatController {
                     new ChatMessage("assistant", GREETING));
         }
         conversationService.addMessage(result.conversationId(), currentMsg);
-        String reply = aiChatService.chat(currentMsg, request.getHistory(), userId);
-        conversationService.addMessage(result.conversationId(), new ChatMessage("assistant", reply));
-        return new ChatResponse(reply, result.conversationId());
+        AiChatService.ChatResult chatResult = aiChatService.chat(currentMsg, request.getHistory(), userId);
+        conversationService.addMessage(result.conversationId(), new ChatMessage("assistant", chatResult.getReply()));
+        return new ChatResponse(chatResult.getReply(), result.conversationId(), chatResult.getRecommendedProducts());
     }
 
     private static final String GREETING = "你好！我是智能导购助手，可以帮你推荐商品、了解产品信息。请问有什么需要帮助的吗？";

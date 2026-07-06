@@ -5,12 +5,14 @@ import {
   getConversation,
   deleteConversation,
   ChatMessage as ApiChatMessage,
-  Conversation
+  Conversation,
+  RecommendedProduct
 } from '../api/aiApi';
 
 interface ChatMessage {
   role: 'user' | 'ai';
   content: string;
+  products?: RecommendedProduct[];
 }
 
 @Entry
@@ -294,7 +296,11 @@ struct AiChatPage {
     try {
       const result = await chatWithAI(text, history, this.activeConversationId);
       this.activeConversationId = result.conversationId;
-      const aiMsg: ChatMessage = { role: 'ai', content: result.reply };
+      const aiMsg: ChatMessage = {
+        role: 'ai',
+        content: result.reply,
+        products: result.recommendedProducts ?? undefined
+      };
       this.messages.push(aiMsg);
     } catch (_) {
       const errMsg: ChatMessage = { role: 'ai', content: '抱歉，暂时无法连接智能助手，请稍后再试。' };
@@ -309,6 +315,22 @@ struct AiChatPage {
   async refreshConversations() {
     try {
       this.conversations = await listConversations();
+    } catch (_) {}
+  }
+
+  navigateToProduct(product: RecommendedProduct) {
+    try {
+      router.pushUrl({
+        url: 'pages/ProductDetailPage',
+        params: {
+          productId: product.productId,
+          source: 'category',
+          productName: product.productName,
+          productImage: product.imageUrl ?? '',
+          productFeature: product.feature ?? '',
+          productPrice: product.price === null ? '' : product.price.toString()
+        }
+      });
     } catch (_) {}
   }
 
@@ -339,7 +361,7 @@ struct AiChatPage {
       Image($r('app.media.ai_chat_icon'))
         .width(28).height(28).borderRadius(14).margin({ right: 8 })
         .alignSelf(ItemAlign.Start)
-      Column() {
+      Column({ space: 8 }) {
         Text(msg.content)
           .fontSize(15)
           .fontColor('#1D2129')
@@ -348,6 +370,9 @@ struct AiChatPage {
           .borderRadius({ topLeft: 4, topRight: 16, bottomLeft: 16, bottomRight: 16 })
           .maxLines(100)
           .lineHeight(22)
+        if (msg.products && msg.products.length > 0) {
+          this.recommendCardList(msg.products)
+        }
       }
       .margin({ right: 60 })
       Blank()
@@ -355,6 +380,62 @@ struct AiChatPage {
     .width('100%')
     .padding({ left: 16, right: 16, bottom: 8 })
     .alignItems(VerticalAlign.Top)
+  }
+
+  @Builder recommendCardList(products: RecommendedProduct[]) {
+    Scroll() {
+      Row({ space: 10 }) {
+        ForEach(products, (product: RecommendedProduct) => {
+          this.recommendCard(product)
+        })
+      }
+      .padding({ left: 2, right: 2 })
+    }
+    .scrollable(ScrollDirection.Horizontal)
+    .scrollBar(BarState.Off)
+    .clip(true)
+    .width('100%')
+  }
+
+  @Builder recommendCard(product: RecommendedProduct) {
+    Column({ space: 6 }) {
+      if (product.imageUrl) {
+        Image(product.imageUrl)
+          .width('100%').height(120)
+          .objectFit(ImageFit.Contain)
+          .backgroundColor('#F7F8FA')
+          .borderRadius(8)
+      }
+      Text(product.productName)
+        .fontSize(13)
+        .fontWeight(FontWeight.Medium)
+        .fontColor('#1D2129')
+        .maxLines(1)
+        .textOverflow({ overflow: TextOverflow.Ellipsis })
+        .lineHeight(18)
+        .width('100%')
+      if (product.feature) {
+        Text(product.feature)
+          .fontSize(10)
+          .fontColor('#86909C')
+          .maxLines(1)
+          .textOverflow({ overflow: TextOverflow.Ellipsis })
+          .width('100%')
+      }
+      if (product.price !== null) {
+        Text('¥' + product.price)
+          .fontSize(15)
+          .fontWeight(FontWeight.Bold)
+          .fontColor('#D71920')
+          .width('100%')
+      }
+    }
+    .width(140)
+    .padding(10)
+    .backgroundColor(Color.White)
+    .borderRadius(10)
+    .shadow({ radius: 4, color: '#1A000000', offsetX: 0, offsetY: 2 })
+    .onClick(() => this.navigateToProduct(product))
   }
 
   @Builder loadingIndicator() {

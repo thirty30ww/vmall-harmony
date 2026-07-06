@@ -6,9 +6,18 @@ export interface ChatMessage {
   content: string;
 }
 
+export interface RecommendedProduct {
+  productId: number;
+  productName: string;
+  imageUrl: string | null;
+  price: number | null;
+  feature: string | null;
+}
+
 export interface ChatResponse {
   reply: string;
   conversationId: number;
+  recommendedProducts: RecommendedProduct[] | null;
 }
 
 export interface Conversation {

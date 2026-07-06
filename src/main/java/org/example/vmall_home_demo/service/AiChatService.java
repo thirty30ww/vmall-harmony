@@ -1,6 +1,7 @@
 package org.example.vmall_home_demo.service;
 
 import org.example.vmall_home_demo.dto.ChatMessage;
+import org.example.vmall_home_demo.dto.RecommendedProduct;
 import org.example.vmall_home_demo.entity.CartItem;
 import org.example.vmall_home_demo.entity.Category;
 import org.example.vmall_home_demo.entity.User;
@@ -16,9 +17,16 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class AiChatService {
+
+    private static final Pattern RECOMMEND_PATTERN = Pattern.compile(
+            "【推荐商品编号:\\s*([\\d,\\s]+)】");
 
     private final ChatClient chatClient;
     private final CategoryMapper categoryMapper;
@@ -35,9 +43,23 @@ public class AiChatService {
         this.cartItemMapper = cartItemMapper;
     }
 
-    public String chat(ChatMessage currentMessage, List<ChatMessage> history, Long userId) {
+    public static class ChatResult {
+        private final String reply;
+        private final List<RecommendedProduct> recommendedProducts;
+
+        public ChatResult(String reply, List<RecommendedProduct> recommendedProducts) {
+            this.reply = reply;
+            this.recommendedProducts = recommendedProducts;
+        }
+
+        public String getReply() { return reply; }
+        public List<RecommendedProduct> getRecommendedProducts() { return recommendedProducts; }
+    }
+
+    public ChatResult chat(ChatMessage currentMessage, List<ChatMessage> history, Long userId) {
+        List<Category> allCategories = categoryMapper.findAll();
         List<Message> messages = new ArrayList<>();
-        messages.add(new SystemMessage(buildSystemPrompt(userId)));
+        messages.add(new SystemMessage(buildSystemPrompt(userId, allCategories)));
         if (history != null) {
             for (ChatMessage msg : history) {
                 String role = msg.getRole();
@@ -54,10 +76,44 @@ public class AiChatService {
                 .messages(messages)
                 .call()
                 .content();
-        return cleanMarkdown(reply);
+        return parseRecommendation(reply, allCategories);
     }
 
-    private String buildSystemPrompt(Long userId) {
+    private ChatResult parseRecommendation(String reply, List<Category> allCategories) {
+        if (reply == null) {
+            return new ChatResult(null, null);
+        }
+        String cleaned = cleanMarkdown(reply);
+        Matcher matcher = RECOMMEND_PATTERN.matcher(cleaned);
+        if (!matcher.find()) {
+            return new ChatResult(cleaned, null);
+        }
+        String idsStr = matcher.group(1);
+        String textWithoutMarker = cleaned.replace(matcher.group(), "").trim();
+        Map<Integer, Category> categoryMap = allCategories.stream()
+                .collect(Collectors.toMap(Category::getId, c -> c, (a, b) -> a));
+        String[] parts = idsStr.split("[,\\s]+");
+        List<RecommendedProduct> products = new ArrayList<>();
+        for (String part : parts) {
+            try {
+                int id = Integer.parseInt(part.trim());
+                Category cat = categoryMap.get(id);
+                if (cat != null) {
+                    products.add(new RecommendedProduct(
+                            cat.getId(),
+                            cat.getProductName(),
+                            cat.getImageUrl(),
+                            cat.getPrice(),
+                            cat.getFeature()
+                    ));
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        return new ChatResult(textWithoutMarker, products.isEmpty() ? null : products);
+    }
+
+    private String buildSystemPrompt(Long userId, List<Category> categories) {
         StringBuilder sb = new StringBuilder();
         sb.append("""
                 你是一个华为商城(Vmall)的智能导购助手。你的任务是根据商品目录，为用户推荐合适的商品。
@@ -68,6 +124,8 @@ public class AiChatService {
                 如果商品目录中没有合适的商品，请如实告知。
                 严禁使用Markdown格式。不要使用任何标记符号。
                 注意：回答时不要称呼用户的姓名或用户名，直接回答问题即可。
+                
+                非常重要：如果你推荐了商品，请在回复的最后一行加上【推荐商品编号: 编号1, 编号2, 编号3】，列出你最推荐的1-3个商品的编号（必须是下面商品目录中【商品编号:XXX】里的整数编号）。多个编号用逗号分隔。
                 """);
         if (userId != null) {
             User user = userMapper.findById(userId);
@@ -84,9 +142,9 @@ public class AiChatService {
             }
         }
         sb.append("\n以下是当前商品目录：\n");
-        List<Category> categories = categoryMapper.findAll();
         for (Category cat : categories) {
-            sb.append("- 分类: ").append(cat.getName())
+            sb.append("【商品编号:").append(cat.getId()).append("】 ")
+                    .append("分类: ").append(cat.getName())
                     .append(" | 组: ").append(cat.getGroupName())
                     .append(" | 商品: ").append(cat.getProductName())
                     .append(" | 描述: ").append(cat.getFeature())
