@@ -8,7 +8,7 @@ import { HomeSwiper } from '../components/HomeSwiper';
 import { ProductCard } from '../components/ProductCard';
 import { ProductsListSection } from '../components/ProductsListSection';
 import { SearchBar } from '../components/SearchBar';
-import { CartItem, CartSummary, deleteCartItem, getCart, selectAllCartItems, updateCartItem } from '../api/cartApi';
+import { CartItem, CartSummary, deleteCartItem, getCart } from '../api/cartApi';
 import { CartItemCardComponent } from '../components/CartItemCardComponent';
 import { Category as HomeCategory } from '../data/categoryData';
 import { getHomeData, getProducts, HomeData, Product } from '../api/homeApi';
@@ -99,48 +99,60 @@ struct HomePage {
     }
   }
 
-  async changeCartQuantity(item: CartItem, quantity: number) {
+  recalcCartTotals() {
+    let selectedCount: number = 0;
+    let totalAmount: number = 0;
+    for (let i: number = 0; i < this.cartItems.length; i++) {
+      const item = this.cartItems[i];
+      if (item.selected) {
+        selectedCount += item.quantity;
+        totalAmount += item.productPrice * item.quantity;
+      }
+    }
+    this.cartSelectedCount = selectedCount;
+    this.cartTotalAmount = totalAmount;
+  }
+
+  toggleCartSelected(item: CartItem) {
+    if (this.cartErrorMessage.length > 0) {
+      this.cartErrorMessage = '';
+    }
+    item.selected = !item.selected;
+    this.recalcCartTotals();
+  }
+
+  changeCartQuantity(item: CartItem, quantity: number) {
+    if (this.cartErrorMessage.length > 0) {
+      this.cartErrorMessage = '';
+    }
     const nextQuantity: number = Math.max(0, Math.min(99, quantity));
     if (nextQuantity === item.quantity) {
       return;
     }
     if (nextQuantity === 0) {
-      await this.deleteCartProduct(item);
+      this.deleteCartProduct(item);
       return;
     }
-
-    this.cartErrorMessage = '';
-    try {
-      const summary: CartSummary = await updateCartItem(item.id, nextQuantity, null);
-      this.cartItems = summary.items;
-      this.cartSelectedCount = summary.selectedCount;
-      this.cartTotalAmount = summary.totalAmount;
-    } catch (error) {
-      this.cartErrorMessage = '\u6570\u91cf\u66f4\u65b0\u5931\u8d25';
-    }
-  }
-
-  async toggleCartSelected(item: CartItem) {
-    this.cartErrorMessage = '';
-    try {
-      const summary: CartSummary = await updateCartItem(item.id, null, !item.selected);
-      this.cartItems = summary.items;
-      this.cartSelectedCount = summary.selectedCount;
-      this.cartTotalAmount = summary.totalAmount;
-    } catch (error) {
-      this.cartErrorMessage = '\u9009\u4e2d\u72b6\u6001\u66f4\u65b0\u5931\u8d25';
-    }
+    item.quantity = nextQuantity;
+    this.recalcCartTotals();
   }
 
   async deleteCartProduct(item: CartItem) {
     this.cartErrorMessage = '';
+    const newItems: CartItem[] = [];
+    for (let i: number = 0; i < this.cartItems.length; i++) {
+      if (this.cartItems[i] !== item) {
+        newItems.push(this.cartItems[i]);
+      }
+    }
+    this.cartItems = newItems;
+    this.recalcCartTotals();
+
     try {
-      const summary: CartSummary = await deleteCartItem(item.id);
-      this.cartItems = summary.items;
-      this.cartSelectedCount = summary.selectedCount;
-      this.cartTotalAmount = summary.totalAmount;
+      await deleteCartItem(item.id);
     } catch (error) {
       this.cartErrorMessage = '\u5220\u9664\u5931\u8d25';
+      await this.loadCartSilent();
     }
   }
 
@@ -165,17 +177,15 @@ struct HomePage {
     }
     return true;
   }
-  async toggleCartAll() {
-    const nextSelected: boolean = !this.allCartSelected();
-    this.cartErrorMessage = '';
-    try {
-      const summary: CartSummary = await selectAllCartItems(nextSelected);
-      this.cartItems = summary.items;
-      this.cartSelectedCount = summary.selectedCount;
-      this.cartTotalAmount = summary.totalAmount;
-    } catch (error) {
-      this.cartErrorMessage = '\u5168\u9009\u66f4\u65b0\u5931\u8d25';
+  toggleCartAll() {
+    if (this.cartErrorMessage.length > 0) {
+      this.cartErrorMessage = '';
     }
+    const nextSelected: boolean = !this.allCartSelected();
+    for (let i: number = 0; i < this.cartItems.length; i++) {
+      this.cartItems[i].selected = nextSelected;
+    }
+    this.recalcCartTotals();
   }
 
   priceText(value: number): string {
@@ -299,22 +309,6 @@ struct HomePage {
     .layoutWeight(1)
     .scrollBar(BarState.Off)
   }
-  @Builder
-  cartSelectButton(selected: boolean, itemId: number, onTap: () => void) {
-    Button(selected ? '\u2713' : '')
-      .width(24)
-      .height(24)
-      .fontSize(14)
-      .fontWeight(FontWeight.Bold)
-      .fontColor(selected ? Color.White : '#C9CDD4')
-      .padding(0)
-      .backgroundColor(selected ? '#D71920' : Color.White)
-      .borderRadius(12)
-      .border({ width: 1.5, color: selected ? '#D71920' : '#C9CDD4' })
-      .onClick(() => {
-        onTap();
-      })
-  }
 
   @Builder
   cartEmptyContent(text: string, buttonText: string, targetLogin: boolean) {
@@ -411,7 +405,7 @@ struct HomePage {
                 }
               })
             }
-          }, (item: CartItem) => item.id.toString() + '_' + item.selected + '_' + item.quantity)
+          }, (item: CartItem) => item.id.toString())
         }
         .layoutWeight(1)
         .width('100%')
@@ -420,9 +414,19 @@ struct HomePage {
 
         Row() {
           Row({ space: 8 }) {
-            this.cartSelectButton(this.allCartSelected(), -1, () => {
-              this.toggleCartAll();
-            })
+            Button(this.allCartSelected() ? '\u2713' : '')
+              .width(24)
+              .height(24)
+              .fontSize(14)
+              .fontWeight(FontWeight.Bold)
+              .fontColor(this.allCartSelected() ? Color.White : '#C9CDD4')
+              .padding(0)
+              .backgroundColor(this.allCartSelected() ? '#D71920' : Color.White)
+              .borderRadius(12)
+              .border({ width: 1.5, color: this.allCartSelected() ? '#D71920' : '#C9CDD4' })
+              .onClick(() => {
+                this.toggleCartAll();
+              })
             Text('\u5168\u9009')
               .fontSize(15)
               .fontColor('#111111')
