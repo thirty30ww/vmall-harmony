@@ -57,16 +57,26 @@ async function requestCart<T>(path: string, method: http.RequestMethod, body: Ca
 
   const request = http.createHttp();
   try {
-    const response = await request.request(`${API_BASE_URL}${path}`, {
-      method: method,
-      connectTimeout: 10000,
-      readTimeout: 10000,
-      header: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      extraData: body === null ? '' : JSON.stringify(body)
-    });
+    const url: string = `${API_BASE_URL}${path}`;
+    const response = body === null
+      ? await request.request(url, {
+          method: method,
+          connectTimeout: 10000,
+          readTimeout: 10000,
+          header: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+      : await request.request(url, {
+          method: method,
+          connectTimeout: 10000,
+          readTimeout: 10000,
+          header: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          extraData: JSON.stringify(body)
+        });
 
     if (response.responseCode < 200 || response.responseCode >= 300) {
       throw new Error(`Request failed: ${response.responseCode}`);
