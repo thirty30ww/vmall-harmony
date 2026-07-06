@@ -7,10 +7,6 @@ export struct SearchBar {
     Column() {
       Row({ space: 8 }) {
         Row({ space: 6 }) {
-          Text('\uD83D\uDD0D')
-            .fontSize(16)
-            .fontColor('#86909C')
-
           TextInput({ placeholder: '\u641c\u7d22\u534e\u4e3a\u5546\u57ce\u5546\u54c1', text: this.keyword })
             .height(42)
             .layoutWeight(1)
