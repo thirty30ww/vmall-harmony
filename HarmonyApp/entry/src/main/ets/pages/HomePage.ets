@@ -76,26 +76,6 @@ struct HomePage {
       this.errorMessage = '\u9875\u9762\u8df3\u8f6c\u5931\u8d25';
     }
   }
-  applyCartSummary(summary: CartSummary) {
-    const summaryMap = new Map<number, CartItem>();
-    summary.items.forEach((item: CartItem) => {
-      summaryMap.set(item.id, item);
-    });
-    for (let i: number = 0; i < this.cartItems.length; i++) {
-      const existing: CartItem = this.cartItems[i];
-      const updated: CartItem | undefined = summaryMap.get(existing.id);
-      if (updated !== undefined) {
-        existing.quantity = updated.quantity;
-        existing.selected = updated.selected;
-        existing.lineAmount = updated.lineAmount;
-        summaryMap.delete(existing.id);
-      }
-    }
-    const sortedItems: CartItem[] = summary.items.slice(0).sort((a: CartItem, b: CartItem) => a.id - b.id);
-    this.cartItems = sortedItems;
-    this.cartSelectedCount = summary.selectedCount;
-    this.cartTotalAmount = summary.totalAmount;
-  }
 
   async loadCart() {
     if (!this.isLoggedIn()) {
@@ -110,7 +90,9 @@ struct HomePage {
     this.cartErrorMessage = '';
     try {
       const summary: CartSummary = await getCart();
-      this.applyCartSummary(summary);
+      this.cartItems = summary.items;
+      this.cartSelectedCount = summary.selectedCount;
+      this.cartTotalAmount = summary.totalAmount;
     } catch (error) {
       this.cartErrorMessage = '\u8d2d\u7269\u8f66\u52a0\u8f7d\u5931\u8d25';
     } finally {
@@ -132,7 +114,14 @@ struct HomePage {
     this.cartErrorMessage = '';
     try {
       const summary: CartSummary = await updateCartItem(item.id, nextQuantity, null);
-      this.applyCartSummary(summary);
+      const updated: CartItem | undefined = summary.items.find((i: CartItem) => i.id === item.id);
+      if (updated !== undefined) {
+        item.quantity = updated.quantity;
+        item.selected = updated.selected;
+        item.lineAmount = updated.lineAmount;
+      }
+      this.cartSelectedCount = summary.selectedCount;
+      this.cartTotalAmount = summary.totalAmount;
     } catch (error) {
       this.cartErrorMessage = '\u6570\u91cf\u66f4\u65b0\u5931\u8d25';
       await this.loadCartSilent();
@@ -146,7 +135,12 @@ struct HomePage {
     this.cartErrorMessage = '';
     try {
       const summary: CartSummary = await updateCartItem(item.id, null, !item.selected);
-      this.applyCartSummary(summary);
+      const updated: CartItem | undefined = summary.items.find((i: CartItem) => i.id === item.id);
+      if (updated !== undefined) {
+        item.selected = updated.selected;
+      }
+      this.cartSelectedCount = summary.selectedCount;
+      this.cartTotalAmount = summary.totalAmount;
     } catch (error) {
       this.cartErrorMessage = '\u9009\u4e2d\u72b6\u6001\u66f4\u65b0\u5931\u8d25';
       await this.loadCartSilent();
@@ -160,7 +154,9 @@ struct HomePage {
     this.cartErrorMessage = '';
     try {
       const summary: CartSummary = await deleteCartItem(item.id);
-      this.applyCartSummary(summary);
+      this.cartItems = summary.items;
+      this.cartSelectedCount = summary.selectedCount;
+      this.cartTotalAmount = summary.totalAmount;
     } catch (error) {
       this.cartErrorMessage = '\u5220\u9664\u5931\u8d25';
       await this.loadCartSilent();
@@ -172,7 +168,9 @@ struct HomePage {
   async loadCartSilent() {
     try {
       const summary: CartSummary = await getCart();
-      this.applyCartSummary(summary);
+      this.cartItems = summary.items;
+      this.cartSelectedCount = summary.selectedCount;
+      this.cartTotalAmount = summary.totalAmount;
     } catch (error) {
       console.error('load cart failed', error);
     }
@@ -194,7 +192,14 @@ struct HomePage {
     this.cartErrorMessage = '';
     try {
       const summary: CartSummary = await selectAllCartItems(nextSelected);
-      this.applyCartSummary(summary);
+      for (let i: number = 0; i < this.cartItems.length; i++) {
+        const updated: CartItem | undefined = summary.items.find((s: CartItem) => s.id === this.cartItems[i].id);
+        if (updated !== undefined) {
+          this.cartItems[i].selected = updated.selected;
+        }
+      }
+      this.cartSelectedCount = summary.selectedCount;
+      this.cartTotalAmount = summary.totalAmount;
     } catch (error) {
       this.cartErrorMessage = '\u5168\u9009\u66f4\u65b0\u5931\u8d25';
       await this.loadCartSilent();
