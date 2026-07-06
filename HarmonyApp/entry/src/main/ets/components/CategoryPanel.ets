@@ -9,6 +9,7 @@ export struct CategoryPanel {
   @State categories: CategoryPageCategory[] = [];
   @State loading: boolean = false;
   @State errorMessage: string = '';
+  private rightScroller: Scroller = new Scroller();
 
   aboutToAppear() {
     this.loadCategoryPage();
@@ -43,6 +44,9 @@ export struct CategoryPanel {
     this.selectedIndex = index;
     this.selectedCategoryName = category.name ?? '';
     this.selectedGroups = category.groups.slice(0);
+    setTimeout(() => {
+      this.rightScroller.scrollEdge(Edge.Top);
+    }, 50);
   }
 
   groupGridHeight(count: number): number {
@@ -222,7 +226,7 @@ export struct CategoryPanel {
           .padding({ right: 12 })
           .justifyContent(FlexAlign.Center)
         } else {
-          Scroll() {
+          Scroll(this.rightScroller) {
             Column() {
               this.categoryContent()
             }
