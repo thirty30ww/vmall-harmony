@@ -9,8 +9,8 @@ import { ProductCard } from '../components/ProductCard';
 import { ProductsListSection } from '../components/ProductsListSection';
 import { SearchBar } from '../components/SearchBar';
 import { CartItem, CartSummary, deleteCartItem, getCart, selectAllCartItems, updateCartItem } from '../api/cartApi';
+import { CartItemCardComponent } from '../components/CartItemCardComponent';
 import { Category as HomeCategory } from '../data/categoryData';
-import { productsList } from '../data/productsListData';
 import { getHomeData, getProducts, HomeData, Product } from '../api/homeApi';
 
 @Entry
@@ -328,141 +328,6 @@ struct HomePage {
   }
 
   @Builder
-  cartProductImage(item: CartItem) {
-    Stack() {
-      if (item.productSource === 'homeStatic' && item.productId >= 0 && item.productId < productsList.length) {
-        Image(productsList[item.productId].productCardsImagePath)
-          .width('100%')
-          .height('100%')
-          .objectFit(ImageFit.Contain)
-      } else if (item.productImage !== null && item.productImage.length > 0) {
-        Image(item.productImage)
-          .width('100%')
-          .height('100%')
-          .objectFit(ImageFit.Contain)
-      } else {
-        Text('HUAWEI')
-          .fontSize(13)
-          .fontWeight(FontWeight.Bold)
-          .fontColor('#8A8F99')
-      }
-    }
-    .width(92)
-    .height(92)
-    .backgroundColor('#F6F7F9')
-    .borderRadius(10)
-    .alignContent(Alignment.Center)
-  }
-
-  @Builder
-  cartItemCard(item: CartItem) {
-    Row({ space: 10 }) {
-      Column() {
-        this.cartSelectButton(item.selected, item.id, () => {
-          this.toggleCartSelected(item);
-        })
-      }
-      .width(28)
-      .height('100%')
-      .justifyContent(FlexAlign.Center)
-
-      this.cartProductImage(item)
-
-      Column({ space: 7 }) {
-        Text(item.productName)
-          .fontSize(16)
-          .fontWeight(FontWeight.Bold)
-          .fontColor('#111111')
-          .lineHeight(20)
-          .maxLines(2)
-          .textOverflow({ overflow: TextOverflow.Ellipsis })
-          .width('100%')
-
-        Text(item.productFeature ?? '')
-          .fontSize(12)
-          .fontColor('#7A7F85')
-          .lineHeight(16)
-          .maxLines(1)
-          .textOverflow({ overflow: TextOverflow.Ellipsis })
-          .width('100%')
-
-        Row() {
-          Row({ space: 2 }) {
-            Text('\u00a5')
-              .fontSize(12)
-              .fontWeight(FontWeight.Bold)
-              .fontColor('#D71920')
-            Text(this.priceText(item.productPrice))
-              .fontSize(18)
-              .fontWeight(FontWeight.Bold)
-              .fontColor('#D71920')
-          }
-          .layoutWeight(1)
-
-          Row() {
-            Button('-')
-              .width(30)
-              .height(30)
-              .fontSize(18)
-              .fontColor('#333333')
-              .padding(0)
-              .backgroundColor('#F1F2F4')
-              .borderRadius(15)
-              .enabled(this.operatingItemId !== item.id && this.isDeletingItemId !== item.id)
-              .onClick(() => {
-                this.changeCartQuantity(item, item.quantity - 1);
-              })
-
-            Text(item.quantity.toString())
-              .width(34)
-              .fontSize(14)
-              .fontColor('#111111')
-              .textAlign(TextAlign.Center)
-
-            Button('+')
-              .width(30)
-              .height(30)
-              .fontSize(18)
-              .fontColor('#333333')
-              .padding(0)
-              .backgroundColor('#F1F2F4')
-              .borderRadius(15)
-              .enabled(this.operatingItemId !== item.id && this.isDeletingItemId !== item.id && item.quantity < 99)
-              .onClick(() => {
-                this.changeCartQuantity(item, item.quantity + 1);
-              })
-          }
-          .height(30)
-          .alignItems(VerticalAlign.Center)
-        }
-        .width('100%')
-        .alignItems(VerticalAlign.Center)
-
-        Button(this.isDeletingItemId === item.id ? '\u5220\u9664\u4e2d' : '\u5220\u9664')
-          .width(64)
-          .height(28)
-          .fontSize(13)
-          .fontColor('#8A8F96')
-          .padding(0)
-          .backgroundColor(Color.Transparent)
-          .alignSelf(ItemAlign.End)
-          .enabled(this.isDeletingItemId !== item.id)
-          .onClick(() => {
-            this.deleteCartProduct(item);
-          })
-      }
-      .layoutWeight(1)
-      .height('100%')
-    }
-    .width('100%')
-    .height(140)
-    .padding({ left: 12, right: 12, top: 12, bottom: 12 })
-    .backgroundColor(Color.White)
-    .borderRadius(16)
-    .alignItems(VerticalAlign.Center)
-  }
-
-  @Builder
   cartEmptyContent(text: string, buttonText: string, targetLogin: boolean) {
     Column({ space: 14 }) {
       Stack() {
@@ -544,9 +409,22 @@ struct HomePage {
         List({ space: 12 }) {
           ForEach(this.cartItems, (item: CartItem) => {
             ListItem() {
-              this.cartItemCard(item)
+              CartItemCardComponent({
+                item: item,
+                operatingItemId: this.operatingItemId ?? -1,
+                isDeletingItemId: this.isDeletingItemId ?? -1,
+                onToggleSelected: (cartItem: CartItem) => {
+                  this.toggleCartSelected(cartItem);
+                },
+                onChangeQuantity: (cartItem: CartItem, quantity: number) => {
+                  this.changeCartQuantity(cartItem, quantity);
+                },
+                onDelete: (cartItem: CartItem) => {
+                  this.deleteCartProduct(cartItem);
+                }
+              })
             }
-          }, (item: CartItem) => item.id.toString())
+          }, (item: CartItem) => item.id.toString() + '_' + item.selected + '_' + item.quantity)
         }
         .layoutWeight(1)
         .width('100%')
@@ -585,6 +463,9 @@ struct HomePage {
             .borderRadius(23)
             .enabled(this.cartSelectedCount > 0)
             .opacity(this.cartSelectedCount > 0 ? 1 : 0.6)
+            .onClick(() => {
+              AlertDialog.show({ message: '\u6682\u65f6\u4e0d\u652f\u6301' });
+            })
         }
         .width('100%')
         .height(66)
