@@ -10,12 +10,9 @@ public class CartItemResponse {
     private String productImage;
     private BigDecimal productPrice;
     private String productFeature;
-    private Integer quantity;
-    private BigDecimal lineAmount;
 
     public CartItemResponse(Long id, Long productId, String productSource, String productName,
-                            String productImage, BigDecimal productPrice, String productFeature,
-                            Integer quantity, BigDecimal lineAmount) {
+                            String productImage, BigDecimal productPrice, String productFeature) {
         this.id = id;
         this.productId = productId;
         this.productSource = productSource;
@@ -23,8 +20,6 @@ public class CartItemResponse {
         this.productImage = productImage;
         this.productPrice = productPrice;
         this.productFeature = productFeature;
-        this.quantity = quantity;
-        this.lineAmount = lineAmount;
     }
 
     public Long getId() {
@@ -81,21 +76,5 @@ public class CartItemResponse {
 
     public void setProductFeature(String productFeature) {
         this.productFeature = productFeature;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public BigDecimal getLineAmount() {
-        return lineAmount;
-    }
-
-    public void setLineAmount(BigDecimal lineAmount) {
-        this.lineAmount = lineAmount;
     }
 }

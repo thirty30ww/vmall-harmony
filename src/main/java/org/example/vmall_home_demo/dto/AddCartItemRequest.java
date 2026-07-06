@@ -9,7 +9,6 @@ public class AddCartItemRequest {
     private String productImage;
     private BigDecimal productPrice;
     private String productFeature;
-    private Integer quantity;
 
     public Long getProductId() {
         return productId;
@@ -57,13 +56,5 @@ public class AddCartItemRequest {
 
     public void setProductFeature(String productFeature) {
         this.productFeature = productFeature;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
     }
 }

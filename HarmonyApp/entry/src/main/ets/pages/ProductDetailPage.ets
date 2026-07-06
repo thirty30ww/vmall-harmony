@@ -129,8 +129,7 @@ struct ProductDetailPage {
       productName: this.product.name ?? '\u534e\u4e3a\u5546\u54c1',
       productImage: this.product.imageUrl,
       productPrice: this.product.price === null ? 0 : this.product.price,
-      productFeature: this.product.feature,
-      quantity: 1
+      productFeature: this.product.feature
     };
 
     this.addingCart = true;

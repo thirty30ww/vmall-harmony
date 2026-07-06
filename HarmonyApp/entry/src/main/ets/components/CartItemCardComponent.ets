@@ -12,8 +12,7 @@ export struct CartItemCardComponent {
     productPrice: 0,
     productFeature: null,
     quantity: 0,
-    selected: false,
-    lineAmount: 0
+    selected: false
   };
   onToggleSelected: (item: CartItem) => void = () => {};
   onChangeQuantity: (item: CartItem, quantity: number) => void = () => {};

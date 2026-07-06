@@ -96,12 +96,10 @@ struct HomePage {
           id: old.id, productId: old.productId, productSource: old.productSource,
           productName: old.productName, productImage: old.productImage,
           productPrice: old.productPrice, productFeature: old.productFeature,
-          quantity: old.quantity, lineAmount: old.lineAmount,
-          selected: old.selected ?? false
+          quantity: 1, selected: old.selected ?? false
         });
       }
       this.cartItems = loadedItems;
-      this.cartTotalAmount = summary.totalAmount;
       this.recalcCartTotals();
     } catch (error) {
       this.cartErrorMessage = '\u8d2d\u7269\u8f66\u52a0\u8f7d\u5931\u8d25';
@@ -134,8 +132,7 @@ struct HomePage {
           id: old.id, productId: old.productId, productSource: old.productSource,
           productName: old.productName, productImage: old.productImage,
           productPrice: old.productPrice, productFeature: old.productFeature,
-          quantity: old.quantity, lineAmount: old.lineAmount,
-          selected: !old.selected
+          quantity: old.quantity, selected: !old.selected
         };
         newItems.push(clone);
       } else {
@@ -160,8 +157,7 @@ struct HomePage {
           id: old.id, productId: old.productId, productSource: old.productSource,
           productName: old.productName, productImage: old.productImage,
           productPrice: old.productPrice, productFeature: old.productFeature,
-          quantity: nextQuantity, lineAmount: old.lineAmount,
-          selected: old.selected
+          quantity: nextQuantity, selected: old.selected
         };
         newItems.push(clone);
       } else {
@@ -201,12 +197,10 @@ struct HomePage {
           id: old.id, productId: old.productId, productSource: old.productSource,
           productName: old.productName, productImage: old.productImage,
           productPrice: old.productPrice, productFeature: old.productFeature,
-          quantity: old.quantity, lineAmount: old.lineAmount,
-          selected: old.selected ?? false
+          quantity: 1, selected: old.selected ?? false
         });
       }
       this.cartItems = loadedItems;
-      this.cartTotalAmount = summary.totalAmount;
       this.recalcCartTotals();
     } catch (error) {
       console.error('load cart failed', error);
@@ -235,8 +229,7 @@ struct HomePage {
         id: old.id, productId: old.productId, productSource: old.productSource,
         productName: old.productName, productImage: old.productImage,
         productPrice: old.productPrice, productFeature: old.productFeature,
-        quantity: old.quantity, lineAmount: old.lineAmount,
-        selected: nextSelected
+        quantity: old.quantity, selected: nextSelected
       };
       newItems.push(clone);
     }
@@ -494,13 +487,14 @@ struct HomePage {
             .fontColor('#D71920')
 
           Button('\u7ed3\u7b97(' + this.cartSelectedCount.toString() + ')')
-            .width(116)
-            .height(46)
-            .fontSize(16)
+            .width(88)
+            .height(34)
+            .fontSize(14)
             .fontWeight(FontWeight.Bold)
             .fontColor(Color.White)
             .backgroundColor('#D71920')
-            .borderRadius(23)
+            .borderRadius(17)
+            .margin({ left: 12 })
             .enabled(this.cartSelectedCount > 0)
             .opacity(this.cartSelectedCount > 0 ? 1 : 0.6)
         }

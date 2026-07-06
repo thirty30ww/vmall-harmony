@@ -3,7 +3,6 @@ package org.example.vmall_home_demo.service;
 import org.example.vmall_home_demo.dto.AddCartItemRequest;
 import org.example.vmall_home_demo.dto.CartItemResponse;
 import org.example.vmall_home_demo.dto.CartSummaryResponse;
-import org.example.vmall_home_demo.dto.UpdateCartItemRequest;
 import org.example.vmall_home_demo.entity.CartItem;
 import org.example.vmall_home_demo.mapper.CartItemMapper;
 import org.springframework.http.HttpStatus;
@@ -46,22 +45,7 @@ public class CartService {
         item.setProductImage(trimToNull(request.getProductImage()));
         item.setProductPrice(request.getProductPrice() == null ? BigDecimal.ZERO : request.getProductPrice());
         item.setProductFeature(trimToNull(request.getProductFeature()));
-        item.setQuantity(normalizeQuantity(request.getQuantity()));
-        cartItemMapper.insertOrIncrease(item);
-        return getCart(userId);
-    }
-
-    public CartSummaryResponse updateItem(Long userId, Long itemId, UpdateCartItemRequest request) {
-        if (itemId == null || itemId <= 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "cart item id is invalid");
-        }
-        if (request == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "request is required");
-        }
-        Integer quantity = request.getQuantity() == null ? null : normalizeQuantity(request.getQuantity());
-        if (quantity != null) {
-            cartItemMapper.updateQuantity(itemId, userId, quantity);
-        }
+        cartItemMapper.insertItem(item);
         return getCart(userId);
     }
 
@@ -79,15 +63,13 @@ public class CartService {
                 .toList();
         BigDecimal totalAmount = BigDecimal.ZERO;
         for (CartItemResponse item : responses) {
-            totalAmount = totalAmount.add(item.getLineAmount());
+            totalAmount = totalAmount.add(item.getProductPrice());
         }
         return new CartSummaryResponse(responses, totalAmount);
     }
 
     private CartItemResponse toResponse(CartItem item) {
-        int quantity = item.getQuantity() == null ? 1 : item.getQuantity();
         BigDecimal price = item.getProductPrice() == null ? BigDecimal.ZERO : item.getProductPrice();
-        BigDecimal lineAmount = price.multiply(BigDecimal.valueOf(quantity));
         return new CartItemResponse(
                 item.getId(),
                 item.getProductId(),
@@ -95,17 +77,8 @@ public class CartService {
                 item.getProductName(),
                 item.getProductImage(),
                 price,
-                item.getProductFeature(),
-                quantity,
-                lineAmount
+                item.getProductFeature()
         );
-    }
-
-    private Integer normalizeQuantity(Integer quantity) {
-        if (quantity == null || quantity < 1) {
-            return 1;
-        }
-        return Math.min(quantity, 99);
     }
 
     private String trimToNull(String value) {

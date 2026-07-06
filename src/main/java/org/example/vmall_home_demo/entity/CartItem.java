@@ -12,7 +12,6 @@ public class CartItem {
     private String productImage;
     private BigDecimal productPrice;
     private String productFeature;
-    private Integer quantity;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -78,14 +77,6 @@ public class CartItem {
 
     public void setProductFeature(String productFeature) {
         this.productFeature = productFeature;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
     }
 
     public LocalDateTime getCreatedAt() {

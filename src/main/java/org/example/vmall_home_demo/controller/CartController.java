@@ -2,16 +2,13 @@ package org.example.vmall_home_demo.controller;
 
 import org.example.vmall_home_demo.dto.AddCartItemRequest;
 import org.example.vmall_home_demo.dto.CartSummaryResponse;
-import org.example.vmall_home_demo.dto.UpdateCartItemRequest;
 import org.example.vmall_home_demo.dto.UserInfo;
 import org.example.vmall_home_demo.service.CartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,13 +33,6 @@ public class CartController {
     public CartSummaryResponse addItem(@AuthenticationPrincipal UserInfo user,
                                        @RequestBody AddCartItemRequest request) {
         return cartService.addItem(currentUserId(user), request);
-    }
-
-    @PutMapping("/items/{id}")
-    public CartSummaryResponse updateItem(@AuthenticationPrincipal UserInfo user,
-                                          @PathVariable Long id,
-                                          @RequestBody UpdateCartItemRequest request) {
-        return cartService.updateItem(currentUserId(user), id, request);
     }
 
     @RequestMapping(value = "/items/{id}", method = { RequestMethod.DELETE, RequestMethod.POST })
