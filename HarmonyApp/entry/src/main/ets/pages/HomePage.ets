@@ -89,7 +89,18 @@ struct HomePage {
     this.cartErrorMessage = '';
     try {
       const summary: CartSummary = await getCart();
-      this.cartItems = summary.items;
+      const loadedItems: CartItem[] = [];
+      for (let i = 0; i < summary.items.length; i++) {
+        const old = summary.items[i];
+        loadedItems.push({
+          id: old.id, productId: old.productId, productSource: old.productSource,
+          productName: old.productName, productImage: old.productImage,
+          productPrice: old.productPrice, productFeature: old.productFeature,
+          quantity: old.quantity, lineAmount: old.lineAmount,
+          selected: old.selected ?? false
+        });
+      }
+      this.cartItems = loadedItems;
       this.cartTotalAmount = summary.totalAmount;
       this.recalcCartTotals();
     } catch (error) {
@@ -183,7 +194,18 @@ struct HomePage {
   async loadCartSilent() {
     try {
       const summary: CartSummary = await getCart();
-      this.cartItems = summary.items;
+      const loadedItems: CartItem[] = [];
+      for (let i = 0; i < summary.items.length; i++) {
+        const old = summary.items[i];
+        loadedItems.push({
+          id: old.id, productId: old.productId, productSource: old.productSource,
+          productName: old.productName, productImage: old.productImage,
+          productPrice: old.productPrice, productFeature: old.productFeature,
+          quantity: old.quantity, lineAmount: old.lineAmount,
+          selected: old.selected ?? false
+        });
+      }
+      this.cartItems = loadedItems;
       this.cartTotalAmount = summary.totalAmount;
       this.recalcCartTotals();
     } catch (error) {
