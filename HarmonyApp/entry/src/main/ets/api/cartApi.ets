@@ -10,6 +10,7 @@ export interface CartItem {
   productPrice: number;
   productFeature: string | null;
   quantity: number;
+  selected: boolean;
   lineAmount: number;
 }
 
@@ -30,9 +31,14 @@ export interface AddCartItemRequest {
 
 interface UpdateCartItemRequest {
   quantity?: number;
+  selected?: boolean;
 }
 
-type CartRequestBody = AddCartItemRequest | UpdateCartItemRequest | null;
+interface SelectAllCartRequest {
+  selected: boolean;
+}
+
+type CartRequestBody = AddCartItemRequest | UpdateCartItemRequest | SelectAllCartRequest | null;
 
 function normalizeCartSummary(data: CartSummary): CartSummary {
   return {
@@ -90,10 +96,13 @@ export async function addCartItem(item: AddCartItemRequest): Promise<CartSummary
   return normalizeCartSummary(data);
 }
 
-export async function updateCartItem(itemId: number, quantity: number | null): Promise<CartSummary> {
+export async function updateCartItem(itemId: number, quantity: number | null, selected: boolean | null): Promise<CartSummary> {
   const requestBody: UpdateCartItemRequest = {};
   if (quantity !== null) {
     requestBody.quantity = quantity;
+  }
+  if (selected !== null) {
+    requestBody.selected = selected;
   }
   const data = await requestCart<CartSummary>(`/cart/items/${itemId}`, http.RequestMethod.PUT, requestBody);
   return normalizeCartSummary(data);
@@ -101,5 +110,11 @@ export async function updateCartItem(itemId: number, quantity: number | null): P
 
 export async function deleteCartItem(itemId: number): Promise<CartSummary> {
   const data = await requestCart<CartSummary>(`/cart/items/${itemId}`, http.RequestMethod.POST, null);
+  return normalizeCartSummary(data);
+}
+
+export async function selectAllCartItems(selected: boolean): Promise<CartSummary> {
+  const requestBody: SelectAllCartRequest = { selected: selected };
+  const data = await requestCart<CartSummary>('/cart/select-all', http.RequestMethod.PUT, requestBody);
   return normalizeCartSummary(data);
 }

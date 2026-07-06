@@ -12,8 +12,10 @@ export struct CartItemCardComponent {
     productPrice: 0,
     productFeature: null,
     quantity: 0,
+    selected: false,
     lineAmount: 0
   };
+  onToggleSelected: (item: CartItem) => void = () => {};
   onChangeQuantity: (item: CartItem, quantity: number) => void = () => {};
   onDelete: (item: CartItem) => void = () => {};
 
@@ -23,6 +25,25 @@ export struct CartItemCardComponent {
 
   build() {
     Row({ space: 10 }) {
+      Column() {
+        Button(this.item.selected ? '\u2713' : '')
+          .width(24)
+          .height(24)
+          .fontSize(14)
+          .fontWeight(FontWeight.Bold)
+          .fontColor(this.item.selected ? Color.White : '#C9CDD4')
+          .padding(0)
+          .backgroundColor(this.item.selected ? '#D71920' : Color.White)
+          .borderRadius(12)
+          .border({ width: 1.5, color: this.item.selected ? '#D71920' : '#C9CDD4' })
+          .onClick(() => {
+            this.onToggleSelected(this.item);
+          })
+      }
+      .width(28)
+      .height('100%')
+      .justifyContent(FlexAlign.Center)
+
       Stack() {
         if (this.item.productSource === 'homeStatic' && this.item.productId >= 0 && this.item.productId < productsList.length) {
           Image(productsList[this.item.productId].productCardsImagePath)
