@@ -10,3 +10,5 @@ target/
 
 # Local DB config (contains real credentials)
 application-local.yml
+.playwright-mcp/
+*.png
