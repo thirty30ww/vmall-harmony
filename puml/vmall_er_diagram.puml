@@ -1,0 +1,194 @@
+@startuml vmall_er
+skinparam defaultFontName Microsoft YaHei
+skinparam backgroundColor #FEFEFE
+skinparam entity {
+  BackgroundColor #F8F8F8
+  BorderColor #444444
+}
+
+title VMall 数据库 ER 图
+
+' ==================== 用户模块 ====================
+entity "vmall_users" as users {
+  * id : bigint <<PK>>
+  --
+  phone : varchar <<UK>>
+  username : varchar
+  password_hash : varchar
+  password_salt : varchar
+  status : tinyint
+  created_at : datetime
+  updated_at : datetime
+  last_login_at : datetime
+}
+
+entity "vmall_sms_codes" as sms {
+  * id : bigint <<PK>>
+  --
+  phone : varchar
+  code : varchar
+  used : tinyint
+  expires_at : datetime
+  created_at : datetime
+}
+
+entity "vmall_cart_items" as cart {
+  * id : bigint <<PK>>
+  --
+  user_id : bigint <<FK>>
+  product_id : bigint
+  product_source : varchar
+  product_name : varchar
+  product_image : varchar
+  product_price : decimal
+  product_feature : varchar
+  created_at : datetime
+}
+
+entity "vmall_conversations" as conv {
+  * id : bigint <<PK>>
+  --
+  user_id : bigint <<FK>>
+  title : varchar
+  status : tinyint
+  created_at : datetime
+}
+
+entity "vmall_conversation_messages" as msgs {
+  * id : bigint <<PK>>
+  --
+  conversation_id : bigint <<FK>>
+  role : varchar
+  content : text
+  metadata : text
+  created_at : datetime
+}
+
+' ==================== 首页模块 ====================
+entity "vmall_homepage_products" as products {
+  * id : int <<PK>>
+  --
+  prd_id : varchar <<UK>>
+  sbom_code : varchar <<UK>>
+  name : varchar
+  feature : text
+  price : decimal
+  image_url : text
+  product_url : text
+  raw_text : text
+  scraped_at : datetime
+}
+
+entity "vmall_homepage_categories" as cats {
+  * id : int <<PK>>
+  --
+  category : varchar
+  group : varchar
+  product_name : varchar
+  description : varchar
+  price : decimal
+  image_url : varchar
+  scraped_at : datetime
+}
+
+entity "vmall_homepage_activities" as acts {
+  * id : int <<PK>>
+  --
+  title : text
+  activity_url : text
+  scraped_at : datetime
+}
+
+entity "vmall_homepage_search_suggestions" as sugg {
+  * id : int <<PK>>
+  --
+  keyword : varchar
+  scraped_at : datetime
+}
+
+' ==================== 发现页模块 ====================
+entity "vmall_discover_pages" as pages {
+  * id : bigint <<PK>>
+  --
+  page_id : varchar <<UK>>
+  page_name : varchar
+  source_url : varchar
+  sort_order : int
+  created_at : datetime
+}
+
+entity "vmall_discover_tabs" as tabs {
+  * id : bigint <<PK>>
+  --
+  tab_key : varchar <<UK>>
+  tab_name : varchar
+  related_page_id : varchar
+  sort_order : int
+  created_at : datetime
+}
+
+entity "vmall_discover_nav_icons" as icons {
+  * id : bigint <<PK>>
+  --
+  page_id : varchar
+  position : varchar
+  title : varchar
+  icon_attribute : varchar
+  image_url : varchar
+  link_url : varchar
+  sort_order : int
+  created_at : datetime
+}
+
+entity "vmall_discover_sections" as sections {
+  * id : bigint <<PK>>
+  --
+  page_id : varchar
+  tab_name : varchar
+  card_id : varchar <<UK>>
+  card_type : varchar
+  card_name : varchar
+  layout_type : varchar
+  data_source_code : varchar
+  data_source_type : varchar
+  img_proportion : varchar
+  sort_order : int
+  created_at : datetime
+}
+
+entity "vmall_discover_items" as items {
+  * id : bigint <<PK>>
+  --
+  page_id : varchar
+  tab_name : varchar
+  card_id : varchar
+  data_source_code : varchar
+  item_type : varchar
+  title : varchar
+  subtitle : varchar
+  author_name : varchar
+  image_url : varchar
+  link_url : varchar
+  content_id : varchar
+  content_type : int
+  product_name : varchar
+  product_price : decimal
+  like_count : int
+  view_count : int
+  sort_order : int
+  created_at : datetime
+}
+
+' ==================== 关系 ====================
+users ||..o{ sms : "phone"
+users ||..o{ cart : "user_id"
+users ||..o{ conv : "user_id"
+
+conv ||..|{ msgs : "conversation_id"
+
+pages ||..o{ tabs : "page_id = related_page_id"
+pages ||..o{ icons : "page_id"
+pages ||..o{ sections : "page_id"
+pages ||..o{ items : "page_id"
+
+@enduml

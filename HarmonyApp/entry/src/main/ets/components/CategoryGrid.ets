@@ -1,9 +1,11 @@
+// 首页顶部分类网格组件 —— 横向滚动展示 16 个分类入口
 import { Category, categoryData } from '../data/categoryData';
 
 @Component
 export struct CategoryGrid {
-  onSelect: (category: Category) => void = () => {};
+  onSelect: (category: Category) => void = () => {};  // 分类点击回调
 
+  // 单个分类列项
   @Builder
   columnItem(item: Category) {
     Column({ space: 6 }) {
@@ -25,6 +27,7 @@ export struct CategoryGrid {
     })
   }
 
+  // 每行显示两个分类（上下排列）
   @Builder
   pairColumn(first: Category, second: Category) {
     Column({ space: 14 }) {
@@ -49,7 +52,7 @@ export struct CategoryGrid {
       }
     }
     .width('100%')
-    .scrollable(ScrollDirection.Horizontal)
+    .scrollable(ScrollDirection.Horizontal)  // 横向滚动
     .scrollBar(BarState.Off)
   }
 }

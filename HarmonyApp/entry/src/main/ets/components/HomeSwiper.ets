@@ -1,3 +1,4 @@
+// 首页轮播图组件 —— 展示华为产品宣传图轮播
 const swiperImages: Resource[] = [
   $r('app.media.swiper_PuraXMax'),
   $r('app.media.swiper_Mate80ProMax'),
@@ -19,10 +20,10 @@ export struct HomeSwiper {
       }, (image: Resource, index: number) => index.toString())
     }
     .width('100%')
-    .aspectRatio(1)
-    .autoPlay(true)
-    .interval(3500)
-    .indicator(true)
+    .aspectRatio(1)          // 宽高比 1:1
+    .autoPlay(true)           // 自动轮播
+    .interval(3500)           // 3.5 秒切换
+    .indicator(true)          // 显示指示器
     .borderRadius(18)
   }
 }

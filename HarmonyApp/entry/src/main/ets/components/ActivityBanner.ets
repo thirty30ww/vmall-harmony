@@ -1,3 +1,4 @@
+// 活动横幅组件 —— 首页展示活动内容轮播
 import { Activity } from '../api/homeApi';
 
 @Component
@@ -36,9 +37,9 @@ export struct ActivityBanner {
         })
       }, (item: Activity) => item.id.toString())
     }
-    .autoPlay(true)
-    .interval(3500)
-    .indicator(true)
+    .autoPlay(true)      // 自动轮播
+    .interval(3500)      // 切换间隔 3.5 秒
+    .indicator(true)     // 显示指示器
     .height(128)
     .width('100%')
   }

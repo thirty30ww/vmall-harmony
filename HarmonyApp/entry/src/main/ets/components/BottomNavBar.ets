@@ -1,8 +1,10 @@
+// 底部导航栏组件 —— 首页/分类/发现/购物车/我的 五个 Tab 切换
 @Component
 export struct BottomNavBar {
-  @Link activeIndex: number;
-  onTabChange: (index: number) => void = () => {};
+  @Link activeIndex: number;                   // 当前激活的 Tab 索引
+  onTabChange: (index: number) => void = () => {};  // Tab 切换回调
 
+  // 根据选中状态显示对应图标（选中/未选中）
   @Builder
   navIcon(index: number) {
     if (index === 0) {
@@ -33,6 +35,7 @@ export struct BottomNavBar {
     }
   }
 
+  // 单个导航项
   @Builder
   navItem(index: number, label: string) {
     Column({ space: 2 }) {
@@ -59,11 +62,11 @@ export struct BottomNavBar {
 
   build() {
     Row() {
-      this.navItem(0, '\u9996\u9875')
-      this.navItem(1, '\u5206\u7c7b')
-      this.navItem(2, '\u53d1\u73b0')
-      this.navItem(3, '\u8d2d\u7269\u8f66')
-      this.navItem(4, '\u6211\u7684')
+      this.navItem(0, '首页')
+      this.navItem(1, '分类')
+      this.navItem(2, '发现')
+      this.navItem(3, '购物车')
+      this.navItem(4, '我的')
     }
     .width('100%')
     .height(60)

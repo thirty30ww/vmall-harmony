@@ -1,8 +1,10 @@
+// 分类数据类型 —— 用于首页顶部分类导航
 export interface Category {
   categoryImagePath: Resource,
   categoryName: string
 }
 
+// 首页顶部分类列表数据，共 16 个分类入口
 export const categoryData: Category[] = [
   { categoryImagePath: $r('app.media.category_HuaWeiShouJi'), categoryName: '华为手机' },
   { categoryImagePath: $r('app.media.category_HongMengZhiJia'), categoryName: '鸿蒙智家' },

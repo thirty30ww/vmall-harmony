@@ -1,0 +1,89 @@
+@startuml vmall_modules
+skinparam defaultFontName Microsoft YaHei
+skinparam backgroundColor #FEFEFE
+skinparam package {
+  BorderColor #336699
+  BackgroundColor #F0F5FF
+}
+
+title VMall 模块依赖图
+
+package "认证模块" as auth {
+  rectangle "登录/注册"
+  rectangle "短信验证码"
+  rectangle "JWT 签发"
+}
+
+package "首页模块" as home {
+  rectangle "首页聚合"
+}
+
+package "商品模块" as product {
+  rectangle "商品列表"
+  rectangle "商品搜索"
+}
+
+package "分类模块" as category {
+  rectangle "分类浏览"
+  rectangle "分类页菜单"
+}
+
+package "购物车模块" as cart {
+  rectangle "加购/删改"
+  rectangle "购物车摘要"
+}
+
+package "AI导购模块" as ai {
+  rectangle "智能对话"
+  rectangle "会话管理"
+  rectangle "商品推荐"
+}
+
+package "发现页模块" as discover {
+  rectangle "页面/Tab"
+  rectangle "区块/内容"
+}
+
+package "公共模块" as common {
+  rectangle "JWT 工具"
+  rectangle "全局配置"
+  rectangle "DTO"
+  rectangle "异常处理"
+}
+
+package "数据层" as dal {
+  rectangle "MyBatis Mapper"
+  rectangle "MySQL"
+}
+
+' ==== 依赖关系 ====
+home --> product : 读取商品
+home --> category : 读取分类
+home --> discover : 读取活动
+
+cart --> product : 引用商品
+cart --> category : 引用分类
+
+ai --> cart : 读取购物车
+ai --> category : 读取商品目录
+ai --> product : 获取商品信息
+
+auth --> common : 使用JWT
+home --> common
+cart --> common
+ai --> common
+discover --> common
+product --> common
+category --> common
+
+auth --> dal
+home --> dal
+product --> dal
+category --> dal
+cart --> dal
+ai --> dal
+discover --> dal
+
+note right of ai : 通过 Spring AI\n调用 DeepSeek 大模型
+
+@enduml

@@ -1,4 +1,4 @@
-// DiscoverPanel.ets
+// 发现页组件 —— 轮播图 + Tab 切换 + 内容网格
 import {
   createEmptyDiscoverData,
   DiscoverData,
@@ -17,6 +17,7 @@ const TAB_PAGE_MAP: Record<string, string> = {
   '玩机技巧': '101151082'
 };
 
+// ===== 轮播图子组件 =====
 @Component
 struct BannerSwiper {
   @Prop bannerItemsData: DiscoverItem[] = [];
@@ -60,6 +61,7 @@ struct BannerSwiper {
   }
 }
 
+// ===== Tab 切换栏子组件 =====
 @Component
 struct TabsBar {
   @Prop selectedIndex: number = 0;
@@ -92,10 +94,12 @@ struct TabsBar {
   }
 }
 
+// ===== 内容网格子组件 =====
 @Component
 struct ContentGrid {
   @Prop items: DiscoverItem[] = [];
 
+  // 获取显示标题（优先用 title，其次是 productName）
   displayTitle(item: DiscoverItem): string {
     const title: string = item.title ?? '';
     if (title.length > 0 && title !== '1') {
@@ -108,6 +112,7 @@ struct ContentGrid {
     return '精选内容';
   }
 
+  // 获取副标题（优先用 subtitle，其次是 authorName）
   displaySubTitle(item: DiscoverItem): string {
     const subtitle: string = item.subtitle ?? '';
     if (subtitle.length > 0) {
@@ -120,6 +125,7 @@ struct ContentGrid {
     return '';
   }
 
+  // 格式化阅读量（过万显示 X 万）
   formatViewCount(count: number | null): string {
     if (count === null || count === undefined) return '';
     if (count >= 10000) {
@@ -134,6 +140,7 @@ struct ContentGrid {
         ForEach(this.items, (item: DiscoverItem) => {
           GridItem() {
             Column() {
+              // 图片区域
               Stack() {
                 if ((item.imageUrl ?? '').length > 0) {
                   Image(item.imageUrl ?? '')
@@ -155,6 +162,7 @@ struct ContentGrid {
                   .borderRadius({ topLeft: 8, topRight: 8 })
                 }
 
+                // 视频类型标记
                 if (item.contentType === '2') {
                   Text('视频')
                     .fontSize(10)
@@ -169,6 +177,7 @@ struct ContentGrid {
               .height(180)
               .clip(true)
 
+              // 文字信息区域
               Column() {
                 Text(this.displayTitle(item))
                   .fontSize(16)
@@ -232,6 +241,7 @@ struct ContentGrid {
   }
 }
 
+// ===== 发现页主组件 =====
 @Component
 export struct DiscoverPanel {
   @State discoverData: DiscoverData = createEmptyDiscoverData();
@@ -242,11 +252,13 @@ export struct DiscoverPanel {
   @State errorMessage: string = '';
   @State isBannerLoaded: boolean = false;
 
+  // 组件初始化时加载轮播图和默认 Tab 内容
   aboutToAppear() {
     this.loadBannerData();
     this.loadDiscover(this.selectedTabName);
   }
 
+  // 加载轮播图数据（仅加载一次）
   async loadBannerData() {
     if (this.isBannerLoaded) {
       return;
@@ -260,6 +272,7 @@ export struct DiscoverPanel {
         });
       });
 
+      // 筛选符合条件的轮播项：pageId 匹配、有图片、类型为广告或标题含"发布会"
       const banners = allItems.filter((item: DiscoverItem) => {
         return item.pageId === DEFAULT_DISCOVER_PAGE_ID &&
           (item.imageUrl ?? '').length > 0 &&
@@ -269,6 +282,7 @@ export struct DiscoverPanel {
       if (banners.length > 0) {
         this.bannerItemsData = banners.slice(0, 5);
       } else {
+        // 降级：使用所有有图片的项作为轮播
         const fallbackBanners = allItems.filter((item: DiscoverItem) => {
           return (item.imageUrl ?? '').length > 0;
         });
@@ -281,6 +295,7 @@ export struct DiscoverPanel {
     }
   }
 
+  // 加载指定 Tab 的发现页内容
   async loadDiscover(tabName: string) {
     this.errorMessage = '';
     try {
@@ -297,12 +312,14 @@ export struct DiscoverPanel {
     }
   }
 
+  // Tab 点击处理
   async onTabClick(index: number, tabName: string) {
     this.selectedTabIndex = index;
     this.selectedTabName = tabName;
     await this.loadDiscover(tabName);
   }
 
+  // 获取当前选中的 Tab 对应的区块列表
   currentSections(): DiscoverSectionGroup[] {
     const matched: DiscoverSectionGroup[] = this.discoverData.sections.filter((group: DiscoverSectionGroup) => {
       const groupTabName = group.section.tabName ?? '';
@@ -317,6 +334,7 @@ export struct DiscoverPanel {
     return matched;
   }
 
+  // 获取当前 Tab 的所有内容项
   currentItems(): DiscoverItem[] {
     const items: DiscoverItem[] = [];
     this.currentSections().forEach((group: DiscoverSectionGroup) => {
@@ -327,6 +345,7 @@ export struct DiscoverPanel {
     return items;
   }
 
+  // 获取排除轮播图后的内容项列表
   contentItems(): DiscoverItem[] {
     const bannerIds: number[] = this.bannerItemsData.map((item: DiscoverItem) => item.id);
 
@@ -338,6 +357,7 @@ export struct DiscoverPanel {
     return items;
   }
 
+  // ===== 顶部标题栏 Builder =====
   @Builder
   topHeader() {
     Row() {
@@ -361,11 +381,14 @@ export struct DiscoverPanel {
 
       Scroll() {
         Column({ space: 16 }) {
+          // 轮播图
           BannerSwiper({ bannerItemsData: this.bannerItemsData })
+          // Tab 切换栏
           TabsBar({
             selectedIndex: this.selectedTabIndex,
             onTabClick: (i: number, n: string): void => { this.onTabClick(i, n); }
           })
+          // 内容网格
           ContentGrid({ items: this.contentItems() })
         }
         .width('100%')

@@ -1,3 +1,4 @@
+// AI 智能导购聊天页面 —— 支持多轮对话、商品推荐、对话历史管理
 import { router, KeyboardAvoidMode } from '@kit.ArkUI';
 import {
   chatWithAI,
@@ -9,12 +10,14 @@ import {
   RecommendedProduct
 } from '../api/aiApi';
 
+// 本地聊天消息类型
 interface ChatMessage {
   role: 'user' | 'ai';
   content: string;
   products?: RecommendedProduct[];
 }
 
+// 从消息元数据中解析推荐商品列表
 function parseMetadataProducts(metadata: string | null | undefined): RecommendedProduct[] | undefined {
   if (!metadata) return undefined;
   try {
@@ -29,29 +32,33 @@ function parseMetadataProducts(metadata: string | null | undefined): Recommended
 @Entry
 @Component
 struct AiChatPage {
-  @State messages: ChatMessage[] = [];
-  @State inputText: string = '';
-  @State loading: boolean = false;
-  @State conversations: Conversation[] = [];
-  @State activeConversationId: number | null = null;
-  @State showSidebar: boolean = false;
-  private scroller: Scroller = new Scroller();
+  @State messages: ChatMessage[] = [];           // 聊天消息列表
+  @State inputText: string = '';                  // 输入框文本
+  @State loading: boolean = false;                // 正在等待 AI 回复
+  @State conversations: Conversation[] = [];       // 对话历史列表
+  @State activeConversationId: number | null = null; // 当前活跃的对话 ID
+  @State showSidebar: boolean = false;            // 是否显示对话历史侧边栏
+  private scroller: Scroller = new Scroller();    // 聊天区域滚动控制器
 
+  // 滚动到聊天区域底部
   scrollToBottom(): void {
     setTimeout(() => {
       this.scroller.scrollEdge(Edge.Bottom);
     }, 80);
   }
 
+  // 页面初始化：设置键盘避让模式，加载对话历史
   aboutToAppear() {
     this.getUIContext().setKeyboardAvoidMode(KeyboardAvoidMode.RESIZE);
     this.loadConversations();
   }
 
+  // 页面离开：恢复键盘避让模式
   aboutToDisappear() {
     this.getUIContext().setKeyboardAvoidMode(KeyboardAvoidMode.OFFSET);
   }
 
+  // 加载对话历史列表，有历史时切换到第一个
   async loadConversations() {
     try {
       const list = await listConversations();
@@ -66,6 +73,7 @@ struct AiChatPage {
     }
   }
 
+  // 添加 AI 欢迎语（仅在消息为空时）
   addGreeting() {
     if (this.messages.length === 0) {
       const greeting: ChatMessage = {
@@ -76,6 +84,7 @@ struct AiChatPage {
     }
   }
 
+  // 切换到指定对话
   async switchConversation(id: number) {
     this.activeConversationId = id;
     try {
@@ -96,6 +105,7 @@ struct AiChatPage {
     }
   }
 
+  // 开始新的对话
   startNewConversation() {
     this.activeConversationId = null;
     this.messages = [];
@@ -103,6 +113,7 @@ struct AiChatPage {
     this.showSidebar = false;
   }
 
+  // 删除指定对话
   async deleteConv(id: number) {
     try {
       await deleteConversation(id);
@@ -118,8 +129,10 @@ struct AiChatPage {
     } catch (_) {}
   }
 
+  // ===== 主页面构建 =====
   build() {
     Stack() {
+      // 聊天主体区域
       Column() {
         this.buildChatArea()
         this.buildInputArea()
@@ -128,6 +141,7 @@ struct AiChatPage {
       .height('100%')
       .padding({ top: 52 })
 
+      // 顶部导航栏
       Row() {
         Text('<')
           .fontSize(22)
@@ -138,12 +152,14 @@ struct AiChatPage {
           .fontWeight(FontWeight.Medium)
           .fontColor('#1D2129')
         Blank()
+        // 历史记录按钮
         if (this.conversations.length > 0) {
           Image($r('app.media.history'))
             .width(22).height(22)
             .onClick(() => { this.showSidebar = !this.showSidebar })
             .margin({ right: 16 })
         }
+        // 新建对话按钮
         Image($r('app.media.new_chat'))
           .width(22).height(22)
           .onClick(() => this.startNewConversation())
@@ -156,6 +172,7 @@ struct AiChatPage {
       .alignItems(VerticalAlign.Center)
       .position({ top: 0 })
 
+      // 对话历史侧边栏
       if (this.showSidebar && this.conversations.length > 0) {
         this.buildConversationList()
       }
@@ -165,6 +182,7 @@ struct AiChatPage {
     .backgroundColor('#F5F6F8')
   }
 
+  // ===== 对话历史列表 Builder =====
   @Builder buildConversationList() {
     Column() {
       Scroll() {
@@ -172,12 +190,14 @@ struct AiChatPage {
           ForEach(this.conversations, (conv: Conversation) => {
             Row() {
               Column() {
+                // 对话标题
                 Text(conv.title)
                   .fontSize(14)
                   .fontColor('#1D2129')
                   .maxLines(1)
                   .textOverflow({ overflow: TextOverflow.Ellipsis })
                   .lineHeight(20)
+                // 对话创建时间
                 Text(this.formatDate(conv.createdAt))
                   .fontSize(11)
                   .fontColor('#C9CDD4')
@@ -186,6 +206,7 @@ struct AiChatPage {
               .layoutWeight(1)
               .alignItems(HorizontalAlign.Start)
 
+              // 删除按钮
               Text('✕')
                 .fontSize(12)
                 .fontColor('#C9CDD4')
@@ -216,6 +237,7 @@ struct AiChatPage {
     .position({ top: 52 })
   }
 
+  // 格式化日期显示（刚刚/X分钟前/X小时前/MM-DD）
   formatDate(iso: string): string {
     try {
       const d = new Date(iso);
@@ -234,6 +256,7 @@ struct AiChatPage {
     }
   }
 
+  // ===== 聊天消息区域 Builder =====
   @Builder buildChatArea() {
     Scroll(this.scroller) {
       Column() {
@@ -244,6 +267,7 @@ struct AiChatPage {
             this.userMessage(msg)
           }
         })
+        // AI 回复中时显示加载指示器
         if (this.loading) {
           this.loadingIndicator()
         }
@@ -256,8 +280,10 @@ struct AiChatPage {
     .align(Alignment.Top)
   }
 
+  // ===== 输入区域 Builder =====
   @Builder buildInputArea() {
     Row() {
+      // 文本输入框
       TextInput({ text: this.inputText, placeholder: '输入问题...' })
         .layoutWeight(1)
         .height(44)
@@ -268,6 +294,7 @@ struct AiChatPage {
         .onChange((value: string) => { this.inputText = value })
         .onFocus(() => { this.scrollToBottom() })
 
+      // 发送按钮
       Button() {
         Text('发送')
           .fontColor(Color.White).fontSize(15)
@@ -286,16 +313,19 @@ struct AiChatPage {
     .alignItems(VerticalAlign.Center)
   }
 
+  // 发送消息到 AI
   async sendMessage() {
     const text = this.inputText.trim();
     if (text.length === 0 || this.loading) return;
 
+    // 添加用户消息
     const userMsg: ChatMessage = { role: 'user', content: text };
     this.messages.push(userMsg);
     this.inputText = '';
     this.loading = true;
     this.scrollToBottom();
 
+    // 构建历史消息
     const history: ApiChatMessage[] = [];
     for (let i = 0; i < this.messages.length - 1; i++) {
       const msg = this.messages[i];
@@ -306,6 +336,7 @@ struct AiChatPage {
     }
 
     try {
+      // 调用 AI 接口
       const result = await chatWithAI(text, history, this.activeConversationId);
       this.activeConversationId = result.conversationId;
       const aiMsg: ChatMessage = {
@@ -315,6 +346,7 @@ struct AiChatPage {
       };
       this.messages.push(aiMsg);
     } catch (_) {
+      // AI 回复失败时显示错误消息
       const errMsg: ChatMessage = { role: 'ai', content: '抱歉，暂时无法连接智能助手，请稍后再试。' };
       this.messages.push(errMsg);
     } finally {
@@ -324,12 +356,14 @@ struct AiChatPage {
     }
   }
 
+  // 刷新对话历史列表
   async refreshConversations() {
     try {
       this.conversations = await listConversations();
     } catch (_) {}
   }
 
+  // 跳转到商品详情页
   navigateToProduct(product: RecommendedProduct) {
     try {
       router.pushUrl({
@@ -346,6 +380,7 @@ struct AiChatPage {
     } catch (_) {}
   }
 
+  // ===== 用户消息气泡 Builder =====
   @Builder userMessage(msg: ChatMessage) {
     Row() {
       Blank()
@@ -368,6 +403,7 @@ struct AiChatPage {
     .alignItems(VerticalAlign.Top)
   }
 
+  // ===== AI 消息气泡 Builder（含推荐商品卡片）=====
   @Builder aiMessage(msg: ChatMessage) {
     Row() {
       Image($r('app.media.ai_chat_icon'))
@@ -382,6 +418,7 @@ struct AiChatPage {
           .borderRadius({ topLeft: 4, topRight: 16, bottomLeft: 16, bottomRight: 16 })
           .maxLines(100)
           .lineHeight(22)
+        // 如果有推荐商品，展示横向滚动卡片列表
         if (msg.products && msg.products.length > 0) {
           this.recommendCardList(msg.products)
         }
@@ -394,6 +431,7 @@ struct AiChatPage {
     .alignItems(VerticalAlign.Top)
   }
 
+  // ===== 推荐商品横向滚动列表 Builder =====
   @Builder recommendCardList(products: RecommendedProduct[]) {
     Scroll() {
       Row({ space: 10 }) {
@@ -409,8 +447,10 @@ struct AiChatPage {
     .width('100%')
   }
 
+  // ===== 单个推荐商品卡片 Builder =====
   @Builder recommendCard(product: RecommendedProduct) {
     Column({ space: 6 }) {
+      // 商品图片
       if (product.imageUrl) {
         Image(product.imageUrl)
           .width('100%').height(120)
@@ -418,6 +458,7 @@ struct AiChatPage {
           .backgroundColor('#F7F8FA')
           .borderRadius(8)
       }
+      // 商品名称
       Text(product.productName)
         .fontSize(13)
         .fontWeight(FontWeight.Medium)
@@ -426,6 +467,7 @@ struct AiChatPage {
         .textOverflow({ overflow: TextOverflow.Ellipsis })
         .lineHeight(18)
         .width('100%')
+      // 商品特性
       if (product.feature) {
         Text(product.feature)
           .fontSize(10)
@@ -434,6 +476,7 @@ struct AiChatPage {
           .textOverflow({ overflow: TextOverflow.Ellipsis })
           .width('100%')
       }
+      // 商品价格
       if (product.price !== null) {
         Text('¥' + product.price)
           .fontSize(15)
@@ -450,6 +493,7 @@ struct AiChatPage {
     .onClick(() => this.navigateToProduct(product))
   }
 
+  // ===== AI 回复加载指示器 Builder =====
   @Builder loadingIndicator() {
     Row() {
       Image($r('app.media.ai_chat_icon'))

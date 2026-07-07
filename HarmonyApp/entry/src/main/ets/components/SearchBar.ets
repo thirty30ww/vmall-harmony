@@ -1,13 +1,14 @@
+// 搜索栏组件 —— 首页顶部的商品搜索输入框
 @Component
 export struct SearchBar {
-  @Link keyword: string;
-  onSearch: (keyword: string) => void = () => {};
+  @Link keyword: string;                        // 搜索关键字（双向绑定）
+  onSearch: (keyword: string) => void = () => {};  // 搜索回调
 
   build() {
     Column() {
       Row({ space: 8 }) {
         Row({ space: 6 }) {
-          TextInput({ placeholder: '\u641c\u7d22\u534e\u4e3a\u5546\u57ce\u5546\u54c1', text: this.keyword })
+          TextInput({ placeholder: '搜索华为商城商品', text: this.keyword })
             .height(42)
             .layoutWeight(1)
             .fontSize(14)
@@ -23,7 +24,7 @@ export struct SearchBar {
         .borderRadius(21)
         .border({ width: 1, color: '#E5E6E8' })
 
-        Button('\u641c\u7d22')
+        Button('搜索')
           .height(42)
           .width(64)
           .fontSize(15)

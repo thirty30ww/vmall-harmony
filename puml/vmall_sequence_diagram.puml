@@ -1,0 +1,49 @@
+@startuml vmall_sequence
+skinparam defaultFontName Microsoft YaHei
+
+title VMall 核心业务流程时序图
+
+' ==================== 登录注册 ====================
+== 登录注册 ==
+
+actor 用户
+participant 前端 as App
+participant 后端 as API
+database 数据库 as DB
+
+用户 -> App : 输入手机号
+App -> API : POST /api/auth/send-code
+API -> DB : INSERT 验证码
+API --> App : 发送成功
+App --> 用户 : 提示验证码已发送
+
+用户 -> App : 输入验证码+密码
+App -> API : POST /api/auth/register
+API -> DB : 校验验证码+写入用户
+API --> App : JWT token + 用户信息
+App --> 用户 : 登录成功，进入首页
+
+' ==================== 加购 ====================
+== 加购 ==
+
+用户 -> App : 点击"加入购物车"
+App -> API : POST /api/cart/items
+API -> DB : UPSERT 购物车记录
+API --> App : 最新购物车列表
+App --> 用户 : 提示已加入
+
+' ==================== AI 智能导购 ====================
+== AI 智能导购 ==
+
+用户 -> App : 输入聊天消息
+App -> API : POST /api/ai/chat
+API -> DB : 保存用户消息
+API -> API : 构建Prompt，调用DeepSeek
+API -> DB : 读取商品目录
+API -> DB : 读取用户购物车
+API -> API : 解析AI回复中的推荐商品
+API -> DB : 保存助手回复
+API --> App : 回复文本 + 推荐商品列表
+App --> 用户 : 显示回复 + 推荐商品
+
+@enduml

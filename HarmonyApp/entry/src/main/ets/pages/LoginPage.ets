@@ -1,16 +1,18 @@
+// 登录页面 —— 支持验证码登录和密码登录两种方式
 import { router } from '@kit.ArkUI';
 import { loginByCode, loginByPassword, LoginResult, sendLoginCode } from '../api/authApi';
 
 @Entry
 @Component
 struct LoginPage {
-  @State phone: string = '';
-  @State code: string = '';
-  @State password: string = '';
-  @State message: string = '';
-  @State loading: boolean = false;
-  @State loginMode: number = 0;
+  @State phone: string = '';          // 手机号
+  @State code: string = '';           // 验证码
+  @State password: string = '';       // 密码
+  @State message: string = '';        // 提示消息
+  @State loading: boolean = false;    // 加载状态
+  @State loginMode: number = 0;       // 登录模式：0=验证码登录，1=密码登录
 
+  // 判断是否可以提交登录
   canSubmit(): boolean {
     if (this.phone.trim().length !== 11 || this.loading) {
       return false;
@@ -21,15 +23,17 @@ struct LoginPage {
     return this.password.trim().length > 0;
   }
 
+  // 保存登录结果到全局存储
   saveLoginResult(result: LoginResult) {
     AppStorage.setOrCreate('token', result.token);
     AppStorage.setOrCreate('phone', result.user.phone);
     AppStorage.setOrCreate('username', result.user.username);
   }
 
+  // 发送验证码
   async handleSendCode() {
     if (this.phone.trim().length !== 11) {
-      this.message = '\u8bf7\u8f93\u5165\u6b63\u786e\u7684\u624b\u673a\u53f7';
+      this.message = '请输入正确的手机号';
       return;
     }
 
@@ -37,19 +41,20 @@ struct LoginPage {
     this.message = '';
     try {
       await sendLoginCode(this.phone.trim());
-      this.message = '\u9a8c\u8bc1\u7801\u5df2\u751f\u6210\uff0c\u8bf7\u67e5\u770b IDEA \u540e\u7aef\u63a7\u5236\u53f0';
+      this.message = '验证码已生成，请查看 IDEA 后端控制台';
     } catch (error) {
-      this.message = '\u9a8c\u8bc1\u7801\u83b7\u53d6\u5931\u8d25\uff1a\u624b\u673a\u53f7\u4e0d\u5b58\u5728\u6216\u540e\u7aef\u672a\u8fde\u63a5';
+      this.message = '验证码获取失败：手机号不存在或后端未连接';
     } finally {
       this.loading = false;
     }
   }
 
+  // 执行登录
   async handleLogin() {
     if (!this.canSubmit()) {
       this.message = this.loginMode === 0
-        ? '\u8bf7\u8f93\u5165\u624b\u673a\u53f7\u548c\u9a8c\u8bc1\u7801'
-        : '\u8bf7\u8f93\u5165\u624b\u673a\u53f7\u548c\u5bc6\u7801';
+        ? '请输入手机号和验证码'
+        : '请输入手机号和密码';
       return;
     }
 
@@ -63,13 +68,14 @@ struct LoginPage {
       router.replaceUrl({ url: 'pages/HomePage' });
     } catch (error) {
       this.message = this.loginMode === 0
-        ? '\u767b\u5f55\u5931\u8d25\uff0c\u8bf7\u68c0\u67e5\u9a8c\u8bc1\u7801'
-        : '\u767b\u5f55\u5931\u8d25\uff0c\u8bf7\u68c0\u67e5\u624b\u673a\u53f7\u6216\u5bc6\u7801';
+        ? '登录失败，请检查验证码'
+        : '登录失败，请检查手机号或密码';
     } finally {
       this.loading = false;
     }
   }
 
+  // ===== 登录模式切换按钮 Builder =====
   @Builder
   modeButton(title: string, mode: number) {
     Text(title)
@@ -85,22 +91,24 @@ struct LoginPage {
       })
   }
 
+  // ===== 页面主构建 =====
   build() {
     Column() {
+      // 顶部 Logo + 标题
       Column({ space: 8 }) {
         Image($r('app.media.hwlogo'))
           .width(44)
           .height(44)
           .margin({ bottom: 16 })
 
-        Text('\u534e\u4e3a\u8d26\u53f7')
+        Text('华为账号')
           .fontColor('#191919')
           .textAlign(TextAlign.Center)
           .width('100%')
           .fontSize(24)
           .fontWeight(FontWeight.Bold)
 
-        Text('\u767b\u5f55\u8d26\u53f7\u4ee5\u4f7f\u7528\u4e91\u7a7a\u95f4\u3001\u5e94\u7528\u5e02\u573a\u53ca\u66f4\u591a\u670d\u52a1')
+        Text('登录账号以使用云空间、应用市场及更多服务')
           .fontColor('rgba(0,0,0,0.6)')
           .textAlign(TextAlign.Center)
           .width('100%')
@@ -110,28 +118,32 @@ struct LoginPage {
       .alignItems(HorizontalAlign.Center)
       .margin({ bottom: 32 })
 
+      // 登录模式切换（验证码登录 / 密码登录）
       Row() {
-        this.modeButton('\u9a8c\u8bc1\u7801\u767b\u5f55', 0)
-        this.modeButton('\u5bc6\u7801\u767b\u5f55', 1)
+        this.modeButton('验证码登录', 0)
+        this.modeButton('密码登录', 1)
       }
       .width('100%')
       .height(42)
       .margin({ bottom: 18 })
 
+      // 登录表单
       Column({ space: 12 }) {
+        // 国家/地区选择
         Row() {
-          Text('\u56fd\u5bb6/\u5730\u533a')
+          Text('国家/地区')
             .fontSize(15)
             .fontColor('#191919')
           Blank()
-          Text('\u4e2d\u56fd +86 >')
+          Text('中国 +86 >')
             .fontSize(14)
             .fontColor('rgba(0,0,0,0.6)')
         }
         .width('100%')
         .height(44)
 
-        TextInput({ placeholder: '\u624b\u673a\u53f7', text: this.phone })
+        // 手机号输入
+        TextInput({ placeholder: '手机号', text: this.phone })
           .height(48)
           .backgroundColor(Color.Transparent)
           .showUnderline(true)
@@ -140,9 +152,10 @@ struct LoginPage {
             this.phone = value;
           })
 
+        // 验证码登录：验证码输入 + 获取验证码按钮
         if (this.loginMode === 0) {
           Row() {
-            TextInput({ placeholder: '\u77ed\u4fe1\u9a8c\u8bc1\u7801', text: this.code })
+            TextInput({ placeholder: '短信验证码', text: this.code })
               .layoutWeight(1)
               .height(48)
               .backgroundColor(Color.Transparent)
@@ -152,7 +165,7 @@ struct LoginPage {
                 this.code = value;
               })
 
-            Text('\u83b7\u53d6\u9a8c\u8bc1\u7801')
+            Text('获取验证码')
               .fontColor(this.phone.trim().length === 11 ? '#007DFF' : 'rgba(0,125,255,0.5)')
               .fontSize(14)
               .onClick(() => {
@@ -163,7 +176,8 @@ struct LoginPage {
           .width('100%')
           .height(48)
         } else {
-          TextInput({ placeholder: '\u5bc6\u7801', text: this.password })
+          // 密码登录：密码输入
+          TextInput({ placeholder: '密码', text: this.password })
             .height(48)
             .backgroundColor(Color.Transparent)
             .showUnderline(true)
@@ -173,6 +187,7 @@ struct LoginPage {
             })
         }
 
+        // 错误提示消息
         if (this.message.length > 0) {
           Text(this.message)
             .fontSize(13)
@@ -180,7 +195,8 @@ struct LoginPage {
             .width('100%')
         }
 
-        Button(this.loading ? '\u5904\u7406\u4e2d' : '\u767b\u5f55')
+        // 登录按钮
+        Button(this.loading ? '处理中' : '登录')
           .width('100%')
           .height(44)
           .margin({ top: 18 })
@@ -189,7 +205,8 @@ struct LoginPage {
             this.handleLogin();
           })
 
-        Button('\u6ce8\u518c\u8d26\u53f7')
+        // 注册账号按钮
+        Button('注册账号')
           .width('100%')
           .height(44)
           .fontColor('#007DFF')

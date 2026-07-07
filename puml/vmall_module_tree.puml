@@ -1,0 +1,52 @@
+@startuml vmall_module_tree
+skinparam defaultFontName Microsoft YaHei
+skinparam backgroundColor #FEFEFE
+
+title VMall 模块树
+
+rectangle "vmall_home\n商城系统" as root
+rectangle "common\n公共模块" as common
+rectangle "auth\n认证模块" as auth
+rectangle "home\n首页模块" as home
+rectangle "product\n商品模块" as product
+rectangle "category\n分类模块" as category
+rectangle "cart\n购物车模块" as cart
+rectangle "ai\nAI导购模块" as ai
+rectangle "discover\n发现页模块" as discover
+
+rectangle "JWT/配置/DTO" as c1
+rectangle "登录注册" as a1
+rectangle "短信验证码" as a2
+rectangle "首页聚合" as h1
+rectangle "商品列表" as p1
+rectangle "分类浏览" as cat1
+rectangle "加购删改" as cart1
+rectangle "智能对话" as ai1
+rectangle "商品推荐" as ai2
+rectangle "会话管理" as ai3
+rectangle "页面/Tab" as d1
+rectangle "区块/内容" as d2
+
+root --> common
+root --> auth
+root --> home
+root --> product
+root --> category
+root --> cart
+root --> ai
+root --> discover
+
+common --> c1
+auth --> a1
+auth --> a2
+home --> h1
+product --> p1
+category --> cat1
+cart --> cart1
+ai --> ai1
+ai --> ai2
+ai --> ai3
+discover --> d1
+discover --> d2
+
+@enduml

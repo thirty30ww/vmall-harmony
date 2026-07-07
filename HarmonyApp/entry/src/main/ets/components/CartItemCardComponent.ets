@@ -1,3 +1,4 @@
+// 购物车商品卡片组件 —— 展示商品信息、数量调整、选中/删除操作
 import { CartItem } from '../api/cartApi';
 import { productsList } from '../data/productsListData';
 
@@ -14,16 +15,18 @@ export struct CartItemCardComponent {
     quantity: 0,
     selected: false
   };
-  onToggleSelected: (item: CartItem) => void = () => {};
-  onChangeQuantity: (item: CartItem, quantity: number) => void = () => {};
-  onDelete: (item: CartItem) => void = () => {};
+  onToggleSelected: (item: CartItem) => void = () => {};   // 切换选中回调
+  onChangeQuantity: (item: CartItem, quantity: number) => void = () => {};  // 修改数量回调
+  onDelete: (item: CartItem) => void = () => {};            // 删除回调
 
+  // 格式化价格
   priceText(value: number): string {
     return value.toFixed(2);
   }
 
   build() {
     Row({ space: 10 }) {
+      // 选中/未选中按钮
       Column() {
         Button(this.item.selected ? '\u2713' : '')
           .width(24)
@@ -43,13 +46,16 @@ export struct CartItemCardComponent {
       .height('100%')
       .justifyContent(FlexAlign.Center)
 
+      // 商品图片
       Stack() {
         if (this.item.productSource === 'homeStatic' && this.item.productId >= 0 && this.item.productId < productsList.length) {
+          // 本地静态商品图片
           Image(productsList[this.item.productId].productCardsImagePath)
             .width('100%')
             .height('100%')
             .objectFit(ImageFit.Contain)
         } else if (this.item.productImage !== null && this.item.productImage.length > 0) {
+          // 后端返回的商品图片
           Image(this.item.productImage)
             .width('100%')
             .height('100%')
@@ -67,7 +73,9 @@ export struct CartItemCardComponent {
       .borderRadius(10)
       .alignContent(Alignment.Center)
 
+      // 商品信息区域
       Column({ space: 7 }) {
+        // 商品名称
         Text(this.item.productName)
           .fontSize(16)
           .fontWeight(FontWeight.Bold)
@@ -77,6 +85,7 @@ export struct CartItemCardComponent {
           .textOverflow({ overflow: TextOverflow.Ellipsis })
           .width('100%')
 
+        // 商品特性
         Text(this.item.productFeature ?? '')
           .fontSize(12)
           .fontColor('#7A7F85')
@@ -85,9 +94,11 @@ export struct CartItemCardComponent {
           .textOverflow({ overflow: TextOverflow.Ellipsis })
           .width('100%')
 
+        // 价格和数量操作
         Row() {
+          // 价格
           Row({ space: 2 }) {
-            Text('\u00a5')
+            Text('¥')
               .fontSize(12)
               .fontWeight(FontWeight.Bold)
               .fontColor('#D71920')
@@ -98,6 +109,7 @@ export struct CartItemCardComponent {
           }
           .layoutWeight(1)
 
+          // 数量调整（- / 数量 / +）
           Row() {
             Button('-')
               .width(30)
@@ -135,7 +147,8 @@ export struct CartItemCardComponent {
         .width('100%')
         .alignItems(VerticalAlign.Center)
 
-        Button('\u5220\u9664')
+        // 删除按钮
+        Button('删除')
           .width(64)
           .height(28)
           .fontSize(13)

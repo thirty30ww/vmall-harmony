@@ -1,6 +1,8 @@
+// 商品分类列表组件 —— 按商品类型（手机/平板/穿戴等）分区展示
 import { router } from '@kit.ArkUI';
 import { ProductType, ProductsListData, productsList } from '../data/productsListData';
 
+// 展示的商品类型列表
 const productSectionTypes: ProductType[] = [
   ProductType.PHONE,
   ProductType.TABLET,
@@ -12,14 +14,18 @@ const productSectionTypes: ProductType[] = [
 
 @Component
 export struct ProductsListSection {
+  // 格式化价格显示（优先折扣价）
   priceText(item: ProductsListData): string {
     const price = item.discountPrice ?? item.originalPrice;
-    return `\u00A5${price}`;
+    return `¥${price}`;
   }
 
+  // 按类型筛选商品
   getProductsByType(type: ProductType): ProductsListData[] {
     return productsList.filter((item: ProductsListData) => item.type === type);
   }
+
+  // 获取商品在静态列表中的索引
   productIndex(item: ProductsListData): number {
     for (let index = 0; index < productsList.length; index++) {
       if (productsList[index].productName === item.productName && productsList[index].type === item.type) {
@@ -29,6 +35,7 @@ export struct ProductsListSection {
     return -1;
   }
 
+  // 打开商品详情页
   openProduct(item: ProductsListData) {
     const price = item.discountPrice ?? item.originalPrice;
     try {
@@ -47,6 +54,7 @@ export struct ProductsListSection {
     }
   }
 
+  // ===== 大卡片商品展示（列表中第一个商品）=====
   @Builder
   BigProductCard(item: ProductsListData) {
     Column() {
@@ -94,6 +102,7 @@ export struct ProductsListSection {
     })
   }
 
+  // ===== 小卡片商品展示（列表中后续商品，横向滚动）=====
   @Builder
   SmallProductCard(item: ProductsListData) {
     Column({ space: 8 }) {
@@ -131,10 +140,12 @@ export struct ProductsListSection {
     })
   }
 
+  // ===== 单个商品类型分区 Builder =====
   @Builder
   ProductTypeSection(type: ProductType) {
     if (this.getProductsByType(type).length > 0) {
       Column({ space: 12 }) {
+        // 类型标题 + "更多"入口
         Row() {
           Text(type)
             .fontSize(22)
@@ -144,7 +155,7 @@ export struct ProductsListSection {
           Blank()
 
           Row({ space: 4 }) {
-            Text('\u66F4\u591A')
+            Text('更多')
               .fontSize(15)
               .fontColor('#6B7280')
             Text('>')
@@ -155,8 +166,10 @@ export struct ProductsListSection {
         }
         .width('100%')
 
+        // 大卡片（第一个商品）
         this.BigProductCard(this.getProductsByType(type)[0])
 
+        // 小卡片横向滚动（后续商品）
         if (this.getProductsByType(type).length > 1) {
           Scroll() {
             Row({ space: 10 }) {

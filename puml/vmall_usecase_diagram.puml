@@ -1,0 +1,59 @@
+@startuml vmall_usecase
+skinparam defaultFontName Microsoft YaHei
+skinparam usecase {
+  BorderColor #555555
+}
+skinparam actor {
+  BorderColor #555555
+  Color #555555
+}
+
+title VMall 商城系统 - 用例图
+
+actor 用户
+
+rectangle "用户认证" {
+  usecase "登录" as UC1
+  usecase "注册" as UC2
+  usecase "短信验证码" as UC3
+}
+
+rectangle "首页浏览" {
+  usecase "浏览首页" as UC4
+  usecase "搜索商品" as UC5
+  usecase "查看活动" as UC6
+}
+
+rectangle "商城浏览" {
+  usecase "浏览分类" as UC7
+  usecase "发现页浏览" as UC8
+}
+
+rectangle "购物车" {
+  usecase "查看购物车" as UC9
+  usecase "添加商品" as UC10
+  usecase "删除商品" as UC11
+}
+
+rectangle "AI 导购" {
+  usecase "AI 智能对话" as UC12
+  usecase "商品推荐" as UC13
+  usecase "管理对话记录" as UC14
+}
+
+用户 --> UC1
+用户 --> UC2
+用户 --> UC3
+用户 --> UC4
+用户 --> UC5
+用户 --> UC6
+用户 --> UC7
+用户 --> UC8
+用户 --> UC9
+用户 --> UC10
+用户 --> UC11
+用户 --> UC12
+用户 --> UC13
+用户 --> UC14
+
+@enduml

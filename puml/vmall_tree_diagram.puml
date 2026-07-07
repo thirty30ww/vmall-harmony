@@ -1,0 +1,57 @@
+@startuml vmall_tree
+skinparam defaultFontName Microsoft YaHei
+skinparam backgroundColor #FEFEFE
+skinparam rectangle {
+  BorderColor #336699
+  RoundCorner 0
+}
+skinparam node {
+  BorderColor #336699
+  BackgroundColor #F0F5FF
+  RoundCorner 6
+}
+skinparam arrow {
+  Color #88AACC
+}
+
+title VMall 系统模块树
+
+node "HarmonyOS 前端" as fe {
+  rectangle "首页"
+  rectangle "分类"
+  rectangle "发现"
+  rectangle "购物车"
+  rectangle "AI导购"
+  rectangle "个人中心"
+}
+
+node "Spring Boot 后端" as be {
+  rectangle "Controller\n(API 接口)" as ctrl
+  rectangle "Service\n(业务逻辑)" as svc
+  rectangle "Mapper\n(MyBatis 注解)" as mapper
+  rectangle "Security\n(JWT + CORS)" as sec
+  rectangle "AI Client\n(Spring AI)" as ai
+}
+
+database "MySQL 8.0" as db {
+  rectangle "用户表" as t1
+  rectangle "短信验证码表" as t2
+  rectangle "购物车表" as t3
+  rectangle "对话表" as t4
+  rectangle "对话消息表" as t5
+  rectangle "商品表" as t6
+  rectangle "分类商品表" as t7
+  rectangle "活动表" as t8
+  rectangle "搜索建议表" as t9
+  rectangle "发现页各表" as t10
+}
+
+node "外部 API" as ext {
+  rectangle "DeepSeek\n大模型"
+}
+
+fe --> be : REST API
+be --> db : JDBC
+be --> ext : HTTP
+
+@enduml

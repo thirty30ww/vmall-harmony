@@ -1,0 +1,63 @@
+@startuml vmall_architecture
+skinparam defaultFontName Microsoft YaHei
+skinparam backgroundColor #FEFEFE
+skinparam rectangle {
+  BorderColor #555555
+}
+skinparam node {
+  BorderColor #333366
+}
+
+title VMall 系统整体架构图
+
+' ==================== 表现层 ====================
+package "表现层" {
+  node "HarmonyOS 前端应用" as frontend {
+    rectangle "首页" as home
+    rectangle "分类" as cat
+    rectangle "发现" as discover
+    rectangle "购物车" as cart
+    rectangle "个人中心" as profile
+    rectangle "AI导购对话" as chat
+  }
+}
+
+' ==================== 网关层 ====================
+package "网关层" {
+  rectangle "Spring Security\nJWT 认证" as security
+  rectangle "CORS 跨域" as cors
+}
+
+' ==================== 业务层 ====================
+package "业务层" as biz {
+  rectangle "Controller 层\n(11 个 REST Controller)" as ctrl
+  rectangle "Service 层\n(9 个业务 Service)" as services
+}
+
+' ==================== 数据层 ====================
+package "数据层" as data {
+  rectangle "MyBatis Mapper\n(接口+注解)" as mappers
+}
+
+' ==================== 存储层 ====================
+database "MySQL 8.0\nvmall 数据库" as db {
+  rectangle "14 张表\n(vmall_*)" as tables
+}
+
+' ==================== 外部服务 ====================
+node "外部服务" as ext {
+  rectangle "DeepSeek\n大模型 API" as llm
+}
+
+' ==================== 连线 ====================
+frontend --> security : HTTP REST
+
+security --> ctrl
+ctrl --> services
+
+services --> mappers
+services --> llm : Spring AI ChatClient
+
+mappers --> db : JDBC
+
+@enduml

@@ -1,4 +1,4 @@
-//商品类型枚举值
+// 商品类型枚举 —— 用于商品分类筛选展示
 export enum ProductType {
   PHONE = '手机',
   TABLET = '平板',
@@ -7,17 +7,20 @@ export enum ProductType {
   AUDIO = '音频',
   SMART_HOME = '鸿蒙智家'
 }
-//商品分类列表模板
+
+// 商品分类列表的数据结构
 export  interface  ProductsListData {
-  productCardsImagePath : Resource
-  productName:string
-  description:string
-  originalPrice:number
-  discountPrice:number | null
-  type: ProductType
+  productCardsImagePath : Resource  // 商品卡片图片路径
+  productName:string               // 商品名称
+  description:string               // 商品描述
+  originalPrice:number             // 原价
+  discountPrice:number | null      // 折扣价（null 表示无折扣）
+  type: ProductType                // 商品类型
 }
 
+// 静态商品数据列表（当后端未连接时的本地备选数据）
 export const productsList:ProductsListData[]=[
+  // ===== 手机 =====
   {
     productCardsImagePath:$r('app.media.productsList_nova16pro'),
     productName:'nova 16 Pro',
@@ -50,7 +53,6 @@ export const productsList:ProductsListData[]=[
     discountPrice:null,
     type: ProductType.PHONE
   },
-
   {
     productCardsImagePath:$r('app.media.productsList_Mate80ProMax'),
     productName:'Mate80 Pro Max',
@@ -60,6 +62,7 @@ export const productsList:ProductsListData[]=[
     type: ProductType.PHONE
   },
 
+  // ===== 平板 =====
   {
     productCardsImagePath:$r('app.media.productsList_MatePadProMax'),
     productName:'MatePad Pro Max',
@@ -100,6 +103,8 @@ export const productsList:ProductsListData[]=[
     discountPrice:2949,
     type: ProductType.TABLET
   },
+
+  // ===== 穿戴 =====
   {
     productCardsImagePath:$r('app.media.productsList_WATCH5'),
     productName:'WATCH 5',
@@ -140,6 +145,8 @@ export const productsList:ProductsListData[]=[
     discountPrice:null,
     type: ProductType.WEARABLE
   },
+
+  // ===== 电脑 =====
   {
     productCardsImagePath:$r('app.media.productsList_MateBook14HongMeng'),
     productName:'MateBook 14 鸿蒙版',
@@ -180,6 +187,8 @@ export const productsList:ProductsListData[]=[
     discountPrice:7999,
     type: ProductType.COMPUTER
   },
+
+  // ===== 音频 =====
   {
     productCardsImagePath:$r('app.media.productsList_FreeClip2'),
     productName:'FreeClip 2',
@@ -220,6 +229,8 @@ export const productsList:ProductsListData[]=[
     discountPrice:299,
     type: ProductType.AUDIO
   },
+
+  // ===== 鸿蒙智家 =====
   {
     productCardsImagePath:$r('app.media.productsList_HuaWeiVisionZhiHuiPing6SE'),
     productName:'华为Vision智慧屏 6SE',

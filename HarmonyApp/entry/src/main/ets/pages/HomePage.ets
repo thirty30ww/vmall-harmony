@@ -1,3 +1,4 @@
+// 首页页面 —— 主入口，包含底部导航栏切换（首页、分类、发现、购物车、我的）
 import { router } from '@kit.ArkUI';
 import { ActivityBanner } from '../components/ActivityBanner';
 import { BottomNavBar } from '../components/BottomNavBar';
@@ -17,24 +18,25 @@ import { AiFloatingButton } from '../components/AiFloatingButton';
 @Entry
 @Component
 struct HomePage {
+  // 首页数据（分类、搜索建议、活动、商品列表）
   @State homeData: HomeData = {
     categories: [],
     suggestions: [],
     activities: [],
     products: []
-  };  
-  @State keyword: string = '';
-  @State loading: boolean = true;
-  @State errorMessage: string = '';
-  @State activeTabIndex: number = 0;
-  @State currentUsername: string = '';
-  @State cartItems: CartItem[] = [];
-  @State cartSelectedCount: number = 0;
-  @State cartTotalAmount: number = 0;
-  @State cartLoading: boolean = false;
-  @State cartErrorMessage: string = '';
+  };
+  @State keyword: string = '';          // 搜索关键字
+  @State loading: boolean = true;        // 首页加载状态
+  @State errorMessage: string = '';      // 错误提示信息
+  @State activeTabIndex: number = 0;     // 底部导航栏当前选中标签（0首页/1分类/2发现/3购物车/4我的）
+  @State currentUsername: string = '';   // 当前用户名
+  @State cartItems: CartItem[] = [];     // 购物车商品列表
+  @State cartSelectedCount: number = 0;  // 购物车已选数量
+  @State cartTotalAmount: number = 0;    // 购物车总金额
+  @State cartLoading: boolean = false;   // 购物车加载状态
+  @State cartErrorMessage: string = '';  // 购物车错误信息
 
-
+  // 页面即将显示时初始化：加载用户信息、处理传入参数、加载首页数据
   aboutToAppear() {
     this.loadCurrentUser();
     const params = router.getParams() as Record<string, number>;
@@ -51,16 +53,20 @@ struct HomePage {
     }
   }
 
+  // 从全局存储加载当前用户信息
   loadCurrentUser() {
     const username = AppStorage.get<string>('username') ?? '';
     const phone = AppStorage.get<string>('phone') ?? '';
     this.currentUsername = username.length > 0 ? username : phone;
   }
+
+  // 判断用户是否已登录（检查 Token 是否存在）
   isLoggedIn(): boolean {
     const token = AppStorage.get<string>('token') ?? '';
     return token.length > 0;
   }
 
+  // 退出登录，清除全局存储并跳转登录页
   logout() {
     AppStorage.setOrCreate('token', '');
     AppStorage.setOrCreate('phone', '');
@@ -73,10 +79,11 @@ struct HomePage {
     try {
       router.pushUrl({ url: 'pages/LoginPage' });
     } catch (error) {
-      this.errorMessage = '\u9875\u9762\u8df3\u8f6c\u5931\u8d25';
+      this.errorMessage = '页面跳转失败';
     }
   }
 
+  // 加载购物车数据
   async loadCart() {
     if (!this.isLoggedIn()) {
       this.cartItems = [];
@@ -103,12 +110,13 @@ struct HomePage {
       this.cartItems = loadedItems;
       this.recalcCartTotals();
     } catch (error) {
-      this.cartErrorMessage = '\u8d2d\u7269\u8f66\u52a0\u8f7d\u5931\u8d25';
+      this.cartErrorMessage = '购物车加载失败';
     } finally {
       this.cartLoading = false;
     }
   }
 
+  // 重新计算购物车选中数量和总金额
   recalcCartTotals() {
     let selectedCount: number = 0;
     let totalAmount: number = 0;
@@ -123,6 +131,7 @@ struct HomePage {
     this.cartTotalAmount = totalAmount;
   }
 
+  // 切换购物车中某个商品的选中状态
   toggleCartSelected(item: CartItem) {
     this.cartErrorMessage = '';
     const newItems: CartItem[] = [];
@@ -144,6 +153,7 @@ struct HomePage {
     this.recalcCartTotals();
   }
 
+  // 修改购物车商品数量（限制 1-99）
   changeCartQuantity(item: CartItem, quantity: number) {
     this.cartErrorMessage = '';
     const nextQuantity: number = Math.max(1, Math.min(99, quantity));
@@ -169,6 +179,7 @@ struct HomePage {
     this.recalcCartTotals();
   }
 
+  // 从购物车删除指定商品
   async deleteCartProduct(item: CartItem) {
     this.cartErrorMessage = '';
     const newItems: CartItem[] = [];
@@ -183,11 +194,12 @@ struct HomePage {
     try {
       await deleteCartItem(item.id);
     } catch (error) {
-      this.cartErrorMessage = '\u5220\u9664\u5931\u8d25';
+      this.cartErrorMessage = '删除失败';
       await this.loadCartSilent();
     }
   }
 
+  // 静默加载购物车（用于删除失败后的回滚恢复）
   async loadCartSilent() {
     try {
       const summary: CartSummary = await getCart();
@@ -204,10 +216,11 @@ struct HomePage {
       this.cartItems = loadedItems;
       this.recalcCartTotals();
     } catch (error) {
-      console.error('load cart failed', error);
+      console.error('购物车加载失败', error);
     }
   }
 
+  // 判断是否所有购物车商品都已选中
   allCartSelected(): boolean {
     if (this.cartItems.length === 0) {
       return false;
@@ -220,6 +233,7 @@ struct HomePage {
     return true;
   }
 
+  // 全选/取消全选购物车商品
   toggleCartAll() {
     this.cartErrorMessage = '';
     const nextSelected: boolean = !this.allCartSelected();
@@ -238,36 +252,41 @@ struct HomePage {
     this.recalcCartTotals();
   }
 
+  // 将价格格式化为两位小数
   priceText(value: number): string {
     return value.toFixed(2);
   }
+
+  // 获取当前 Tab 的中文名称
   tabName(): string {
     switch (this.activeTabIndex) {
       case 1:
-        return '\u5206\u7c7b';
+        return '分类';
       case 2:
-        return '\u53d1\u73b0';
+        return '发现';
       case 3:
-        return '\u8d2d\u7269\u8f66';
+        return '购物车';
       case 4:
-        return '\u6211\u7684';
+        return '我的';
       default:
-        return '\u9996\u9875';
+        return '首页';
     }
   }
 
+  // 加载首页数据（从后端接口获取）
   async loadHome() {
     this.loading = true;
     this.errorMessage = '';
     try {
       this.homeData = await getHomeData();
     } catch (error) {
-      this.errorMessage = '\u9996\u9875\u52a0\u8f7d\u5931\u8d25\uff0c\u8bf7\u68c0\u67e5\u540e\u7aef\u670d\u52a1';
+      this.errorMessage = '首页加载失败，请检查后端服务';
     } finally {
       this.loading = false;
     }
   }
 
+  // 搜索商品
   async searchProducts(keyword: string) {
     this.loading = true;
     this.errorMessage = '';
@@ -280,12 +299,13 @@ struct HomePage {
         products: products
       };
     } catch (error) {
-      this.errorMessage = '\u641c\u7d22\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5';
+      this.errorMessage = '搜索失败，请稍后重试';
     } finally {
       this.loading = false;
     }
   }
 
+  // 打开商品详情页
   openProduct(product: Product) {
     try {
       router.pushUrl({
@@ -300,21 +320,25 @@ struct HomePage {
         }
       });
     } catch (error) {
-      this.errorMessage = '\u9875\u9762\u8df3\u8f6c\u5931\u8d25';
+      this.errorMessage = '页面跳转失败';
     }
   }
 
+  // ===== 首页内容区域 Builder =====
   @Builder
   homeContent() {
     Scroll() {
       Column({ space: 18 }) {
+        // 轮播图区域
         Column() {
           HomeSwiper()
         }
         .width('100%')
         .padding({ left: 16, right: 16 })
 
+        // 分类导航 + 活动横幅 + 商品列表区域
         Column({ space: 18 }) {
+          // 顶部分类快捷入口
           CategoryGrid({
             onSelect: (category: HomeCategory) => {
               this.keyword = category.categoryName;
@@ -322,10 +346,13 @@ struct HomePage {
             }
           })
 
+          // 活动横幅轮播
           ActivityBanner({ activities: this.homeData.activities })
 
+          // 商品分类区块（手机/平板/穿戴等）
           ProductsListSection()
 
+          // 商品列表网格
           Grid() {
             ForEach(this.homeData.products, (item: Product) => {
               GridItem() {
@@ -353,9 +380,11 @@ struct HomePage {
     .scrollBar(BarState.Off)
   }
 
+  // ===== 购物车空状态 Builder =====
   @Builder
   cartEmptyContent(text: string, buttonText: string, targetLogin: boolean) {
     Column({ space: 14 }) {
+      // 购物车图标占位
       Stack() {
         Text('\uD83D\uDED2')
           .fontSize(76)
@@ -365,11 +394,13 @@ struct HomePage {
       .height(92)
       .alignContent(Alignment.Center)
 
+      // 提示文字
       Text(text)
         .fontSize(16)
         .fontColor('#7A7F85')
         .textAlign(TextAlign.Center)
 
+      // 操作按钮（去登录/去购物）
       Button(buttonText)
         .width(150)
         .height(50)
@@ -383,7 +414,7 @@ struct HomePage {
             try {
               router.pushUrl({ url: 'pages/LoginPage' });
             } catch (error) {
-              this.errorMessage = '\u9875\u9762\u8df3\u8f6c\u5931\u8d25';
+              this.errorMessage = '页面跳转失败';
             }
           } else {
             this.activeTabIndex = 0;
@@ -396,13 +427,16 @@ struct HomePage {
     .alignItems(HorizontalAlign.Center)
   }
 
+  // ===== 购物车主内容 Builder =====
   @Builder
   cartContent() {
+    // 未登录 -> 显示空状态提示去登录
     if (!this.isLoggedIn()) {
-      this.cartEmptyContent('\u8bf7\u5148\u767b\u5f55\u540e\u67e5\u770b\u8d2d\u7269\u8f66', '\u53bb\u767b\u5f55', true)
+      this.cartEmptyContent('请先登录后查看购物车', '去登录', true)
     } else if (this.cartLoading && this.cartItems.length === 0) {
+      // 加载中
       Column() {
-        Text('\u8d2d\u7269\u8f66\u52a0\u8f7d\u4e2d')
+        Text('购物车加载中')
           .fontSize(15)
           .fontColor('#86909C')
       }
@@ -410,11 +444,12 @@ struct HomePage {
       .width('100%')
       .justifyContent(FlexAlign.Center)
     } else if (this.cartErrorMessage.length > 0 && this.cartItems.length === 0) {
+      // 加载出错 -> 显示重试按钮
       Column({ space: 12 }) {
         Text(this.cartErrorMessage)
           .fontSize(15)
           .fontColor('#86909C')
-        Button('\u91cd\u8bd5')
+        Button('重试')
           .width(120)
           .height(42)
           .fontColor(Color.White)
@@ -429,9 +464,12 @@ struct HomePage {
       .justifyContent(FlexAlign.Center)
       .alignItems(HorizontalAlign.Center)
     } else if (this.cartItems.length === 0) {
-      this.cartEmptyContent('\u60a8\u7684\u8d2d\u7269\u8f66\u6682\u65f6\u6ca1\u6709\u5546\u54c1', '\u53bb\u8d2d\u7269', false)
+      // 购物车为空
+      this.cartEmptyContent('您的购物车暂时没有商品', '去购物', false)
     } else {
+      // 购物车有商品 -> 展示列表 + 底部结算栏
       Column() {
+        // 商品列表
         List({ space: 12 }) {
           ForEach(this.cartItems, (item: CartItem) => {
             ListItem() {
@@ -455,7 +493,9 @@ struct HomePage {
         .padding({ left: 16, right: 16, top: 12, bottom: 12 })
         .scrollBar(BarState.Off)
 
+        // 底部结算栏
         Row() {
+          // 全选按钮
           Row({ space: 8 }) {
             Button(this.allCartSelected() ? '\u2713' : '')
               .width(24)
@@ -470,7 +510,7 @@ struct HomePage {
               .onClick(() => {
                 this.toggleCartAll();
               })
-            Text('\u5168\u9009')
+            Text('全选')
               .fontSize(15)
               .fontColor('#111111')
           }
@@ -479,15 +519,17 @@ struct HomePage {
 
           Blank()
 
-          Text('\u5408\u8ba1: ')
+          // 合计金额
+          Text('合计: ')
             .fontSize(14)
             .fontColor('#111111')
-          Text('\u00a5' + this.priceText(this.cartTotalAmount))
+          Text('¥' + this.priceText(this.cartTotalAmount))
             .fontSize(20)
             .fontWeight(FontWeight.Bold)
             .fontColor('#D71920')
 
-          Button('\u7ed3\u7b97(' + this.cartSelectedCount.toString() + ')')
+          // 结算按钮
+          Button('结算(' + this.cartSelectedCount.toString() + ')')
             .width(88)
             .height(34)
             .fontSize(14)
@@ -509,6 +551,8 @@ struct HomePage {
       .width('100%')
     }
   }
+
+  // ===== 我的页面 —— 资产项 Builder =====
   @Builder
   myAssetItem(icon: Resource, title: string) {
     Column({ space: 4 }) {
@@ -531,6 +575,7 @@ struct HomePage {
     .alignItems(HorizontalAlign.Center)
   }
 
+  // ===== 我的页面 —— 订单项 Builder =====
   @Builder
   myOrderItem(icon: Resource, title: string) {
     Column({ space: 8 }) {
@@ -549,6 +594,7 @@ struct HomePage {
     .alignItems(HorizontalAlign.Center)
   }
 
+  // ===== 我的页面 —— 服务项 Builder =====
   @Builder
   myServiceItem(icon: Resource, title: string) {
     Column({ space: 8 }) {
@@ -567,6 +613,7 @@ struct HomePage {
     .alignItems(HorizontalAlign.Center)
   }
 
+  // ===== 我的页面 —— 列表行 Builder =====
   @Builder
   myListRow(icon: Resource, title: string) {
     Row() {
@@ -582,7 +629,7 @@ struct HomePage {
         .fontColor('#111111')
         .layoutWeight(1)
 
-      Text('\u203a')
+      Text('›')
         .fontSize(20)
         .fontColor('#C9CDD4')
     }
@@ -591,6 +638,7 @@ struct HomePage {
     .alignItems(VerticalAlign.Center)
   }
 
+  // ===== 我的页面 —— 退出登录行 Builder =====
   @Builder
   logoutRow() {
     Row() {
@@ -600,13 +648,13 @@ struct HomePage {
         .objectFit(ImageFit.Contain)
         .margin({ right: 12 })
 
-      Text('\u9000\u51fa\u767b\u5f55')
+      Text('退出登录')
         .fontSize(18)
         .fontWeight(FontWeight.Bold)
         .fontColor('#D71920')
         .layoutWeight(1)
 
-      Text('\u203a')
+      Text('›')
         .fontSize(20)
         .fontColor('#C9CDD4')
     }
@@ -618,10 +666,12 @@ struct HomePage {
     })
   }
 
+  // ===== "我的"页面内容 Builder =====
   @Builder
   myContent() {
     Scroll() {
       Column({ space: 14 }) {
+        // 用户头像和名称/登录入口
         Column() {
           Row({ space: 14 }) {
             Image($r('app.media.avatar'))
@@ -630,7 +680,7 @@ struct HomePage {
               .borderRadius(29)
               .objectFit(ImageFit.Cover)
 
-            Text(this.currentUsername.length > 0 ? this.currentUsername : '\u767b\u5f55/\u6ce8\u518c')
+            Text(this.currentUsername.length > 0 ? this.currentUsername : '登录/注册')
               .fontSize(22)
               .fontWeight(FontWeight.Bold)
               .fontColor('#111111')
@@ -646,7 +696,7 @@ struct HomePage {
             try {
               router.pushUrl({ url: 'pages/LoginPage' });
             } catch (error) {
-              this.errorMessage = '\u9875\u9762\u8df3\u8f6c\u5931\u8d25';
+              this.errorMessage = '页面跳转失败';
             }
           })
 
@@ -654,13 +704,14 @@ struct HomePage {
             .strokeWidth(1)
             .color('#E1E1E1')
 
+          // 会员频道入口
           Row() {
-            Text('\u5f00\u542f\u667a\u6167\u751f\u6d3b')
+            Text('开启智慧生活')
               .fontSize(16)
               .fontColor('#7A7F85')
               .layoutWeight(1)
 
-            Text('\u4f1a\u5458\u9891\u9053')
+            Text('会员频道')
               .fontSize(14)
               .fontWeight(FontWeight.Bold)
               .fontColor('#7B5B20')
@@ -677,11 +728,12 @@ struct HomePage {
         .backgroundColor(Color.White)
         .borderRadius(18)
 
+        // 资产卡片（积分/优惠券/代金券/优购码）
         Row() {
-          this.myAssetItem($r('app.media.jifen'), '\u79ef\u5206')
-          this.myAssetItem($r('app.media.youhui'), '\u4f18\u60e0\u5238')
-          this.myAssetItem($r('app.media.daijing'), '\u4ee3\u91d1\u5238')
-          this.myAssetItem($r('app.media.bao'), '\u4f18\u8d2d\u7801')
+          this.myAssetItem($r('app.media.jifen'), '积分')
+          this.myAssetItem($r('app.media.youhui'), '优惠券')
+          this.myAssetItem($r('app.media.daijing'), '代金券')
+          this.myAssetItem($r('app.media.bao'), '优购码')
         }
         .width('100%')
         .height(104)
@@ -690,19 +742,20 @@ struct HomePage {
         .borderRadius(18)
         .alignItems(VerticalAlign.Center)
 
+        // 我的订单
         Column({ space: 12 }) {
           Row() {
-            Text('\u6211\u7684\u8ba2\u5355')
+            Text('我的订单')
               .fontSize(22)
               .fontWeight(FontWeight.Bold)
               .fontColor('#111111')
               .layoutWeight(1)
 
-            Text('\u5168\u90e8\u8ba2\u5355')
+            Text('全部订单')
               .fontSize(16)
               .fontColor('#7A7F85')
 
-            Text('\u203a')
+            Text('›')
               .fontSize(18)
               .fontColor('#8A8F96')
               .margin({ left: 4 })
@@ -710,12 +763,13 @@ struct HomePage {
           .height(36)
           .alignItems(VerticalAlign.Center)
 
+          // 订单状态入口（待付款/待收货/待评价/售后退款/回收单）
           Row() {
-            this.myOrderItem($r('app.media.daifukuan'), '\u5f85\u4ed8\u6b3e')
-            this.myOrderItem($r('app.media.daishouhuo'), '\u5f85\u6536\u8d27')
-            this.myOrderItem($r('app.media.pingjia'), '\u5f85\u8bc4\u4ef7')
-            this.myOrderItem($r('app.media.shouhou'), '\u552e\u540e\u9000\u6b3e')
-            this.myOrderItem($r('app.media.huishou'), '\u56de\u6536\u5355')
+            this.myOrderItem($r('app.media.daifukuan'), '待付款')
+            this.myOrderItem($r('app.media.daishouhuo'), '待收货')
+            this.myOrderItem($r('app.media.pingjia'), '待评价')
+            this.myOrderItem($r('app.media.shouhou'), '售后退款')
+            this.myOrderItem($r('app.media.huishou'), '回收单')
           }
           .width('100%')
           .height(58)
@@ -726,19 +780,20 @@ struct HomePage {
         .backgroundColor(Color.White)
         .borderRadius(18)
 
+        // 常用服务
         Column({ space: 14 }) {
           Row() {
-            Text('\u5e38\u7528\u670d\u52a1')
+            Text('常用服务')
               .fontSize(22)
               .fontWeight(FontWeight.Bold)
               .fontColor('#111111')
               .layoutWeight(1)
 
-            Text('\u8054\u7cfb\u5ba2\u670d')
+            Text('联系客服')
               .fontSize(16)
               .fontColor('#7A7F85')
 
-            Text('\u203a')
+            Text('›')
               .fontSize(18)
               .fontColor('#8A8F96')
               .margin({ left: 4 })
@@ -746,11 +801,12 @@ struct HomePage {
           .height(36)
           .alignItems(VerticalAlign.Center)
 
+          // 服务入口（官方售后/服务商店/保值换新/价保申请）
           Row() {
-            this.myServiceItem($r('app.media.shouhou'), '\u5b98\u65b9\u552e\u540e')
-            this.myServiceItem($r('app.media.shangdian'), '\u670d\u52a1\u5546\u5e97')
-            this.myServiceItem($r('app.media.baozhi'), '\u4fdd\u503c\u6362\u65b0')
-            this.myServiceItem($r('app.media.baojia'), '\u4ef7\u4fdd\u7533\u8bf7')
+            this.myServiceItem($r('app.media.shouhou'), '官方售后')
+            this.myServiceItem($r('app.media.shangdian'), '服务商店')
+            this.myServiceItem($r('app.media.baozhi'), '保值换新')
+            this.myServiceItem($r('app.media.baojia'), '价保申请')
           }
           .width('100%')
           .height(62)
@@ -761,21 +817,23 @@ struct HomePage {
         .backgroundColor(Color.White)
         .borderRadius(18)
 
+        // 问题和建议 + 商城公告
         Column() {
-          this.myListRow($r('app.media.wenti'), '\u95ee\u9898\u548c\u5efa\u8bae')
+          this.myListRow($r('app.media.wenti'), '问题和建议')
           Divider()
             .strokeWidth(1)
             .color('#ECECEC')
             .margin({ left: 40 })
-          this.myListRow($r('app.media.gonggao'), '\u5546\u57ce\u516c\u544a')
+          this.myListRow($r('app.media.gonggao'), '商城公告')
         }
         .width('100%')
         .padding({ left: 14, right: 14 })
         .backgroundColor(Color.White)
         .borderRadius(18)
 
+        // 设置 + 退出登录
         Column() {
-          this.myListRow($r('app.media.shezhi'), '\u8bbe\u7f6e')
+          this.myListRow($r('app.media.shezhi'), '设置')
           if (this.isLoggedIn()) {
             Divider()
               .strokeWidth(1)
@@ -789,7 +847,8 @@ struct HomePage {
         .backgroundColor(Color.White)
         .borderRadius(18)
 
-        Text('\u9690\u79c1\u653f\u7b56  |  \u7528\u6237\u534f\u8bae  |  \u5173\u4e8eCookie\n\u8425\u4e1a\u6267\u7167    \u5907\u6848\u4e3b\u4f53\u7f16\u53f7\uff1a44201919072182\n\u7ca4ICP\u590719015064\u53f7   \u7ca4\u516c\u7f51\u5b89\u590744190002003939\u53f7\n\u589e\u503c\u7535\u4fe1\u4e1a\u52a1\u7ecf\u8425\u8bb8\u53ef\u8bc1\uff1a\u7ca4B2-20190762')
+        // 底部法律信息
+        Text('隐私政策  |  用户协议  |  关于Cookie\n营业执照    备案主体编号：44201919072182\n粤ICP备19015064号   粤公网安备44190002003939号\n增值电信业务经营许可证：粤B2-20190762')
           .fontSize(13)
           .lineHeight(22)
           .fontColor('#A5A8AD')
@@ -805,6 +864,8 @@ struct HomePage {
     .layoutWeight(1)
     .scrollBar(BarState.Off)
   }
+
+  // ===== 等待中的模块占位 Builder =====
   @Builder
   waitingContent() {
     Column({ space: 12 }) {
@@ -813,7 +874,7 @@ struct HomePage {
         .fontWeight(FontWeight.Bold)
         .fontColor('#111111')
 
-      Text('\u5f53\u524d\u6a21\u5757\u7b49\u5f85\u5b8c\u6210')
+      Text('当前模块等待完成')
         .fontSize(15)
         .fontColor('#86909C')
     }
@@ -822,11 +883,12 @@ struct HomePage {
     .justifyContent(FlexAlign.Center)
   }
 
+  // ===== 顶部导航栏 Builder（非首页时显示）=====
   @Builder
   topBar() {
     if (this.activeTabIndex === 1 || this.activeTabIndex === 3 || this.activeTabIndex === 4) {
       Row() {
-        Text(this.activeTabIndex === 1 ? '\u5206\u7c7b' : this.activeTabIndex === 3 ? '\u8d2d\u7269\u8f66' : '\u6211\u7684')
+        Text(this.activeTabIndex === 1 ? '分类' : this.activeTabIndex === 3 ? '购物车' : '我的')
           .fontSize(28)
           .fontWeight(FontWeight.Bold)
           .fontColor('#111111')
@@ -834,6 +896,7 @@ struct HomePage {
         Blank()
           .layoutWeight(1)
 
+        // "我的"页面右上角的邮件图标
         if (this.activeTabIndex === 4) {
           Stack() {
             Image($r('app.media.youjian'))
@@ -854,9 +917,11 @@ struct HomePage {
     }
   }
 
+  // ===== 页面主构建 =====
   build() {
     Stack() {
       Column() {
+        // 首页显示搜索栏，其他 Tab 显示顶部标题栏
         if (this.activeTabIndex === 0) {
           SearchBar({
             keyword: $keyword,
@@ -870,22 +935,24 @@ struct HomePage {
           this.topBar()
         }
 
+        // 根据 Tab 切换不同内容
         if (this.activeTabIndex === 0) {
-          this.homeContent()
+          this.homeContent()       // 首页
         } else if (this.activeTabIndex === 1) {
-          CategoryPanel()
+          CategoryPanel()          // 分类
             .layoutWeight(1)
         } else if (this.activeTabIndex === 2) {
-          DiscoverPanel()
+          DiscoverPanel()          // 发现
             .layoutWeight(1)
         } else if (this.activeTabIndex === 3) {
-          this.cartContent()
+          this.cartContent()       // 购物车
         } else if (this.activeTabIndex === 4) {
-          this.myContent()
+          this.myContent()         // 我的
         } else {
           this.waitingContent()
         }
 
+        // 底部导航栏
         BottomNavBar({ activeIndex: $activeTabIndex, onTabChange: (index: number) => {
           if (index === 3) {
             this.loadCart();
@@ -898,6 +965,7 @@ struct HomePage {
       .height('100%')
       .backgroundColor('#F5F6F8')
 
+      // AI 智能导购悬浮按钮
       AiFloatingButton({ initBottom: 130 })
     }
     .width('100%')

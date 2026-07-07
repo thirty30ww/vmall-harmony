@@ -1,0 +1,143 @@
+@startuml vmall_class_diagram
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Microsoft YaHei
+skinparam backgroundColor #FEFEFE
+hide empty members
+
+title VMall 数据库模型类图
+
+' ======================== 用户域 ========================
+package "用户域" {
+  class User {
+    + Long id
+    + String phone
+    + String username
+    + Integer status
+  }
+
+  class SmsCode {
+    + Long id
+    + String phone
+    + String code
+    + Integer used
+    + LocalDateTime expiresAt
+  }
+
+  class CartItem {
+    + Long id
+    + Long userId
+    + Long productId
+    + String productSource
+    + String productName
+    + BigDecimal productPrice
+  }
+
+  class Conversation {
+    + Long id
+    + Long userId
+    + String title
+    + Integer status
+  }
+
+  class ConversationMessage {
+    + Long id
+    + Long conversationId
+    + String role
+    + String content
+  }
+}
+
+' ======================== 商品域 ========================
+package "商品域" {
+  class Product {
+    + Integer id
+    + String prdId
+    + String name
+    + String feature
+    + BigDecimal price
+    + String imageUrl
+  }
+
+  class Category {
+    + int id
+    + String name
+    + String groupName
+    + String productName
+    + BigDecimal price
+  }
+}
+
+' ======================== 首页内容 ========================
+package "首页内容（独立抓取数据）" {
+  class Activity {
+    + Integer id
+    + String title
+  }
+
+  class SearchSuggestion {
+    + Integer id
+    + String keyword
+  }
+}
+
+' ======================== 发现页域 ========================
+package "发现页域" {
+  class DiscoverPage {
+    + Integer id
+    + String pageId
+    + String pageName
+  }
+
+  class DiscoverTab {
+    + Integer id
+    + String tabKey
+    + String tabName
+    + String relatedPageId
+  }
+
+  class DiscoverNavIcon {
+    + Integer id
+    + String pageId
+    + String title
+    + String imageUrl
+    + String linkUrl
+  }
+
+  class DiscoverSection {
+    + Integer id
+    + String pageId
+    + String tabName
+    + String cardId
+    + String cardType
+    + String cardName
+    + String layoutType
+  }
+
+  class DiscoverItem {
+    + Integer id
+    + String pageId
+    + String tabName
+    + String cardId
+    + String itemType
+    + String title
+    + String imageUrl
+    + String linkUrl
+  }
+}
+
+' ======================== 关系 ========================
+User o-- SmsCode
+User o-- CartItem
+User o-- Conversation
+
+Conversation *-- ConversationMessage
+
+CartItem ..> Product : «use»
+CartItem ..> Category : «use»
+
+DiscoverPage o-- DiscoverTab
+DiscoverPage o-- DiscoverNavIcon
+DiscoverPage o-- DiscoverSection
+DiscoverPage o-- DiscoverItem
+
+@enduml

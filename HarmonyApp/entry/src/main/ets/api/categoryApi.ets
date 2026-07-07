@@ -1,6 +1,8 @@
+// 分类页面 API —— 提供商品分类数据的获取和整理
 import { http } from '@kit.NetworkKit';
 import { API_BASE_URL } from './ApiConfig';
 
+// 后端返回的扁平化原始商品类型
 export interface CategoryPageRawItem {
   id: number;
   name: string | null;
@@ -13,6 +15,7 @@ export interface CategoryPageRawItem {
   scrapedAt?: string | null;
 }
 
+// 分类页商品类型
 export interface CategoryPageProduct {
   id: number;
   categoryId: number;
@@ -26,11 +29,13 @@ export interface CategoryPageProduct {
   sortOrder: number | null;
 }
 
+// 分类页商品分组类型
 export interface CategoryPageGroup {
   groupName: string;
   products: CategoryPageProduct[];
 }
 
+// 分类页分类类型
 export interface CategoryPageCategory {
   id: number;
   name: string | null;
@@ -39,10 +44,12 @@ export interface CategoryPageCategory {
   products: CategoryPageProduct[];
 }
 
+// 分类页数据结构
 export interface CategoryPageData {
   categories: CategoryPageCategory[];
 }
 
+// 在分类列表中查找指定名称的分类索引
 function findCategoryIndex(categories: CategoryPageCategory[], categoryName: string): number {
   for (let index = 0; index < categories.length; index++) {
     if (categories[index].name === categoryName) {
@@ -52,6 +59,7 @@ function findCategoryIndex(categories: CategoryPageCategory[], categoryName: str
   return -1;
 }
 
+// 在分组列表中查找指定名称的分组索引
 function findGroupIndex(groups: CategoryPageGroup[], groupName: string): number {
   for (let index = 0; index < groups.length; index++) {
     if (groups[index].groupName === groupName) {
@@ -61,6 +69,7 @@ function findGroupIndex(groups: CategoryPageGroup[], groupName: string): number 
   return -1;
 }
 
+// 将后端扁平化的原始分类数据转换为树形结构
 function normalizeFlatCategoryItems(items: CategoryPageRawItem[]): CategoryPageData {
   const categories: CategoryPageCategory[] = [];
 
@@ -120,6 +129,7 @@ function normalizeFlatCategoryItems(items: CategoryPageRawItem[]): CategoryPageD
   return result;
 }
 
+// 规范化树形分类数据，确保分组和商品字段完整
 function normalizeTreeCategoryData(data: CategoryPageData): CategoryPageData {
   const categories: CategoryPageCategory[] = data.categories ?? [];
   categories.forEach((category: CategoryPageCategory) => {
@@ -153,6 +163,7 @@ function normalizeTreeCategoryData(data: CategoryPageData): CategoryPageData {
   return result;
 }
 
+// 统一规范化分类数据：数组格式转为树形，树形格式补全字段
 function normalizeCategoryPage(data: CategoryPageData | CategoryPageRawItem[]): CategoryPageData {
   if (Array.isArray(data)) {
     return normalizeFlatCategoryItems(data as CategoryPageRawItem[]);
@@ -160,6 +171,7 @@ function normalizeCategoryPage(data: CategoryPageData | CategoryPageRawItem[]): 
   return normalizeTreeCategoryData(data as CategoryPageData);
 }
 
+// 通用 GET 请求封装
 async function requestJson<T>(path: string): Promise<T> {
   const request = http.createHttp();
   try {
@@ -173,7 +185,7 @@ async function requestJson<T>(path: string): Promise<T> {
     });
 
     if (response.responseCode < 200 || response.responseCode >= 300) {
-      throw new Error(`Request failed: ${response.responseCode}`);
+      throw new Error(`请求失败: ${response.responseCode}`);
     }
 
     return JSON.parse(response.result as string) as T;
@@ -182,6 +194,7 @@ async function requestJson<T>(path: string): Promise<T> {
   }
 }
 
+// 获取分类页面数据
 export async function getCategoryPage(): Promise<CategoryPageData> {
   const data = await requestJson<CategoryPageData | CategoryPageRawItem[]>('/categories');
   return normalizeCategoryPage(data);

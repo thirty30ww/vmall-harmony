@@ -1,15 +1,17 @@
+// AI 智能导购悬浮按钮组件 —— 支持拖拽移动，点击跳转 AI 聊天页
 import { router, display, window } from '@kit.ArkUI';
 
 @Component
 export struct AiFloatingButton {
-  initBottom: number = 90;
-  @State posX: number = 0;
-  @State posY: number = 0;
-  private startX: number = 0;
-  private startY: number = 0;
-  private winW: number = 360;
-  private winH: number = 800;
+  initBottom: number = 90;        // 初始底部偏移（距底部距离）
+  @State posX: number = 0;        // 按钮 X 位置
+  @State posY: number = 0;        // 按钮 Y 位置
+  private startX: number = 0;     // 拖拽起始 X
+  private startY: number = 0;     // 拖拽起始 Y
+  private winW: number = 360;     // 窗口宽度
+  private winH: number = 800;     // 窗口高度
 
+  // 初始化：获取窗口尺寸，计算按钮初始位置
   aboutToAppear() {
     const defaultDisplay = display.getDefaultDisplaySync();
     this.winW = px2vp(defaultDisplay.width);
@@ -39,6 +41,7 @@ export struct AiFloatingButton {
     } catch (_e) {}
   }
 
+  // 计算按钮位置（右下角）
   setPosition() {
     this.posX = this.winW - 56 - 16;
     this.posY = this.winH - 56 - this.initBottom;
@@ -58,6 +61,7 @@ export struct AiFloatingButton {
     .justifyContent(FlexAlign.Center)
     .shadow({ radius: 12, color: '#40D71920', offsetX: 0, offsetY: 4 })
     .position({ left: this.posX, top: this.posY })
+    // 拖拽手势：支持在屏幕上自由拖动
     .gesture(
       PanGesture()
         .onActionStart(() => {
@@ -73,6 +77,7 @@ export struct AiFloatingButton {
           this.posY = newY;
         })
     )
+    // 点击跳转 AI 聊天页
     .onClick(() => {
       router.pushUrl({ url: 'pages/AiChatPage' });
     })
